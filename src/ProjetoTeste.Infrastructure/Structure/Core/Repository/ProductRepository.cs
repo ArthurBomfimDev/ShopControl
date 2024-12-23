@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
-using ProjetoEstagioAPI.Context;
-using ProjetoEstagioAPI.Infrastructure.Default;
-using ProjetoEstagioAPI.Models;
+using ProjetoTeste.Context;
+using ProjetoTeste.Infrastructure.Default;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Infrastructure.Products
+namespace ProjetoTeste.Infrastructure.Products
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {

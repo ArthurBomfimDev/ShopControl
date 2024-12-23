@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Update.Internal;
 
-namespace ProjetoEstagioAPI.Infrastructure.Default;
+namespace ProjetoTeste.Infrastructure.Default;
 
 public interface IRepository<T> where T : class
 {

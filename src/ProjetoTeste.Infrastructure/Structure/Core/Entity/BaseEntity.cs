@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProjetoEstagioAPI.Models
+namespace ProjetoTeste.Models
 {
     public class BaseEntity
     {

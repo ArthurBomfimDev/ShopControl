@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjetoEstagioAPI.Configurations;
-using ProjetoEstagioAPI.Models;
+using ProjetoTeste.Configurations;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Context
+namespace ProjetoTeste.Context
 {
     public class AppDbContext : DbContext
     {

@@ -1,12 +1,12 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.ValueFrameworkCore;
-using ProjetoEstagioAPI.Arguments.Brands;
-using ProjetoEstagioAPI.Infrastructure.UnitOfWork;
-using ProjetoEstagioAPI.Mapping.Brands;
-using ProjetoEstagioAPI.Models;
+using ProjetoTeste.Arguments.Brands;
+using ProjetoTeste.Infrastructure.UnitOfWork;
+using ProjetoTeste.Mapping.Brands;
+using ProjetoTeste.Models;
 using System.Drawing.Drawing2D;
 
-namespace ProjetoEstagioAPI.Services;
+namespace ProjetoTeste.Services;
 
 public class BrandService
 {

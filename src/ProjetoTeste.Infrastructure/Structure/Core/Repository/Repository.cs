@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjetoEstagioAPI.Context;
-using ProjetoEstagioAPI.Models;
+using ProjetoTeste.Context;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Infrastructure.Default
+namespace ProjetoTeste.Infrastructure.Default
 {
     public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity, new()
     {

@@ -1,7 +1,7 @@
-﻿using ProjetoEstagioAPI.Infrastructure.Default;
-using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Infrastructure.Default;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Infrastructure.Products
+namespace ProjetoTeste.Infrastructure.Products
 {
     public interface IProductRepository : IRepository<Product>
     {

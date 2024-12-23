@@ -1,7 +1,7 @@
-﻿using ProjetoEstagioAPI.Infrastructure.Default;
-using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Infrastructure.Default;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Infrastructure.Clients
+namespace ProjetoTeste.Infrastructure.Clients
 {
     public interface IClientRepository : IRepository<Client>
     {

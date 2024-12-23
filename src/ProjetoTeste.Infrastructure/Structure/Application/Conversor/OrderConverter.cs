@@ -1,7 +1,7 @@
-﻿using ProjetoEstagioAPI.Arguments.Order;
-using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Arguments.Order;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Mapping.Orders
+namespace ProjetoTeste.Mapping.Orders
 {
     public static class OrderConverter
     {

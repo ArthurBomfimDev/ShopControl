@@ -1,7 +1,7 @@
-﻿using ProjetoEstagioAPI.Infrastructure.Default;
-using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Infrastructure.Default;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Infrastructure.Brands
+namespace ProjetoTeste.Infrastructure.Brands
 {
     public interface IBrandRepository : IRepository<Brand>
     {

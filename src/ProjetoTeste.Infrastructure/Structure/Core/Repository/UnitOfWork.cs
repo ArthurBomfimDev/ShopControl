@@ -1,21 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using ProjetoEstagioAPI.Context;
-using ProjetoEstagioAPI.Infrastructure.Brands;
-using ProjetoEstagioAPI.Infrastructure.Clients;
-using ProjetoEstagioAPI.Infrastructure.Orders;
-using ProjetoEstagioAPI.Infrastructure.Products;
-using ProjetoEstagioAPI.Models;
+using ProjetoTeste.Context;
+using ProjetoTeste.Infrastructure.Brands;
+using ProjetoTeste.Infrastructure.Clients;
+using ProjetoTeste.Infrastructure.Orders;
+using ProjetoTeste.Infrastructure.Products;
 
-namespace ProjetoEstagioAPI.Infrastructure.UnitOfWork
+namespace ProjetoTeste.Infrastructure.UnitOfWork;
+
+public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    private readonly IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
+    private readonly AppDbContext _context;
+    public async Task CommitAsync()
     {
-        private readonly IDbContextTransaction dbContextTransaction = Context.Database.BeginTransaction();
-        private readonly AppContext _context;
-        public async Task Commit()
-        {
-           await context.Database.Transaction
-        }
+        await context.Database.CommitTransactionAsync();
     }
 }

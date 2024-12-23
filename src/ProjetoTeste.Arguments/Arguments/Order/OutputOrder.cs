@@ -1,8 +1,8 @@
-﻿using ProjetoEstagioAPI.Infrastructure.Products;
-using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Infrastructure.Products;
+using ProjetoTeste.Models;
 using System.Text.Json.Serialization;
 
-namespace ProjetoEstagioAPI.Arguments.Order
+namespace ProjetoTeste.Arguments.Order
 {
     public class OutputOrder
     {

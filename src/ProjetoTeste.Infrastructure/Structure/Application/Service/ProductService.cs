@@ -1,9 +1,9 @@
-﻿using ProjetoEstagioAPI.Arguments.Products;
-using ProjetoEstagioAPI.Infrastructure.UnitOfWork;
-using ProjetoEstagioAPI.Mapping.Products;
-using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Arguments.Products;
+using ProjetoTeste.Infrastructure.UnitOfWork;
+using ProjetoTeste.Mapping.Products;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Services;
+namespace ProjetoTeste.Services;
 
 public class ProductService
 {

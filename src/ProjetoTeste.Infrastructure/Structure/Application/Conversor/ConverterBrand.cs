@@ -1,7 +1,7 @@
-﻿using ProjetoEstagioAPI.Arguments.Brands;
-using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Arguments.Brands;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Mapping.Brands;
+namespace ProjetoTeste.Mapping.Brands;
 
 public static class ConverterBrand
 {

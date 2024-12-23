@@ -1,7 +1,7 @@
-﻿using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Models;
 using System.Text.Json.Serialization;
 
-namespace ProjetoEstagioAPI.Arguments.Order
+namespace ProjetoTeste.Arguments.Order
 {
     [method: JsonConstructor]
     public class InputCreateOrder(long clientId, List<ProductOrder> productOrders)

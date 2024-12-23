@@ -1,10 +1,6 @@
-﻿using ProjetoEstagioAPI.Context;
-using ProjetoEstagioAPI.Infrastructure.Brands;
-using ProjetoEstagioAPI.Infrastructure.Clients;
-using ProjetoEstagioAPI.Infrastructure.Orders;
-using ProjetoEstagioAPI.Infrastructure.Products;
+﻿using ProjetoTeste.Context;
 
-namespace ProjetoEstagioAPI.Infrastructure.UnitOfWork
+namespace ProjetoTeste.Infrastructure.UnitOfWork
 {
     public interface IUnitOfWork
     {

@@ -1,4 +1,4 @@
-using ProjetoEstagioAPI.Extensions;
+using ProjetoTeste.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

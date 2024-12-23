@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProjetoEstagioAPI.Models
+namespace ProjetoTeste.Models
 {
     [Table("Brand")]
     public class Brand : BaseEntity

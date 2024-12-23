@@ -1,6 +1,6 @@
-﻿using ProjetoEstagioAPI.Models;
-using ProjetoEstagioAPI.Arguments.Products;
-namespace ProjetoEstagioAPI.Mapping.Products;
+﻿using ProjetoTeste.Models;
+using ProjetoTeste.Arguments.Products;
+namespace ProjetoTeste.Mapping.Products;
 
 public static class ConverterProducts
 {

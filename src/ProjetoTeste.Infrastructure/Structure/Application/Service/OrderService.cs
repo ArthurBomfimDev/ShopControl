@@ -1,10 +1,10 @@
-﻿using ProjetoEstagioAPI.Arguments.Order;
-using ProjetoEstagioAPI.Infrastructure.UnitOfWork;
-using ProjetoEstagioAPI.Mapping.Orders;
-using ProjetoEstagioAPI.Models;
+﻿using ProjetoTeste.Arguments.Order;
+using ProjetoTeste.Infrastructure.UnitOfWork;
+using ProjetoTeste.Mapping.Orders;
+using ProjetoTeste.Models;
 using System.Linq;
 
-namespace ProjetoEstagioAPI.Services;
+namespace ProjetoTeste.Services;
 
 public class OrderService
 {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjetoEstagioAPI.Context;
-using ProjetoEstagioAPI.Infrastructure.Default;
-using ProjetoEstagioAPI.Models;
+using ProjetoTeste.Context;
+using ProjetoTeste.Infrastructure.Default;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Infrastructure.Clients;
+namespace ProjetoTeste.Infrastructure.Clients;
 
 public class ClientRepository : Repository<Client>, IClientRepository
 {

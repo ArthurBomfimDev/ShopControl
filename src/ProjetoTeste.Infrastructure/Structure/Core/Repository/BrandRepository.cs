@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjetoEstagioAPI.Context;
-using ProjetoEstagioAPI.Infrastructure.Default;
-using ProjetoEstagioAPI.Models;
+using ProjetoTeste.Context;
+using ProjetoTeste.Infrastructure.Default;
+using ProjetoTeste.Models;
 
-namespace ProjetoEstagioAPI.Infrastructure.Brands;
+namespace ProjetoTeste.Infrastructure.Brands;
 
 public class BrandRepository : Repository<Brand>, IBrandRepository
 {

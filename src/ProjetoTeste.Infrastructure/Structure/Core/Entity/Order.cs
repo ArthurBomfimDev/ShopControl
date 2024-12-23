@@ -1,6 +1,6 @@
-﻿using ProjetoEstagioAPI.Infrastructure.Products;
+﻿using ProjetoTeste.Infrastructure.Products;
 
-namespace ProjetoEstagioAPI.Models;
+namespace ProjetoTeste.Models;
 
 public class Order : BaseEntity
 {

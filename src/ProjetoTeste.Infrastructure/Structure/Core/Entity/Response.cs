@@ -1,4 +1,4 @@
-﻿namespace ProjetoEstagioAPI.Models
+﻿namespace ProjetoTeste.Models
 {
     public class Response<TEntity>
     {

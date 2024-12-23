@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-namespace ProjetoEstagioAPI.Arguments.Brands;
+namespace ProjetoTeste.Arguments.Brands;
 
 [method: JsonConstructor]
 public class OutputBrand(long id, string name, string code, string description)

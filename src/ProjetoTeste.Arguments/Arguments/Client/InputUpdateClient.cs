@@ -1,4 +1,4 @@
-﻿namespace ProjetoEstagioAPI.Arguments.Client
+﻿namespace ProjetoTeste.Arguments.Client
 {
     public class InputUpdateClient
     {

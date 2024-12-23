@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjetoEstagioAPI.Context;
+using ProjetoTeste.Context;
 
 public static class ContextExtension
 {

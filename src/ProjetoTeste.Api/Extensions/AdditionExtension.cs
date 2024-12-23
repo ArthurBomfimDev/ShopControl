@@ -1,13 +1,13 @@
-﻿using ProjetoEstagioAPI.Infrastructure.Brands;
-using ProjetoEstagioAPI.Infrastructure.Clients;
-using ProjetoEstagioAPI.Infrastructure.Default;
-using ProjetoEstagioAPI.Infrastructure.Orders;
-using ProjetoEstagioAPI.Infrastructure.Products;
-using ProjetoEstagioAPI.Infrastructure.UnitOfWork;
-using ProjetoEstagioAPI.Models;
-using ProjetoEstagioAPI.Services;
+﻿using ProjetoTeste.Infrastructure.Brands;
+using ProjetoTeste.Infrastructure.Clients;
+using ProjetoTeste.Infrastructure.Default;
+using ProjetoTeste.Infrastructure.Orders;
+using ProjetoTeste.Infrastructure.Products;
+using ProjetoTeste.Infrastructure.UnitOfWork;
+using ProjetoTeste.Models;
+using ProjetoTeste.Services;
 
-namespace ProjetoEstagioAPI.Extensions
+namespace ProjetoTeste.Extensions
 {
     public static class AdditionExtension
     {
