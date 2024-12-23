@@ -1,4 +1,4 @@
-﻿namespace ProjetoTeste.Arguments.Client
+﻿namespace ProjetoTeste.Arguments.Arguments.Client
 {
     public class InputCreateClient
     {

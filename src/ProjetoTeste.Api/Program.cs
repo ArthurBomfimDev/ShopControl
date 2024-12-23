@@ -1,4 +1,4 @@
-using ProjetoTeste.Extensions;
+using ProjetoTeste.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

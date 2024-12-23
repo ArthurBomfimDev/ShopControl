@@ -1,31 +1,22 @@
-﻿using ProjetoTeste.Infrastructure.Products;
-using ProjetoTeste.Models;
+﻿using ProjetoTeste.Arguments.Arguments.ProductsOrder;
 using System.Text.Json.Serialization;
 
-namespace ProjetoTeste.Arguments.Order
+namespace ProjetoTeste.Arguments.Arguments.Order;
+
+public class OutputOrder
 {
-    public class OutputOrder
+    public long Id { get; set; }
+    public long ClientId { get; set; }
+    public List<OutputProductOrder> ProductOrders { get; set; }
+    public decimal Total { get; set; }
+    public DateTime OrderDate { get; set; }
+    [JsonConstructor]
+    public OutputOrder(long id, long clientId, List<OutputProductOrder> productOrders, decimal total, DateTime orderDate)
     {
-        protected readonly ProductRepository _repository;
-
-        public OutputOrder(ProductRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public long Id { get; set; }
-        public long ClientId { get; set; }
-        public List<ProductOrder> ProductOrders { get; set; }
-        public decimal Total { get; set; }
-        public DateTime OrderDate { get; set; }
-        [JsonConstructor]
-        public OutputOrder(long id, long clientId, List<ProductOrder> productOrders, decimal total, DateTime orderDate)
-        {
-            Id = id;
-            ClientId = clientId;
-            ProductOrders = productOrders;
-            Total = total;
-            OrderDate = orderDate;
-        }
+        Id = id;
+        ClientId = clientId;
+        ProductOrders = productOrders;
+        Total = total;
+        OrderDate = orderDate;
     }
 }

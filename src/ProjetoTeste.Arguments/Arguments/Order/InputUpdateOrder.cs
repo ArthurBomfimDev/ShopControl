@@ -1,4 +1,4 @@
-﻿namespace ProjetoTeste.Arguments.Order
+﻿namespace ProjetoTeste.Arguments.Arguments.Order
 {
     public class InputUpdateOrder
     {

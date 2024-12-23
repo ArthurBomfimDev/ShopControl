@@ -7,7 +7,7 @@ using ProjetoTeste.Infrastructure.UnitOfWork;
 using ProjetoTeste.Models;
 using ProjetoTeste.Services;
 
-namespace ProjetoTeste.Extensions
+namespace ProjetoTeste.Api.Extensions
 {
     public static class AdditionExtension
     {
