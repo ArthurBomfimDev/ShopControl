@@ -1,9 +1,8 @@
 ﻿using ProjetoTeste.Infrastructure.Persistence.Entity;
 
-namespace ProjetoTeste.Infrastructure.Interface.Repositories
+namespace ProjetoTeste.Infrastructure.Interface.Repositories;
+
+public interface IBrandRepository : IRepository<Brand>
 {
-    public interface IBrandRepository : IRepository<Brand>
-    {
-        Task<bool> Exist(string name);
-    }
+    Task<bool> Exist(string code);
 }

@@ -1,32 +1,22 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.ValueFrameworkCore;
-using System.Drawing.Drawing2D;
-using ProjetoTeste.Arguments.Arguments.Brands;
-using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
+﻿using ProjetoTeste.Arguments.Arguments.Brands;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
+using ProjetoTeste.Infrastructure.Interface.Repositories;
+using ProjetoTeste.Infrastructure.Interface.Service;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
 
-public class BrandService
+public class BrandService :IBrandService
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IBrandRepository _brandRepository;
 
-    public BrandService(IUnitOfWork unitOfWork)
+    public BrandService(IBrandRepository brandRepository)
     {
-        _unitOfWork = unitOfWork;
+        _brandRepository = brandRepository;
     }
     public async Task<Response<List<OutputBrand>>> GetAll()
     {
-        var brandList = await _unitOfWork.BrandRepository.GetAllAsync();
-        if (brandList is null || brandList.Count() == 0)
-        {
-            return new Response<List<OutputBrand>>
-            {
-                Message = " >>> Não há Marcas Cadastradas No Sistema <<<",
-                Success = false,
-            };
-        }
+        var brandList = await _brandRepository.GetAllAsync();
         return new Response<List<OutputBrand>>
         {
             Success = true,
@@ -35,74 +25,90 @@ public class BrandService
     }
     public async Task<Response<OutputBrand>> Get(long id)
     {
-        var brand = await _unitOfWork.BrandRepository.Get(id);
-        if (brand is null)
-        {
-            return new Response<OutputBrand> { Message = " >>> Marca com o Id digitado NÃO encontrada <<<", Success = false };
-        }
+        var brand = await _brandRepository.Get(id);
         return new Response<OutputBrand>
         {
             Value = brand.ToOutputBrand(),
             Success = true,
         };
     }
+    public async Task<Response<Brand>> BrandExists(long id)
+    {
+        var brand = await _brandRepository.Get(id);
+        if (brand == null)
+        {
+            return new Response<Brand>
+            {
+                Success = false,
+                Message = { " >>> Marca com o Id digitado NÃO encontrada <<<" }
+            };
+        }
+        return new Response<Brand>
+        {
+            Value = brand,
+            Success = true,
+        };
+    }
     public async Task<Response<OutputBrand>> Create(InputCreateBrand input)
     {
-        //var nameExists =  await _unitOfWork.BrandRepository.Exist(input.Name);
-        //if (nameExists is false)
-        //{
-        //    return new Response<OutputBrand> { Message = " >>> ERRO - Nome de Marca já existe <<<", Success = false };
-        //}
-        //var CodeExists = await _unitOfWork.BrandRepository.Exist(input.Code);
-        //if (CodeExists is false)
-        //{
-        //    return new Response<OutputBrand> { Message = " >>> Erro - Codigo de Marca já cadastrado <<<", Success = false };
-        //}
-        var createBrand = await _unitOfWork.BrandRepository.Create(input.ToBrand());
-        //if (createBrand is null)
-        //{
-        //    return new Response<OutputBrand> { Message = " >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<", Success = false };
-        //}
-        await _unitOfWork.Commit();
+        if (input is null)
+        {
+            return new Response<OutputBrand> { Message = { " >>> Dados Inseridos Inválidos <<<" }, Success = false };
+        }
+        var response = new Response<OutputBrand>();
+        var CodeExists = await _brandRepository.Exist(input.Code);
+        if (CodeExists is false)
+        {
+            response.Message.Add(" >>> Erro - Codigo de Marca já cadastrado <<<");
+            response.Success = false;
+        }
+        var createBrand = await _brandRepository.Create(input.ToBrand());
+        if (createBrand is null)
+        {
+            response.Message.Add(" >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<");
+            response.Success = false;
+        }
         return new Response<OutputBrand>
         {
             Value = createBrand.ToOutputBrand(),
             Success = true,
         };
     }
-    public async Task<Response<OutputBrand>> Update(long id, InputUpdateBrand brand)
+    public async Task<Response<bool>> Update(long id, InputUpdateBrand brand)
     {
-        var brandExists = await _unitOfWork.BrandRepository.Get(id);
+        var response = await BrandExists(id);
+        var brandExists = response.Value;
 
         if (brand is null)
         {
-            return new Response<OutputBrand> { Message = " >>> Marca com o Id digitado NÃO encontrada <<<", Success = false };
+            response.Success = false;
+            response.Message.Add(" >>> Dados Inseridos Inválidos <<<");
         }
         brandExists.Name = brand.Name;
         brandExists.Code = brand.Code;
         brandExists.Description = brand.Description;
-        var brandUpdate = _unitOfWork.BrandRepository.Update(brandExists);
+        var brandUpdate = _brandRepository.Update(brandExists);
         if (brandUpdate is null)
         {
-            return new Response<OutputBrand> { Message = " >>> ERRO - Marca não atualizada - Dados digitados errados ou incompletos <<<", Success = false };
+            response.Success = false;
+            response.Message.Add(" >>> ERRO - Marca não atualizada - Dados digitados errados ou incompletos <<<");
         }
-        await _unitOfWork.Commit();
-        return new Response<OutputBrand> { Success = true, Message = " >>> Marca Atualizada com SUCESSO <<<" };
-    }
-    public async Task<Response<OutputBrand>> Delete(long id)
-    {
-        var brandExists = await _unitOfWork.BrandRepository.Get(id);
-
-        if (brandExists is null)
+        if (!response.Success)
         {
-            return new Response<OutputBrand> { Message = " >>> Marca com o Id digitado NÃO encontrada <<<", Success = false };
+            return new Response<bool> { Success = false, Message = response.Message };
         }
-        var brandDelete = _unitOfWork.BrandRepository.Delete(id);
+        return new Response<bool> { Success = true, Message = { " >>> Marca Atualizada com SUCESSO <<<" } };
+    }
+    public async Task<Response<bool>> Delete(long id)
+    {
+        var response = await BrandExists(id);
+        var brandExists = response.Value;
+        var brandDelete = _brandRepository.Delete(id);
         if (brandDelete is null)
         {
-            return new Response<OutputBrand> { Message = " >>> ERRO - Marca não apagada - Dados digitados errados ou incompletos <<<", Success = false };
+            response.Success = false;
+            response.Message.Add(" >>> ERRO - Marca não apagada - Dados digitados errados ou incompletos <<<");
         }
-        await _unitOfWork.Commit();
-        return new Response<OutputBrand> { Message = " >>> Marca DELETADA com SUCESSO <<<", Success = true };
+        return new Response<bool> { Message = { " >>> Marca DELETADA com SUCESSO <<<" }, Success = true };
     }
 }

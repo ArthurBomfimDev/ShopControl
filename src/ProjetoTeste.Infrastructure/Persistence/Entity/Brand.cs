@@ -1,8 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 
-namespace ProjetoTeste.Infrastructure.Persistence.Entity;
-
-[Table("Brand")]
 public class Brand : BaseEntity
 {
     public string Name { get; set; }
@@ -16,13 +13,6 @@ public class Brand : BaseEntity
 
     public Brand(string name, string code, string description)
     {
-        Name = name;
-        Code = code;
-        Description = description;
-    }
-    public Brand(long Id, string name, string code, string description)
-    {
-        Id = Id;
         Name = name;
         Code = code;
         Description = description;

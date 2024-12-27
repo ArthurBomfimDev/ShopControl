@@ -1,9 +1,6 @@
-﻿using ProjetoTeste.Context;
+﻿namespace ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
-namespace ProjetoTeste.Infrastructure.Interface.UnitOfWork
+public interface IUnitOfWork
 {
-    public interface IUnitOfWork
-    {
-        Task Commit();
-    }
+    Task Commit();
 }

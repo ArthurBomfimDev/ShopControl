@@ -1,11 +1,7 @@
-﻿using ProjetoTeste.Infrastructure.Brands;
-using ProjetoTeste.Infrastructure.Clients;
-using ProjetoTeste.Infrastructure.Default;
-using ProjetoTeste.Infrastructure.Orders;
-using ProjetoTeste.Infrastructure.Products;
-using ProjetoTeste.Infrastructure.UnitOfWork;
-using ProjetoTeste.Models;
-using ProjetoTeste.Services;
+﻿using ProjetoTeste.Infrastructure.Application.Service;
+using ProjetoTeste.Infrastructure.Interface.Repositories;
+using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
+using ProjetoTeste.Infrastructure.Persistence.Repository;
 
 namespace ProjetoTeste.Api.Extensions
 {
@@ -20,6 +16,7 @@ namespace ProjetoTeste.Api.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<BrandService>();
             services.AddScoped<ProductService>();
+            services.AddScoped<OrderService>();
 
             return services;
         }

@@ -9,5 +9,8 @@ public class ProductOrderConfiguration : IEntityTypeConfiguration<ProductOrder>
     public void Configure(EntityTypeBuilder<ProductOrder> builder)
     {
         builder.HasKey(p => p.Id);
+
+        builder.Property(p => p.OrderId).HasColumnName("pedido_id")
+            .IsRequired();
     }
 }

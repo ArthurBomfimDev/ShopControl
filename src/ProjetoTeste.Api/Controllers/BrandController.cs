@@ -1,27 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using ProjeotTeste.ProjetoTeste
-
-using ProjeotTeste.Infrastructure.Brands;
-using ProjeotTeste.Infrastructure.UnitOfWork;
-using ProjeotTeste.Mapping.Brands;
-using ProjeotTeste.Services;
+using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
+using ProjetoTeste.Infrastructure.Application.Service;
+using ProjetoTeste.Arguments.Arguments.Brands;
 
 namespace ProjetoTeste.Api.Controllers;
 
-[Route("marca")]
-[ApiController]
-public class BrandController : Controller
+
+public class BrandController : BaseController
 {
     private readonly BrandService _brandService;
-    private readonly IUnitOfWork _unitOfWork;
 
-    public BrandController(IUnitOfWork unitOfWork, BrandService brandService)
+    public BrandController(IUnitOfWork unitOfWork, BrandService brandService) : base(unitOfWork)
     {
         _brandService = brandService;
-        _unitOfWork = unitOfWork;
     }
-    [HttpGet("ExibirTodasasMarcas")]
+    [HttpGet]
     public async Task<ActionResult<List<OutputBrand?>>> GetAll()
     {
         var brandList = await _brandService.GetAll();
@@ -29,9 +22,9 @@ public class BrandController : Controller
         {
             return NotFound(brandList.Message);
         }
-        return Ok(brandList.Entity);
+        return Ok(brandList.Value);
     }
-    [HttpGet("ProcurarMarca")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<OutputBrand?>> Get(int id)
     {
         var brand = await _brandService.Get(id);
@@ -39,19 +32,19 @@ public class BrandController : Controller
         {
             return NotFound(brand.Message);
         }
-        return Ok(brand.Entity);
+        return Ok(brand.Value);
     }
-    [HttpPost("Criar Marca")]
+    [HttpPost]
     public async Task<ActionResult<OutputBrand>> Create(InputCreateBrand brand)
     {
         var createdBrand = await _brandService.Create(brand);
         if (!createdBrand.Success)
         {
-            BadRequest(createdBrand.Message);
+            return BadRequest(createdBrand.Message);
         }
-        return Ok(createdBrand.Entity);
+        return Ok(createdBrand.Value);
     }
-    [HttpPut("AtualizarMarca")]
+    [HttpPut]
     public async Task<ActionResult> Update(long id, InputUpdateBrand input)
     {
         var updateBrand = await _brandService.Update(id, input);
@@ -61,7 +54,7 @@ public class BrandController : Controller
         }
         return Ok(updateBrand.Message);
     }
-    [HttpDelete("DeletarMarca")]
+    [HttpDelete]
     public async Task<ActionResult> Delete(long id)
     {
         var deleteBrand = await _brandService.Delete(id);
@@ -70,10 +63,5 @@ public class BrandController : Controller
             return BadRequest(deleteBrand.Message);
         }
         return Ok(deleteBrand.Message);
-    }
-    public override async void OnActionExecuted(ActionExecutedContext context)
-    {
-        await _unitOfWork.Commit();
-        base.OnActionExecuted(context);
     }
 }

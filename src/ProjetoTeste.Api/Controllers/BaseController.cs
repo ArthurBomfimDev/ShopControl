@@ -1,15 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
-namespace ProjetoTeste.Api.Controllers
+namespace ProjetoTeste.Api.Controllers;
+
+[Route("api/v1/[controller]")]
+[ApiController]
+public class BaseController : Controller
 {
-    public class BaseController : Controller
+    private readonly IUnitOfWork _unitOfWork;
+
+    public BaseController(IUnitOfWork unitOfWork)
     {
-        private readonly IUnitOfWork _unitOfWork
-        public override async void OnActionExecuted(ActionExecutedContext context)
-        {
-            await _unitOfWork.Commit();
-            base.OnActionExecuted(context);
-        }
+        _unitOfWork = unitOfWork;
+    }
+
+    public override async void OnActionExecuted(ActionExecutedContext context)
+    {
+        await _unitOfWork.Commit();
+        base.OnActionExecuted(context);
     }
 }

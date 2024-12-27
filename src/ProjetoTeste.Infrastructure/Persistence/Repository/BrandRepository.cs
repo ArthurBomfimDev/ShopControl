@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 using ProjetoTeste.Infrastructure.Persistence.Context;
+using ProjetoTeste.Infrastructure.Interface.Repositories;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Repository;
 
@@ -9,10 +10,8 @@ public class BrandRepository : Repository<Brand>, IBrandRepository
     public BrandRepository(AppDbContext context) : base(context)
     {
     }
-
-    public Task<bool> Exist(string name)
+    public async Task<bool> Exist(string code)
     {
-        var exists = _dbSet.AnyAsync(x => x.Name == name);
-        return exists;
+        return await _dbSet.AnyAsync(x => x.Code == code);
     }
 }

@@ -25,4 +25,9 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\ProjetoTeste.Arguments\ProjetoTeste.Arguments.csproj" />
+	  <ProjectReference Include="..\ProjetoTeste.Infrastructure\ProjetoTeste.Infrastructure.csproj" />
+	</ItemGroup>
+
 </Project>

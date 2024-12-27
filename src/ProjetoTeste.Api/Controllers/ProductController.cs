@@ -1,22 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using ProjeotTeste.Arguments.Products;
-using ProjeotTeste.Models;
-using ProjeotTeste.Services;
+using ProjetoTeste.Arguments.Arguments.Products;
+using ProjetoTeste.Infrastructure.Application.Service;
+using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
 namespace ProjetoTeste.Api.Controllers;
-[Route("Produtos")]
+[Route("[controller]")]
 [ApiController]
-public class ProductController : ControllerBase
+public class ProductController : BaseController
 {
     private readonly ProductService _productService;
 
-    public ProductController(ProductService productService)
+    public ProductController(IUnitOfWork unitOfWork, ProductService productService) : base(unitOfWork)
     {
         _productService = productService;
     }
 
-    [HttpGet("Exibir todos os Produtos")]
+    [HttpGet]
     public async Task<ActionResult<List<OutputProduct>>> GetAll()
     {
         var productList = await _productService.GetAll();
@@ -24,9 +23,9 @@ public class ProductController : ControllerBase
         {
             return BadRequest(productList.Message);
         }
-        return Ok(productList.Entity);
+        return Ok(productList.Value);
     }
-    [HttpGet("Buscar produto por Id")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<OutputProduct>> Get(long id)
     {
         var product = await _productService.Get(id);
@@ -34,9 +33,9 @@ public class ProductController : ControllerBase
         {
             return BadRequest(product.Message);
         }
-        return Ok(product.Entity);
+        return Ok(product.Value);
     }
-    [HttpDelete("Deletar Produto")]
+    [HttpDelete]
     public async Task<ActionResult> Delete(long id)
     {
         var deletePrdocut = await _productService.Delete(id);
@@ -46,7 +45,7 @@ public class ProductController : ControllerBase
         }
         return Ok(deletePrdocut.Message);
     }
-    [HttpPost("Criar Produto")]
+    [HttpPost]
     public async Task<ActionResult<OutputProduct>> Create(InputCreateProduct input)
     {
         var createProduct = await _productService.Create(input);
@@ -54,9 +53,9 @@ public class ProductController : ControllerBase
         {
             return BadRequest(createProduct.Message);
         }
-        return Ok(createProduct.Entity);
+        return Ok(createProduct.Value);
     }
-    [HttpPut("Atualizar Produto")]
+    [HttpPut]
     public async Task<ActionResult> Update(long id, InputUpdateProduct input)
     {
         var updateProduct = await _productService.Update(id, input);

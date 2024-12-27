@@ -20,9 +20,4 @@ public static class ConverterBrand
         if (brand is null) return null;
         return new Brand(brand.Name, brand.Code, brand.Description);
     }
-    public static Brand? ToBrand(this InputUpdateBrand brand, long id)
-    {
-        if (brand is null) return null;
-        return new Brand(id, brand.Name, brand.Code, brand.Description);
-    }
 }

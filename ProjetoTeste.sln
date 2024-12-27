@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjetoTeste.Api", "src\ProjetoTeste.Api\ProjetoTeste.Api.csproj", "{835BC9AF-6339-4F59-9D8C-E6553E032FB5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{70F9A174-2E61-4A2D-AE5B-3F41E265A7E2} = {70F9A174-2E61-4A2D-AE5B-3F41E265A7E2}
+		{A6D9776F-2813-4280-B36B-840663A9B212} = {A6D9776F-2813-4280-B36B-840663A9B212}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjetoTeste.Arguments", "src\ProjetoTeste.Arguments\ProjetoTeste.Arguments.csproj", "{70F9A174-2E61-4A2D-AE5B-3F41E265A7E2}"
 EndProject
