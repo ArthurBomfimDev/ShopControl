@@ -19,7 +19,7 @@ namespace ProjetoTeste.Infrastructure.Conversor
         public static Order? ToOrder(this InputCreateOrder order)
         {
             if (order is null) return null;
-            return new Order(order.ClientId, order.OrderDate,order.ProductOrders.ToProductOrder());
+            return new Order(order.ClientId, DateOnly.FromDateTime(DateTime.Now));
         }
     }
 }

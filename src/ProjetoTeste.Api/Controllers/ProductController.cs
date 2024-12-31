@@ -2,15 +2,17 @@
 using ProjetoTeste.Arguments.Arguments.Products;
 using ProjetoTeste.Infrastructure.Application.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
+using ProjetoTeste.Infrastructure.Interface.Service;
+
 
 namespace ProjetoTeste.Api.Controllers;
 [Route("[controller]")]
 [ApiController]
 public class ProductController : BaseController
 {
-    private readonly ProductService _productService;
+    private readonly IProductService _productService;
 
-    public ProductController(IUnitOfWork unitOfWork, ProductService productService) : base(unitOfWork)
+    public ProductController(IUnitOfWork unitOfWork, IProductService productService) : base(unitOfWork)
     {
         _productService = productService;
     }
@@ -35,16 +37,6 @@ public class ProductController : BaseController
         }
         return Ok(product.Value);
     }
-    [HttpDelete]
-    public async Task<ActionResult> Delete(long id)
-    {
-        var deletePrdocut = await _productService.Delete(id);
-        if (!deletePrdocut.Success)
-        {
-            return BadRequest(deletePrdocut.Message);
-        }
-        return Ok(deletePrdocut.Message);
-    }
     [HttpPost]
     public async Task<ActionResult<OutputProduct>> Create(InputCreateProduct input)
     {
@@ -64,5 +56,15 @@ public class ProductController : BaseController
             return BadRequest(updateProduct.Message);
         }
         return Ok(updateProduct.Message);
+    }
+    [HttpDelete]
+    public async Task<ActionResult> Delete(long id)
+    {
+        var deletePrdocut = await _productService.Delete(id);
+        if (!deletePrdocut.Success)
+        {
+            return BadRequest(deletePrdocut.Message);
+        }
+        return Ok(deletePrdocut.Message);
     }
 }

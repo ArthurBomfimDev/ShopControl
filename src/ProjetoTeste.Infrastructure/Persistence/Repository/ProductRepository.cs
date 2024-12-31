@@ -15,5 +15,10 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         {
             return await _dbSet.AnyAsync(x => x.Code == code);
         }
+
+        public Task<bool> ExistUpdate(string code, long id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -8,10 +8,26 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository;
 
 public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
-    private readonly IDbContextTransaction dbContextTransaction = context.Database.BeginTransaction();
-    private readonly AppDbContext _context;
-    public async Task Commit()
+    private IDbContextTransaction dbContextTransaction;
+    private readonly AppDbContext _context = context;
+    public async Task BeginTransactionAsync()
     {
-        await context.Database.CommitTransactionAsync();
+        if (dbContextTransaction == null)
+        {
+            dbContextTransaction = await _context.Database.BeginTransactionAsync();
+        }
+    }
+    //public async Task CommitAsync()
+    //{
+    //    await _context.SaveChangesAsync();
+    //    await dbContextTransaction.CommitAsync();
+    //}
+    public async Task CommitAsync()
+    {
+        if (dbContextTransaction != null)
+        {
+            await _context.SaveChangesAsync();
+            await dbContextTransaction.CommitAsync();
+        }
     }
 }

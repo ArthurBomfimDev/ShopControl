@@ -19,11 +19,7 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder.Property(c => c.Email).HasColumnName("email")
             .IsRequired()
-            .HasMaxLength(32);
-
-        builder.Property(c => c.Password).HasColumnName("senha")
-            .IsRequired()
-            .HasMaxLength(16);
+            .HasMaxLength(64);
 
         builder.Property(c => c.CPF).HasColumnName("cpf")
             .IsRequired()
@@ -32,7 +28,7 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder.Property(c => c.Phone).HasColumnName("telefone")
             .IsRequired()
-            .HasMaxLength(11)
+            .HasMaxLength(15)
             .IsFixedLength();
     }
 }

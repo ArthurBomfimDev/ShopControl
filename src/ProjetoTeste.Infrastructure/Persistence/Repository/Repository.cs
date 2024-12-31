@@ -27,14 +27,16 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         {
             return await _dbSet.FindAsync(id);
         }
-        public async Task<TEntity?> Update(TEntity? entity)
-        {
-            var update = _dbSet.Entry(entity).State = EntityState.Modified;
-            return entity;
-        }
         public async Task<TEntity?> Create(TEntity? entity)
         {
             await _dbSet.AddAsync(entity);
+            if (entity == null) return entity;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+        public async Task<TEntity?> Update(TEntity? entity)
+        {
+            _dbSet.Update(entity);
             return entity;
         }
         public async Task<bool> Delete(long id)

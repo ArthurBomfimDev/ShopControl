@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
-
-namespace ProjetoTeste.Infrastructure.Persistence.Mapping;
 
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
@@ -26,5 +24,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.Total).HasColumnName("total")
             .IsRequired();
 
+        builder.HasMany(o => o.ProductOrders)
+            .WithOne()
+            .HasForeignKey(po => po.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

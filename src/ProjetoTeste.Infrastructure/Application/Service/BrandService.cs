@@ -3,16 +3,19 @@ using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
 
 public class BrandService :IBrandService
 {
     private readonly IBrandRepository _brandRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public BrandService(IBrandRepository brandRepository)
+    public BrandService(IBrandRepository brandRepository, IUnitOfWork unitOfWork)
     {
         _brandRepository = brandRepository;
+        _unitOfWork = unitOfWork;
     }
     public async Task<Response<List<OutputBrand>>> GetAll()
     {
@@ -57,16 +60,21 @@ public class BrandService :IBrandService
         }
         var response = new Response<OutputBrand>();
         var CodeExists = await _brandRepository.Exist(input.Code);
-        if (CodeExists is false)
+        if (CodeExists)
         {
             response.Message.Add(" >>> Erro - Codigo de Marca já cadastrado <<<");
             response.Success = false;
+            return response;
         }
         var createBrand = await _brandRepository.Create(input.ToBrand());
         if (createBrand is null)
         {
             response.Message.Add(" >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<");
             response.Success = false;
+        }
+        if(!response.Success)
+        {
+            return response;
         }
         return new Response<OutputBrand>
         {
@@ -83,6 +91,19 @@ public class BrandService :IBrandService
         {
             response.Success = false;
             response.Message.Add(" >>> Dados Inseridos Inválidos <<<");
+        }
+        if (brandExists is null)
+        {
+            return new Response<bool> { Message = response.Message, Success = false };
+        }
+        var codeExists = await _brandRepository.Exist(brand.Code);
+        if (brandExists.Code != brand.Code && codeExists)
+        {
+            response.Message.Add(" >>> Código não pode ser Alterado - Em Uso por outra Marca <<<");
+        }
+        if(!response.Success)
+        {
+            return new Response<bool>() { Message = response.Message, Success = false };
         }
         brandExists.Name = brand.Name;
         brandExists.Code = brand.Code;
@@ -103,8 +124,12 @@ public class BrandService :IBrandService
     {
         var response = await BrandExists(id);
         var brandExists = response.Value;
-        var brandDelete = _brandRepository.Delete(id);
-        if (brandDelete is null)
+        if(brandExists is null)
+        {
+            return new Response<bool> { Success = false, Message = response.Message };
+        }
+        bool brandDelete = await _brandRepository.Delete(id);
+        if (!brandDelete)
         {
             response.Success = false;
             response.Message.Add(" >>> ERRO - Marca não apagada - Dados digitados errados ou incompletos <<<");

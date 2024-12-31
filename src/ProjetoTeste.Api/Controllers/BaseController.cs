@@ -13,11 +13,17 @@ public class BaseController : Controller
     public BaseController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+        _unitOfWork.BeginTransactionAsync().Wait();
     }
 
-    public override async void OnActionExecuted(ActionExecutedContext context)
+    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        await _unitOfWork.Commit();
-        base.OnActionExecuted(context);
+        await _unitOfWork.BeginTransactionAsync();
+        var executedContext = await next();
+
+        if (executedContext.Exception == null)
+        {
+            await _unitOfWork.CommitAsync();
+        }
     }
 }

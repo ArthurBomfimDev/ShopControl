@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Application.Service;
+using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Arguments.Arguments.Brands;
 
 namespace ProjetoTeste.Api.Controllers;
@@ -8,9 +9,9 @@ namespace ProjetoTeste.Api.Controllers;
 
 public class BrandController : BaseController
 {
-    private readonly BrandService _brandService;
+    private readonly IBrandService _brandService;
 
-    public BrandController(IUnitOfWork unitOfWork, BrandService brandService) : base(unitOfWork)
+    public BrandController(IUnitOfWork unitOfWork, IBrandService brandService) : base(unitOfWork)
     {
         _brandService = brandService;
     }

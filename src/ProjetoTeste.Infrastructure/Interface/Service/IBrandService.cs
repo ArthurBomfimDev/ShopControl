@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service
 {
-    internal interface IBrandService
+    public interface IBrandService
     {
         Task<Response<List<OutputBrand>>> GetAll();
         Task<Response<OutputBrand>> Get(long id);

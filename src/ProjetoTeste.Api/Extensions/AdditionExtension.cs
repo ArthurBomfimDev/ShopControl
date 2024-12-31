@@ -1,8 +1,9 @@
-﻿using ProjetoTeste.Infrastructure.Application.Service;
+﻿using ProjetoTeste.Api.Controllers;
+using ProjetoTeste.Infrastructure.Application.Service;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Repository;
-
+using ProjetoTeste.Infrastructure.Interface.Service;
 namespace ProjetoTeste.Api.Extensions
 {
     public static class AdditionExtension
@@ -14,9 +15,11 @@ namespace ProjetoTeste.Api.Extensions
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<BrandService>();
-            services.AddScoped<ProductService>();
-            services.AddScoped<OrderService>();
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IClientService, ClientService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             return services;
         }
