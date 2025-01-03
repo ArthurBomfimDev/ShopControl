@@ -30,7 +30,7 @@ public class ProductService : IProductService
     public async Task<Response<List<OutputProduct>>> GetAll()
     {
         var productList = await _productRepository.GetAllAsync();
-        return new Response<List<OutputProduct>> { Success = true, Value = productList.ToListOutProducts() };
+        return new Response<List<OutputProduct>> { Success = true, Value = (from i in productList select i.ToOutputProduct()).ToList() };
     }
 
     public async Task<Response<OutputProduct>> Get(long id)
@@ -155,4 +155,5 @@ public class ProductService : IProductService
         await _productRepository.Delete(id);
         return new Response<bool> { Success = true, Message = { " >>> Produto deletado com sucesso <<<" } };
     }
+
 }

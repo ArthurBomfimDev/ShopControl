@@ -25,7 +25,7 @@ public class OrderService : IOrderService
     public async Task<Response<List<OutputOrder>>> GetAll()
     {
         var orderList = await _orderRepository.GetProductOrders();
-        var outputOrder = orderList.Select(o => new OutputOrder(o.Id, o.ClientId, default /*o.ProductOrders.ToOuputProductOrder()*/, o.Total, o.OrderDate)).ToList();
+        var outputOrder = orderList.Select(o => new OutputOrder(o.Id, o.ClientId, (from i in o.ProductOrders select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList();
         return new Response<List<OutputOrder>> { Success = true, Value = outputOrder };
     }
 
@@ -138,9 +138,6 @@ public class OrderService : IOrderService
     //    var orderList = order.Value;
     //    var bestSeller = from o in orderList
     //                     select o.ProductOrde
-
-
-
     //}
 
 }

@@ -22,7 +22,7 @@ public class ClientService : IClientService
     public async Task<Response<List<OutputClient>>> GetAll()
     {
         var clientList = await _clientRepository.GetAllAsync();
-        return new Response<List<OutputClient>>() { Success = true, Value = clientList.ToOutputClientList() };
+        return new Response<List<OutputClient>>() { Success = true, Value = (from i in clientList select i.ToOutputClient()).ToList() };
     }
 
     public async Task<Response<OutputClient>> Get(long id)

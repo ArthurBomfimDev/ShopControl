@@ -24,7 +24,7 @@ public class BrandService : IBrandService
         return new Response<List<OutputBrand>>
         {
             Success = true,
-            Value = brandList.ToOutputBrandList(),
+            Value = (from i in brandList select i.ToOutputBrand()).ToList(),
         };
     }
 
@@ -63,13 +63,13 @@ public class BrandService : IBrandService
             return new Response<OutputBrand> { Message = { " >>> Dados Inseridos Inválidos <<<" }, Success = false };
         }
         var response = new Response<OutputBrand>();
-        //var CodeExists = await _brandRepository.Exist(input.Code);
-        //if (CodeExists)
-        //{
-        //    response.Message.Add(" >>> Erro - Codigo de Marca já cadastrado <<<");
-        //    response.Success = false;
-        //    return response;
-        //}
+        var CodeExists = await _brandRepository.Exist(input.Code);
+        if (CodeExists)
+        {
+            response.Message.Add(" >>> Erro - Codigo de Marca já cadastrado <<<");
+            response.Success = false;
+            return response;
+        }
         var createBrand = await _brandRepository.Create(input.ToBrand());
         if (createBrand is null)
         {
@@ -125,6 +125,7 @@ public class BrandService : IBrandService
         }
         return new Response<bool> { Success = true, Message = { " >>> Marca Atualizada com SUCESSO <<<" } };
     }
+
     public async Task<Response<bool>> Delete(long id)
     {
         var response = await BrandExists(id);
