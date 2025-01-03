@@ -29,6 +29,27 @@ public class OrderController : BaseController
         return Ok(get.Value);
     }
 
+    [HttpGet("BestSellerProduct")]
+    public async Task<ActionResult<OutputBestSellerProduct>> GetBestSeller()
+    {
+        var order = await _orderService.BestSellerProduct();
+        return Ok(order);
+    }
+
+    [HttpGet("WorstSellerProduct")]
+    public async Task<ActionResult<OutputBestSellerProduct>> GetWortsSeller()
+    {
+        var order = await _orderService.WortsSellerProduct();
+        return Ok(order);
+    }
+
+    [HttpGet("BestSellersProduct")]
+    public async Task<ActionResult<OutputBestSellerProduct>> GetBestSellers()
+    {
+        var order = await _orderService.TopSellers();
+        return Ok(order);
+    }
+
     [HttpPost]
     public async Task<ActionResult<OutputOrder>> Create(InputCreateOrder input)
     {

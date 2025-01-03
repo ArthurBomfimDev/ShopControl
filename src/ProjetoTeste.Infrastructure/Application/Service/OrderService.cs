@@ -4,6 +4,7 @@ using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
 
@@ -132,12 +133,75 @@ public class OrderService : IOrderService
         throw new NotImplementedException();
     }
 
-    //public async Task<Response<OutputProduct>> BestSellerProduct()
-    //{
-    //    var order = await GetAll();
-    //    var orderList = order.Value;
-    //    var bestSeller = from o in orderList
-    //                     select o.ProductOrde
-    //}
+    public async Task<OutputBestSellerProduct> BestSellerProduct()
+    {
+        var order = await _orderRepository.GetProductOrders();
+        var totalSeller = (from i in order
+                   from j in i.ProductOrders
+                   group j by j.ProductId into g
+                   select new
+                   {
+                       productId = g.Key,
+                       totalSeller = g.Sum(p => p.Quantity)
+                   }).ToList();
+        var BestSeller = totalSeller.MaxBy(x => x.totalSeller);
+        var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
+        var output = new OutputBestSellerProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
+        return output;
+    }
+
+    public async Task<List<OutputBestSellerProduct>> TopSellers()
+    {
+        var order = await _orderRepository.GetProductOrders();
+        var totalSeller = (from i in order
+                           from j in i.ProductOrders
+                           group j by j.ProductId into g
+                           select new
+                           {
+                               productId = g.Key,
+                               totalSeller = g.Sum(p => p.Quantity)
+                           });
+        var top = totalSeller.OrderByDescending(t => t.totalSeller).Take(5);
+        var list = new List<OutputBestSellerProduct>();
+        foreach (var item in top)
+        {
+            var bestSellerProduct = await _productRepository.Get(item.productId);
+            list.Add(new OutputBestSellerProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, item.totalSeller));
+        }
+        list.OrderBy(p => p.QuantitySold);
+        return list;
+    }
+
+    public async Task<OutputBestSellerProduct> WortsSellerProduct()
+    {
+        var order = await _orderRepository.GetProductOrders();
+        var totalSeller = (from i in order
+                           from j in i.ProductOrders
+                           group j by j.ProductId into g
+                           select new
+                           {
+                               productId = g.Key,
+                               totalSeller = g.Sum(p => p.Quantity)
+                           }).ToList();
+        var BestSeller = totalSeller.MinBy(x => x.totalSeller);
+        var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
+        var output = new OutputBestSellerProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
+        return output;
+    }
+
+    // ClientID
+    public async Task<Client> BiggestBuyer()
+    {
+        var order = await _orderRepository.GetProductOrders();
+        var totalSeller = (from i in order
+                           from j in i.ProductOrders
+                           group j by j.ProductId into g
+                           select new
+                           {
+                               productId = g.Key,
+                               totalSeller = g.Sum(p => p.Quantity)
+                               clientId = i.clienteID
+                           }).ToList();
+    }
 
 }

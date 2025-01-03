@@ -12,4 +12,7 @@ public interface IOrderService
     Task<Response<OutputOrder>> Create(InputCreateOrder input);
     Task<Response<Order>> Total();
     Task<Response<OutputProductOrder>> Add(InputCreateProductOrder input);
+    Task<OutputBestSellerProduct> BestSellerProduct();
+    Task<OutputBestSellerProduct> WortsSellerProduct();
+    Task<List<OutputBestSellerProduct>> TopSellers();
 }

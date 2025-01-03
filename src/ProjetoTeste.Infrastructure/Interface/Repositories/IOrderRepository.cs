@@ -6,6 +6,6 @@ namespace ProjetoTeste.Infrastructure.Interface.Repositories
     {
         Task<List<Order>> GetProductOrders();
         Task<List<Order>> GetProductOrdersId(long id);
-
+        Task<List<Order>> GetProductOrdersLINQ();
     }
 }

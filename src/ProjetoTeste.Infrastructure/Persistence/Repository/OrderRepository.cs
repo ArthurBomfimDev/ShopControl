@@ -23,5 +23,13 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
                 .Where(o => o.Id == id).ToListAsync();
             return get;
         }
+
+        public async Task<List<Order>> GetProductOrdersLINQ()
+        {
+            var get = await _context.Set<Order>()
+                .Include(o => o.ProductOrders)
+                .ThenInclude(po => po.ProductId).ToListAsync();
+            return get;
+        }
     }
 }
