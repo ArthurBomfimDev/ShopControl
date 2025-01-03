@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Persistence.Context;
+using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Repository
 {
@@ -19,14 +19,17 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         {
             return await _dbSet.ToListAsync();
         }
+
         public List<TEntity?> GetAll()
         {
             return _dbSet.ToList();
         }
+
         public async Task<TEntity?> Get(long id)
         {
             return await _dbSet.FindAsync(id);
         }
+
         public async Task<TEntity?> Create(TEntity? entity)
         {
             await _dbSet.AddAsync(entity);
@@ -34,11 +37,13 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             await _context.SaveChangesAsync();
             return entity;
         }
+
         public async Task<TEntity?> Update(TEntity? entity)
         {
             _dbSet.Update(entity);
             return entity;
         }
+
         public async Task<bool> Delete(long id)
         {
             var entityRemove = await _dbSet.FindAsync(id);

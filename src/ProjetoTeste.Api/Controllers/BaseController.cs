@@ -6,24 +6,17 @@ namespace ProjetoTeste.Api.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class BaseController : Controller
+public class BaseController(IUnitOfWork unitOfWork) : Controller
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public BaseController(IUnitOfWork unitOfWork)
+    public override void OnActionExecuting(ActionExecutingContext context)
     {
-        _unitOfWork = unitOfWork;
-        _unitOfWork.BeginTransactionAsync().Wait();
+        unitOfWork.BeginTransaction();
+        base.OnActionExecuting(context);
     }
 
-    public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    public override void OnActionExecuted(ActionExecutedContext context)
     {
-        await _unitOfWork.BeginTransactionAsync();
-        var executedContext = await next();
-
-        if (executedContext.Exception == null)
-        {
-            await _unitOfWork.CommitAsync();
-        }
+        unitOfWork.Commit();
+        base.OnActionExecuted(context);
     }
 }

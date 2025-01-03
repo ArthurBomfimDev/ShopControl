@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Update.Internal;
-
-namespace ProjetoTeste.Infrastructure.Interface.Repositories;
+﻿namespace ProjetoTeste.Infrastructure.Interface.Repositories;
 
 public interface IRepository<T> where T : class
 {

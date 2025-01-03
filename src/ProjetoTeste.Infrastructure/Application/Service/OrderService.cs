@@ -1,10 +1,9 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Order;
-using ProjetoTeste.Infrastructure.Conversor;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using ProjetoTeste.Arguments.Arguments.ProductsOrder;
+using ProjetoTeste.Infrastructure.Conversor;
+using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
 
@@ -13,23 +12,29 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IClientRepository _clientRepository;
     private readonly IProductRepository _productRepository;
+    private readonly IProductOrderRepository _productOrderRepository;
 
-    public OrderService(IOrderRepository orderRepository, IClientRepository clientRepository, IProductRepository productRepository)
+    public OrderService(IOrderRepository orderRepository, IClientRepository clientRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository)
     {
         _orderRepository = orderRepository;
         _clientRepository = clientRepository;
         _productRepository = productRepository;
+        _productOrderRepository = productOrderRepository;
     }
+
     public async Task<Response<List<OutputOrder>>> GetAll()
     {
-        var orderList = await _orderRepository.GetAllAsync();
-        return new Response<List<OutputOrder>> { Success = true, Value = orderList.ToOutputOrderList() };
+        var orderList = await _orderRepository.GetProductOrders();
+        var outputOrder = orderList.Select(o => new OutputOrder(o.Id, o.ClientId, default /*o.ProductOrders.ToOuputProductOrder()*/, o.Total, o.OrderDate)).ToList();
+        return new Response<List<OutputOrder>> { Success = true, Value = outputOrder };
     }
-    public async Task<Response<Order>> Get(long id)
+
+    public async Task<Response<List<Order>>> Get(long id)
     {
-        var order = await _orderRepository.Get(id); 
-        return new Response<Order> { Success = true, Value = order };
+        var order = await _orderRepository.GetProductOrdersId(id);
+        return new Response<List<Order>> { Success = true, Value = order };
     }
+
     public async Task<Response<bool>> ValidadeteId(long id)
     {
         var orderExists = await Get(id);
@@ -39,27 +44,27 @@ public class OrderService : IOrderService
         }
         return new Response<bool> { Success = false };
     }
-    
-    public async Task<Response<OutputOrder>> Delete(long id)
+
+    public async Task<Response<OutputOrder>> Create(InputCreateOrder input)
     {
-        var orderExists = await ValidadeteId(id);
-        if (!orderExists.Success)
+        var clientExists = await _clientRepository.Get(input.ClientId);
+        if (clientExists is null)
         {
-            return new Response<OutputOrder> { Success = false, Message = orderExists.Message };
+            return new Response<OutputOrder> { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
         }
-        _orderRepository.Delete(id);
-        return new Response<OutputOrder> { Success = true, Message = { " >>> Pedido Deletado com Sucesso <<<" } };
+        var createOrder = await _orderRepository.Create(input.ToOrder());
+        return new Response<OutputOrder> { Success = true, Value = createOrder.ToOutputOrder() };
     }
-    public async Task<Response<OutputOrder>> Add(InputCreateProductOrder input)
+
+    public async Task<Response<OutputProductOrder>> Add(InputCreateProductOrder input)
     {
-        var response = new Response<OutputOrder>();
+        var response = new Response<OutputProductOrder>();
         if (input is null)
         {
-            response.Success = false;
-            response.Message.Add(" >>> Dados Inseridos são Inválidos <<<");
+            return new Response<OutputProductOrder>() { Success = false, Message = { " >>> Dados Inseridos são Inválidos <<<" } };
         }
         var order = await _orderRepository.Get(input.OrderId);
-        if(order is null)
+        if (order is null)
         {
             response.Success = false;
             response.Message.Add(" >>> Id do Pedido Inválido <<<");
@@ -86,13 +91,30 @@ public class OrderService : IOrderService
         }
         productExists.Stock = productExists.Stock - input.Quantity;
         await _productRepository.Update(productExists);
+
         var productOrder = input.ToProductOrder();
+
         productOrder.UnitPrice = productExists.Price;
-        order.ProductOrders.Add(productOrder);
+        productOrder.SubTotal = productOrder.UnitPrice * productOrder.Quantity;
+
         order.Total += productOrder.SubTotal;
+
+        await _productOrderRepository.Update(productOrder);
         await _orderRepository.Update(order);
-        return new Response<OutputOrder> { Success = true, Value = order.ToOutputOrder() };
+        return new Response<OutputProductOrder> { Success = true, Value = productOrder.ToOuputProductOrder() };
+    }
+
+    public async Task<Response<OutputOrder>> Delete(long id)
+    {
+        var orderExists = await ValidadeteId(id);
+        if (!orderExists.Success)
+        {
+            return new Response<OutputOrder> { Success = false, Message = orderExists.Message };
         }
+        _orderRepository.Delete(id);
+        return new Response<OutputOrder> { Success = true, Message = { " >>> Pedido Deletado com Sucesso <<<" } };
+    }
+
     //public async Task<Response<Order>> Total()
     //{
     //    var orderExists = await GetAll();
@@ -104,19 +126,21 @@ public class OrderService : IOrderService
     //    (from o in orderList
     //     select o.ProductOrders
     //    }
-    public async Task<Response<OutputOrder>> Create(InputCreateOrder input)
-    {
-        var clientExists = await _clientRepository.Get(input.ClientId);
-        if (clientExists is null)
-        {
-            return new Response<OutputOrder> { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
-        }
-        var createOrder = await _orderRepository.Create(input.ToOrder());
-        return new Response<OutputOrder> { Success = true, Value = createOrder.ToOutputOrder() };
-    }
 
     public Task<Response<Order>> Total()
     {
         throw new NotImplementedException();
     }
+
+    //public async Task<Response<OutputProduct>> BestSellerProduct()
+    //{
+    //    var order = await GetAll();
+    //    var orderList = order.Value;
+    //    var bestSeller = from o in orderList
+    //                     select o.ProductOrde
+
+
+
+    //}
+
 }

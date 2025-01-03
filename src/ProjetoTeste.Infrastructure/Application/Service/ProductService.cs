@@ -1,8 +1,8 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Products;
 using ProjetoTeste.Infrastructure.Conversor;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
 
@@ -32,18 +32,20 @@ public class ProductService : IProductService
         var productList = await _productRepository.GetAllAsync();
         return new Response<List<OutputProduct>> { Success = true, Value = productList.ToListOutProducts() };
     }
+
     public async Task<Response<OutputProduct>> Get(long id)
     {
         var product = await _productRepository.Get(id);
         return new Response<OutputProduct> { Success = true, Value = product.ToOutputProduct() };
     }
+
     public async Task<Response<Product>> ValidationInput(Product input)
     {
         var response = new Response<Product>();
         if (input is null)
         {
             response.Success = false;
-            response.Message.Add( ">>> Dados Inseridos Incompletos ou Inexistentes <<<");
+            response.Message.Add(">>> Dados Inseridos Incompletos ou Inexistentes <<<");
         }
         bool codeExists = await _productRepository.Exist(input.Code);
         if (codeExists)
@@ -73,6 +75,7 @@ public class ProductService : IProductService
         }
         return new Response<Product>() { Success = true, Value = input };
     }
+
     public async Task<Response<OutputProduct>> Create(InputCreateProduct product)
     {
         var productExists = await ValidationInput(product.ToProduct());
@@ -137,8 +140,9 @@ public class ProductService : IProductService
             return response;
         }
         await _productRepository.Update(update);
-        return new Response<bool> { Success = true, Message = { " >>> Produto Atualizado com SUCESSO <<<" }};
+        return new Response<bool> { Success = true, Message = { " >>> Produto Atualizado com SUCESSO <<<" } };
     }
+
     public async Task<Response<bool>> Delete(long id)
     {
         var response = await ValidationId(id);
@@ -149,6 +153,6 @@ public class ProductService : IProductService
             response.Message.Add(" >>> Produto com o Id digitado NÃO encontrado <<<");
         }
         await _productRepository.Delete(id);
-        return new Response<bool> { Success = true, Message = { " >>> Produto deletado com sucesso <<<" }};
+        return new Response<bool> { Success = true, Message = { " >>> Produto deletado com sucesso <<<" } };
     }
 }

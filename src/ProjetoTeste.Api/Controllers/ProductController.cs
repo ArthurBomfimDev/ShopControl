@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjetoTeste.Arguments.Arguments.Products;
-using ProjetoTeste.Infrastructure.Application.Service;
-using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
 
 namespace ProjetoTeste.Api.Controllers;
@@ -27,6 +26,7 @@ public class ProductController : BaseController
         }
         return Ok(productList.Value);
     }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<OutputProduct>> Get(long id)
     {
@@ -37,6 +37,7 @@ public class ProductController : BaseController
         }
         return Ok(product.Value);
     }
+
     [HttpPost]
     public async Task<ActionResult<OutputProduct>> Create(InputCreateProduct input)
     {
@@ -47,6 +48,7 @@ public class ProductController : BaseController
         }
         return Ok(createProduct.Value);
     }
+
     [HttpPut]
     public async Task<ActionResult> Update(long id, InputUpdateProduct input)
     {
@@ -57,6 +59,7 @@ public class ProductController : BaseController
         }
         return Ok(updateProduct.Message);
     }
+
     [HttpDelete]
     public async Task<ActionResult> Delete(long id)
     {

@@ -1,13 +1,13 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Brands;
 using ProjetoTeste.Infrastructure.Conversor;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
+using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
 
-public class BrandService :IBrandService
+public class BrandService : IBrandService
 {
     private readonly IBrandRepository _brandRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -17,6 +17,7 @@ public class BrandService :IBrandService
         _brandRepository = brandRepository;
         _unitOfWork = unitOfWork;
     }
+
     public async Task<Response<List<OutputBrand>>> GetAll()
     {
         var brandList = await _brandRepository.GetAllAsync();
@@ -26,6 +27,7 @@ public class BrandService :IBrandService
             Value = brandList.ToOutputBrandList(),
         };
     }
+
     public async Task<Response<OutputBrand>> Get(long id)
     {
         var brand = await _brandRepository.Get(id);
@@ -35,6 +37,7 @@ public class BrandService :IBrandService
             Success = true,
         };
     }
+
     public async Task<Response<Brand>> BrandExists(long id)
     {
         var brand = await _brandRepository.Get(id);
@@ -52,6 +55,7 @@ public class BrandService :IBrandService
             Success = true,
         };
     }
+
     public async Task<Response<OutputBrand>> Create(InputCreateBrand input)
     {
         if (input is null)
@@ -59,20 +63,20 @@ public class BrandService :IBrandService
             return new Response<OutputBrand> { Message = { " >>> Dados Inseridos Inválidos <<<" }, Success = false };
         }
         var response = new Response<OutputBrand>();
-        var CodeExists = await _brandRepository.Exist(input.Code);
-        if (CodeExists)
-        {
-            response.Message.Add(" >>> Erro - Codigo de Marca já cadastrado <<<");
-            response.Success = false;
-            return response;
-        }
+        //var CodeExists = await _brandRepository.Exist(input.Code);
+        //if (CodeExists)
+        //{
+        //    response.Message.Add(" >>> Erro - Codigo de Marca já cadastrado <<<");
+        //    response.Success = false;
+        //    return response;
+        //}
         var createBrand = await _brandRepository.Create(input.ToBrand());
         if (createBrand is null)
         {
             response.Message.Add(" >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<");
             response.Success = false;
         }
-        if(!response.Success)
+        if (!response.Success)
         {
             return response;
         }
@@ -82,6 +86,7 @@ public class BrandService :IBrandService
             Success = true,
         };
     }
+
     public async Task<Response<bool>> Update(long id, InputUpdateBrand brand)
     {
         var response = await BrandExists(id);
@@ -101,7 +106,7 @@ public class BrandService :IBrandService
         {
             response.Message.Add(" >>> Código não pode ser Alterado - Em Uso por outra Marca <<<");
         }
-        if(!response.Success)
+        if (!response.Success)
         {
             return new Response<bool>() { Message = response.Message, Success = false };
         }
@@ -124,7 +129,7 @@ public class BrandService :IBrandService
     {
         var response = await BrandExists(id);
         var brandExists = response.Value;
-        if(brandExists is null)
+        if (brandExists is null)
         {
             return new Response<bool> { Success = false, Message = response.Message };
         }

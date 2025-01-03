@@ -7,9 +7,9 @@ namespace ProjetoTeste.Infrastructure.Interface.Service;
 public interface IOrderService
 {
     Task<Response<List<OutputOrder>>> GetAll();
-    Task<Response<Order>> Get(long id);
+    Task<Response<List<Order>>> Get(long id);
     Task<Response<OutputOrder>> Delete(long id);
     Task<Response<OutputOrder>> Create(InputCreateOrder input);
     Task<Response<Order>> Total();
-    Task<Response<OutputOrder>> Add(InputCreateProductOrder input);
+    Task<Response<OutputProductOrder>> Add(InputCreateProductOrder input);
 }

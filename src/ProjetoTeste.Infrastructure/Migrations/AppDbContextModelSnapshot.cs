@@ -175,27 +175,30 @@ namespace ProjetoTeste.Infrastructure.Migrations
                         .HasColumnName("pedido_id");
 
                     b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("produto_id");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("quantidade");
+
+                    b.Property<decimal>("SubTotal")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("subtotal")
+                        .HasComputedColumnSql("quantidade * preco_unitario");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<long?>("orderId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("decimal(65,30)")
+                        .HasColumnName("preco_unitario");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
-                    b.HasIndex("orderId");
-
-                    b.ToTable("ProductOrder");
+                    b.ToTable("pedido_de_produtos", (string)null);
                 });
 
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.Order", b =>
@@ -222,7 +225,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
 
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.ProductOrder", b =>
                 {
-                    b.HasOne("ProjetoTeste.Infrastructure.Persistence.Entity.Order", null)
+                    b.HasOne("ProjetoTeste.Infrastructure.Persistence.Entity.Order", "Order")
                         .WithMany("ProductOrders")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -234,13 +237,9 @@ namespace ProjetoTeste.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjetoTeste.Infrastructure.Persistence.Entity.Order", "order")
-                        .WithMany()
-                        .HasForeignKey("orderId");
+                    b.Navigation("Order");
 
                     b.Navigation("Product");
-
-                    b.Navigation("order");
                 });
 
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.Brand", b =>

@@ -18,16 +18,19 @@ public class ClientService : IClientService
         _clientRepository = clientRepository;
         _unitOfWork = unitOfWork;
     }
+
     public async Task<Response<List<OutputClient>>> GetAll()
     {
         var clientList = await _clientRepository.GetAllAsync();
         return new Response<List<OutputClient>>() { Success = true, Value = clientList.ToOutputClientList() };
     }
+
     public async Task<Response<OutputClient>> Get(long id)
     {
         var client = await _clientRepository.Get(id);
-        return new Response<OutputClient> { Success =  true, Value = client.ToOutputClient() };
+        return new Response<OutputClient> { Success = true, Value = client.ToOutputClient() };
     }
+
     public async Task<Response<OutputClient>> Create(InputCreateClient client)
     {
         var response = new Response<OutputClient>();
@@ -69,6 +72,7 @@ public class ClientService : IClientService
         var createClient = await _clientRepository.Create(newClient);
         return new Response<OutputClient> { Success = true, Value = createClient.ToOutputClient() };
     }
+
     public async Task<Response<bool>> Update(long id, InputUpdateClient client)
     {
         var clientExists = await _clientRepository.Get(id);
@@ -77,7 +81,7 @@ public class ClientService : IClientService
         {
             return new Response<bool>() { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
         }
-        if(client is null)
+        if (client is null)
         {
             return new Response<bool>() { Success = false, Message = { " >>> Dados Inválidos <<<" } };
 
@@ -127,6 +131,7 @@ public class ClientService : IClientService
         _clientRepository.Update(clientExists);
         return new Response<bool> { Success = true, Message = { "Cliente Atualizado com SUCESSO" } };
     }
+
     public async Task<Response<bool>> Delete(long id)
     {
         var clientExists = await _clientRepository.Get(id);
@@ -137,9 +142,10 @@ public class ClientService : IClientService
         await _clientRepository.Delete(id);
         return new Response<bool>() { Success = true, Message = { " >>> Cliente deletado com SUCESSO <<<" } };
     }
+
     public bool CpfValidate(string cpf)
     {
-        if(string.IsNullOrWhiteSpace(cpf)) return false;
+        if (string.IsNullOrWhiteSpace(cpf)) return false;
 
         cpf = Regex.Replace(cpf, "[^0-9]", string.Empty);
 
@@ -174,4 +180,5 @@ public class ClientService : IClientService
 
         return true;
     }
+
 }

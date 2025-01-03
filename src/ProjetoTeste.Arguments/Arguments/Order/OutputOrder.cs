@@ -7,9 +7,10 @@ public class OutputOrder
 {
     public long Id { get; set; }
     public long ClientId { get; set; }
-    public List<OutputProductOrder> ProductOrders { get; set; } = new List<OutputProductOrder>();
+    public List<OutputProductOrder> ProductOrders { get; set; }
     public decimal Total { get; set; }
     public DateOnly OrderDate { get; set; }
+
     [JsonConstructor]
     public OutputOrder(long id, long clientId, List<OutputProductOrder> productOrders, decimal total, DateOnly orderDate)
     {
@@ -18,5 +19,6 @@ public class OutputOrder
         ProductOrders = productOrders;
         Total = total;
         OrderDate = orderDate;
+
     }
 }

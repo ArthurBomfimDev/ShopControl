@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 public class Product : BaseEntity
 {
     public string Name { get; set; }

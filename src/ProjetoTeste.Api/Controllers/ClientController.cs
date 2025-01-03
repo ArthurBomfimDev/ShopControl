@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjetoTeste.Arguments.Arguments.Client;
+using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
-using ProjetoTeste.Infrastructure.Interface.Service;
 
 namespace ProjetoTeste.Api.Controllers;
 
@@ -21,12 +21,14 @@ public class ClientController : BaseController
         var get = await _clientService.GetAll();
         return Ok(get.Value);
     }
+
     [HttpGet("{id}")]
     public async Task<ActionResult> Get(long id)
     {
         var get = await _clientService.Get(id);
         return Ok(get.Value);
     }
+
     [HttpPost]
     public async Task<ActionResult> Create(InputCreateClient input)
     {
@@ -37,6 +39,7 @@ public class ClientController : BaseController
         }
         return Ok(createClient.Value);
     }
+
     [HttpPut]
     public async Task<ActionResult> Update(long Id, InputUpdateClient input)
     {
@@ -47,6 +50,7 @@ public class ClientController : BaseController
         }
         return Ok(update.Message);
     }
+
     [HttpDelete]
     public async Task<ActionResult> Delete(long id)
     {

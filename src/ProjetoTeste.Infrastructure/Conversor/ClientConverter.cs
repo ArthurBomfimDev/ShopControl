@@ -8,7 +8,7 @@ public static class ClientConverter
     public static OutputClient? ToOutputClient(this Client client)
     {
         if (client == null) return null;
-        return new OutputClient(client.Id,client.Name,client.Phone,client.CPF,client.Email);
+        return new OutputClient(client.Id, client.Name, client.Phone, client.CPF, client.Email);
     }
     public static List<OutputClient?> ToOutputClientList(this List<Client> client)
     {

@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
-using ProjetoTeste.Infrastructure.Application.Service;
-using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Arguments.Arguments.Brands;
+using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
 namespace ProjetoTeste.Api.Controllers;
 
@@ -15,6 +14,7 @@ public class BrandController : BaseController
     {
         _brandService = brandService;
     }
+
     [HttpGet]
     public async Task<ActionResult<List<OutputBrand?>>> GetAll()
     {
@@ -25,6 +25,7 @@ public class BrandController : BaseController
         }
         return Ok(brandList.Value);
     }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<OutputBrand?>> Get(int id)
     {
@@ -35,6 +36,7 @@ public class BrandController : BaseController
         }
         return Ok(brand.Value);
     }
+
     [HttpPost]
     public async Task<ActionResult<OutputBrand>> Create(InputCreateBrand brand)
     {
@@ -45,6 +47,7 @@ public class BrandController : BaseController
         }
         return Ok(createdBrand.Value);
     }
+
     [HttpPut]
     public async Task<ActionResult> Update(long id, InputUpdateBrand input)
     {
@@ -55,6 +58,7 @@ public class BrandController : BaseController
         }
         return Ok(updateBrand.Message);
     }
+
     [HttpDelete]
     public async Task<ActionResult> Delete(long id)
     {

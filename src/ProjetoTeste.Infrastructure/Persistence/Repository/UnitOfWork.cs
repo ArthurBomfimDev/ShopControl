@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Context;
 
@@ -10,24 +8,15 @@ public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
     private IDbContextTransaction dbContextTransaction;
     private readonly AppDbContext _context = context;
-    public async Task BeginTransactionAsync()
+    public void BeginTransaction()
     {
-        if (dbContextTransaction == null)
-        {
-            dbContextTransaction = await _context.Database.BeginTransactionAsync();
-        }
+        dbContextTransaction = _context.Database.BeginTransaction();
     }
-    //public async Task CommitAsync()
-    //{
-    //    await _context.SaveChangesAsync();
-    //    await dbContextTransaction.CommitAsync();
-    //}
-    public async Task CommitAsync()
+
+    public void Commit()
     {
-        if (dbContextTransaction != null)
-        {
-            await _context.SaveChangesAsync();
-            await dbContextTransaction.CommitAsync();
-        }
+        _context.SaveChanges();
+        dbContextTransaction.Commit();
+        dbContextTransaction.Dispose();
     }
 }
