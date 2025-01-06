@@ -3,7 +3,7 @@
 namespace ProjetoTeste.Arguments.Arguments.Order;
 
 [method: JsonConstructor]
-public class OutputBestSellerProduct(long id, string name, string code, string description, decimal price, long brandId, long stock, long quantitySold)
+public class OutputSellProduct(long id, string name, string code, string description, decimal price, long brandId, long stock, long quantitySold)
 {
     public long Id { get; private set; } = id;
     public string Name { get; private set; } = name;

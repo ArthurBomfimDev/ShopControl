@@ -27,8 +27,9 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         public async Task<List<Order>> GetProductOrdersLINQ()
         {
             var get = await _context.Set<Order>()
+                .Include(o => o.Client)
                 .Include(o => o.ProductOrders)
-                .ThenInclude(po => po.ProductId).ToListAsync();
+                .ThenInclude(po => po.Product).ToListAsync();
             return get;
         }
     }

@@ -26,4 +26,5 @@ public class ClientRepository : Repository<Client>, IClientRepository
     {
         return await _dbSet.AnyAsync(x => x.Phone == phone);
     }
+
 }

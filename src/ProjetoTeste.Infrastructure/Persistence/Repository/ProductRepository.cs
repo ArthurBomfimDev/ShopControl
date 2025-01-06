@@ -19,5 +19,12 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         {
             throw new NotImplementedException();
         }
+
+        public long BrandId(long id)
+        {
+            var product = _dbSet.Find(id);
+            return product.BrandId;
+        }
+
     }
 }
