@@ -31,10 +31,10 @@ public class OrderService : IOrderService
         return new Response<List<OutputOrder>> { Success = true, Value = outputOrder };
     }
 
-    public async Task<Response<List<Order>>> Get(long id)
+    public async Task<Response<List<OutputOrder>>> Get(long id)
     {
         var order = await _orderRepository.GetProductOrdersId(id);
-        return new Response<List<Order>> { Success = true, Value = order };
+        return new Response<List<OutputOrder>> { Success = true, Value = order.Select(o => new OutputOrder(o.Id, o.ClientId, (from i in o.ProductOrders select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
     }
 
     public async Task<Response<bool>> ValidadeteId(long id)

@@ -23,7 +23,7 @@ public class OrderController : BaseController
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<List<Order>>> Get(long id)
+    public async Task<ActionResult<List<OutputOrder>>> Get(long id)
     {
         var get = await _orderService.Get(id);
         return Ok(get.Value);
