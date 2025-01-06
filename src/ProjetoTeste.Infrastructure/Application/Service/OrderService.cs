@@ -62,18 +62,26 @@ public class OrderService : IOrderService
         return totalSeller.Select(p => new ProductSell(p.productId, p.totalSeller, p.totalPrice)).ToList();
     }
 
-    public async Task<OutputSellProduct> BestSellerProduct()
+    public async Task<Response<OutputSellProduct>> BestSellerProduct()
     {
         var totalSeller = await ProductSell();
+        if(totalSeller is null)
+        {
+            return new Response<OutputSellProduct>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+        }
         var BestSeller = totalSeller.MaxBy(x => x.totalSeller);
         var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
-        var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
+        var output = new Response<OutputSellProduct> { Success = true, Value = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller) };
         return output;
     }
 
-    public async Task<List<OutputSellProduct>> TopSellers()
+    public async Task<Response<List<OutputSellProduct>>> TopSellers()
     {
         var totalSeller = await ProductSell();
+        if (totalSeller is null)
+        {
+            return new Response<List<OutputSellProduct>>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+        }
         var top = totalSeller.OrderByDescending(t => t.totalSeller).Take(5);
         var list = new List<OutputSellProduct>();
         foreach (var item in top)
@@ -82,16 +90,20 @@ public class OrderService : IOrderService
             list.Add(new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, item.totalSeller));
         }
         list.OrderBy(p => p.QuantitySold);
-        return list;
+        return new Response<List<OutputSellProduct>>() { Success = false, Value = list };
     }
 
-    public async Task<OutputSellProduct> LesatSoldProduct()
+    public async Task<Response<OutputSellProduct>> LesatSoldProduct()
     {
         var totalSeller = await ProductSell();
+        if (totalSeller is null)
+        {
+            return new Response<OutputSellProduct>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+        }
         var BestSeller = totalSeller.MinBy(x => x.totalSeller);
         var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
         var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
-        return output;
+        return new Response<OutputSellProduct>() { Success = true, Value = output };
     }
 
     public async Task<List<Buy>> ClientOrder()
