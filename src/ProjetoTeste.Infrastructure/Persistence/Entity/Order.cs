@@ -5,7 +5,7 @@ public class Order : BaseEntity
 
     public long CustomerId { get; set; }
     public Customer Customer { get; set; }
-    public List<ProductOrder> ProductOrders { get; set; }
+    public List<ProductOrder> ListProductOrder { get; set; }
     public DateOnly OrderDate { get; set; }
     public decimal Total { get; set; }
 

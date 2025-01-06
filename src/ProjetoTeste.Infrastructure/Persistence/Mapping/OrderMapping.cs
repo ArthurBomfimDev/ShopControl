@@ -14,7 +14,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired();
 
         builder.HasOne(o => o.Customer)
-            .WithMany(p => p.Order)
+            .WithMany(p => p.ListOrder)
             .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -24,7 +24,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.Total).HasColumnName("total")
             .IsRequired();
 
-        builder.HasMany(o => o.ProductOrders)
+        builder.HasMany(o => o.ListProductOrder)
             .WithOne()
             .HasForeignKey(po => po.OrderId)
             .OnDelete(DeleteBehavior.Cascade);

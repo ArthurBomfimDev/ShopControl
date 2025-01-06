@@ -28,7 +28,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .IsRequired();
 
         builder.HasOne(p => p.Brand)
-            .WithMany(b => b.Products)
+            .WithMany(b => b.ListProduct)
             .HasForeignKey(p => p.BrandId)
             .OnDelete(DeleteBehavior.Cascade);
     }

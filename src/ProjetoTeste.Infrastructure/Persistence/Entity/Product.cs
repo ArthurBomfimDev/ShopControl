@@ -9,20 +9,11 @@ public class Product : BaseEntity
     public long Stock { get; set; }
 
     public Brand? Brand { get; set; }
-    public ProductOrder? ProductOrder { get; set; }
+    public List<ProductOrder>? ListProductOrder { get; set; }
 
     public Product()
     { }
-    public Product(long id, string name, string code, string description, decimal price, long brandId, long stock)
-    {
-        Id = id;
-        Name = name;
-        Code = code;
-        Description = description;
-        Price = price;
-        BrandId = brandId;
-        Stock = stock;
-    }
+
     public Product(string name, string code, string description, decimal price, long brandId, long stock)
     {
         Name = name;

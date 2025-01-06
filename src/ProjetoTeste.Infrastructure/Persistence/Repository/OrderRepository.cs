@@ -13,13 +13,13 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
 
         public async Task<List<Order>> GetProductOrders()
         {
-            var get = await _context.Set<Order>().Include(o => o.ProductOrders).ToListAsync();
+            var get = await _context.Set<Order>().Include(o => o.ListProductOrder).ToListAsync();
             return get;
         }
 
         public async Task<List<Order>> GetProductOrdersId(long id)
         {
-            var get = await _context.Set<Order>().Include(o => o.ProductOrders)
+            var get = await _context.Set<Order>().Include(o => o.ListProductOrder)
                 .Where(o => o.Id == id).ToListAsync();
             return get;
         }
@@ -28,7 +28,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         {
             var get = await _context.Set<Order>()
                 .Include(o => o.Customer)
-                .Include(o => o.ProductOrders)
+                .Include(o => o.ListProductOrder)
                 .ThenInclude(po => po.Product).ToListAsync();
             return get;
         }

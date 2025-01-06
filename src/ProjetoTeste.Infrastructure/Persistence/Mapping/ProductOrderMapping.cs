@@ -14,7 +14,6 @@ public class ProductOrderConfiguration : IEntityTypeConfiguration<ProductOrder>
 
         builder.Property(p => p.ProductId).HasColumnName("produto_id")
             .IsRequired();
-        builder.HasIndex(p => p.ProductId).IsUnique(false);
 
         builder.Property(p => p.Quantity).HasColumnName("quantidade")
             .IsRequired();
@@ -27,8 +26,12 @@ public class ProductOrderConfiguration : IEntityTypeConfiguration<ProductOrder>
             .ValueGeneratedOnAddOrUpdate();
 
         builder.HasOne(p => p.Order)
-            .WithMany(o => o.ProductOrders)
+            .WithMany(o => o.ListProductOrder)
             .HasForeignKey(o => o.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(p => p.Product)
+            .WithMany(o => o.ListProductOrder)
+            .HasForeignKey(o => o.ProductId);
     }
 }

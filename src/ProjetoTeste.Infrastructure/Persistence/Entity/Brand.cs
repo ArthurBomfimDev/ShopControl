@@ -6,7 +6,7 @@ public class Brand : BaseEntity
     public string Code { get; set; }
     public string Description { get; set; }
 
-    public List<Product>? Products { get; set; }
+    public List<Product>? ListProduct { get; set; }
 
     public Brand()
     { }

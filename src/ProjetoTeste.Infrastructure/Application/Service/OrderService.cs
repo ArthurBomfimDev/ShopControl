@@ -27,14 +27,14 @@ public class OrderService : IOrderService
     public async Task<Response<List<OutputOrder>>> GetAll()
     {
         var orderList = await _orderRepository.GetProductOrders();
-        var outputOrder = orderList.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ProductOrders select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList();
+        var outputOrder = orderList.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList();
         return new Response<List<OutputOrder>> { Success = true, Value = outputOrder };
     }
 
     public async Task<Response<List<OutputOrder>>> Get(long id)
     {
         var order = await _orderRepository.GetProductOrdersId(id);
-        return new Response<List<OutputOrder>> { Success = true, Value = order.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ProductOrders select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
+        return new Response<List<OutputOrder>> { Success = true, Value = order.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
     }
 
     #region "LINQ"
@@ -51,7 +51,7 @@ public class OrderService : IOrderService
     {
         var order = await _orderRepository.GetProductOrders();
         var totalSeller = (from i in order
-                           from j in i.ProductOrders
+                           from j in i.ListProductOrder
                            group j by j.ProductId into g
                            select new
                            {
@@ -98,7 +98,7 @@ public class OrderService : IOrderService
     {
         var order = await _orderRepository.GetProductOrdersLINQ();
         var buyer = (from i in order
-                     from j in i.ProductOrders
+                     from j in i.ListProductOrder
                      group j by i.CustomerId into g
                      select new
                      {
@@ -130,7 +130,7 @@ public class OrderService : IOrderService
     {
         var order = await _orderRepository.GetProductOrdersLINQ();
         var brandShere = (from i in order
-                          from j in i.ProductOrders
+                          from j in i.ListProductOrder
                           group j by j.ProductId into g
                           select new
                           {
@@ -155,7 +155,7 @@ public class OrderService : IOrderService
     {
         var order = await _orderRepository.GetProductOrders();
         var avarage = (from i in order
-                       from j in i.ProductOrders
+                       from j in i.ListProductOrder
                        group j by j.OrderId into g
                        select new
                        {
