@@ -3,10 +3,8 @@ using ProjetoTeste.Arguments.Arguments.Products;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
-
 namespace ProjetoTeste.Api.Controllers;
-[Route("[controller]")]
-[ApiController]
+
 public class ProductController : BaseController
 {
     private readonly IProductService _productService;

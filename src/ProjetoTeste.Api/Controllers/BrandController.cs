@@ -5,7 +5,6 @@ using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
 namespace ProjetoTeste.Api.Controllers;
 
-
 public class BrandController : BaseController
 {
     private readonly IBrandService _brandService;
