@@ -49,14 +49,14 @@ public class OrderController : BaseController
         return Ok(order);
     }
 
-    [HttpGet("BiggestBuyerQuantity")]
+    [HttpGet("BiggestBuyer/Quantity")]
     public async Task<ActionResult<OutputCustomerOrder>> BiggestBuyer()
     {
         var client = await _orderService.BiggestBuyer();
         return Ok(client);
     }
 
-    [HttpGet("BiggestBuyerPrice")]
+    [HttpGet("BiggestBuyer/Price")]
     public async Task<ActionResult<OutputCustomerOrder>> BiggestBuyerPrice()
     {
         var client = await _orderService.BiggestBuyerPrice();
