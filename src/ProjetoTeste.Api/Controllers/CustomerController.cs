@@ -6,33 +6,33 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Api.Controllers;
 
-public class ClientController : BaseController
+public class CustomerController : BaseController
 {
-    private readonly IClientService _clientService;
+    private readonly ICustomerService _customerService;
 
-    public ClientController(IClientService clientService, IUnitOfWork _unitOfWork) : base(_unitOfWork)
+    public CustomerController(ICustomerService customerService, IUnitOfWork _unitOfWork) : base(_unitOfWork)
     {
-        _clientService = clientService;
+        _customerService = customerService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<OutputClient>>> GetAll()
+    public async Task<ActionResult<List<OutputCustomer>>> GetAll()
     {
-        var get = await _clientService.GetAll();
+        var get = await _customerService.GetAll();
         return Ok(get.Value);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult> Get(long id)
     {
-        var get = await _clientService.Get(id);
+        var get = await _customerService.Get(id);
         return Ok(get.Value);
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(InputCreateClient input)
+    public async Task<ActionResult> Create(InputCreateCustomer input)
     {
-        Response<OutputClient> createClient = await _clientService.Create(input);
+        Response<OutputCustomer> createClient = await _customerService.Create(input);
         if (!createClient.Success)
         {
             return BadRequest(createClient.Message);
@@ -41,9 +41,9 @@ public class ClientController : BaseController
     }
 
     [HttpPut]
-    public async Task<ActionResult> Update(long Id, InputUpdateClient input)
+    public async Task<ActionResult> Update(long Id, InputUpdateCustomer input)
     {
-        Response<bool> update = await _clientService.Update(Id, input);
+        Response<bool> update = await _customerService.Update(Id, input);
         if (!update.Success)
         {
             return BadRequest(update.Message);
@@ -54,7 +54,7 @@ public class ClientController : BaseController
     [HttpDelete]
     public async Task<ActionResult> Delete(long id)
     {
-        Response<bool> delete = await _clientService.Delete(id);
+        Response<bool> delete = await _customerService.Delete(id);
         if (!delete.Success)
         {
             return BadRequest(delete.Message);

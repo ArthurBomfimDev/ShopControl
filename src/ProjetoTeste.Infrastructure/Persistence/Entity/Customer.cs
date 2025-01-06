@@ -1,6 +1,6 @@
 ﻿namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 
-public class Client : BaseEntity
+public class Customer : BaseEntity
 {
     public string Name { get; set; }
     public string CPF { get; set; }
@@ -8,10 +8,10 @@ public class Client : BaseEntity
     public string Phone { get; set; }
 
     public List<Order?> Order { get; set; }
-    public Client()
+    public Customer()
     { }
 
-    public Client(string name, string cPF, string email, string phone)
+    public Customer(string name, string cPF, string email, string phone)
     {
         Name = name;
         CPF = cPF;

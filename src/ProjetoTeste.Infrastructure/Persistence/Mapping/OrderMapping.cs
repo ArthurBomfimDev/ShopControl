@@ -10,12 +10,12 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasKey(o => o.Id);
 
-        builder.Property(o => o.ClientId).HasColumnName("cliente_id")
+        builder.Property(o => o.CustomerId).HasColumnName("cliente_id")
             .IsRequired();
 
-        builder.HasOne(o => o.Client)
+        builder.HasOne(o => o.Customer)
             .WithMany(p => p.Order)
-            .HasForeignKey(o => o.ClientId)
+            .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(o => o.OrderDate).HasColumnName("data_do_pedido")

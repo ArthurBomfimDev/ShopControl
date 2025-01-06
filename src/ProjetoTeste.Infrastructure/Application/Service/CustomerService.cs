@@ -8,58 +8,58 @@ using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
 
-public class ClientService : IClientService
+public class CustomerService : ICustomerService
 {
-    private readonly IClientRepository _clientRepository;
+    private readonly ICustomerRepository _customerRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ClientService(IClientRepository clientRepository, IUnitOfWork unitOfWork)
+    public CustomerService(ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
     {
-        _clientRepository = clientRepository;
+        _customerRepository = customerRepository;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Response<List<OutputClient>>> GetAll()
+    public async Task<Response<List<OutputCustomer>>> GetAll()
     {
-        var clientList = await _clientRepository.GetAllAsync();
-        return new Response<List<OutputClient>>() { Success = true, Value = (from i in clientList select i.ToOutputClient()).ToList() };
+        var clientList = await _customerRepository.GetAllAsync();
+        return new Response<List<OutputCustomer>>() { Success = true, Value = (from i in clientList select i.ToOutputCustomer()).ToList() };
     }
 
-    public async Task<Response<OutputClient>> Get(long id)
+    public async Task<Response<OutputCustomer>> Get(long id)
     {
-        var client = await _clientRepository.Get(id);
-        return new Response<OutputClient> { Success = true, Value = client.ToOutputClient() };
+        var customer = await _customerRepository.Get(id);
+        return new Response<OutputCustomer> { Success = true, Value = customer.ToOutputCustomer() };
     }
 
-    public async Task<Response<OutputClient>> Create(InputCreateClient client)
+    public async Task<Response<OutputCustomer>> Create(InputCreateCustomer customer)
     {
-        var response = new Response<OutputClient>();
-        if (client is null)
+        var response = new Response<OutputCustomer>();
+        if (customer is null)
         {
             response.Success = false;
             response.Message.Add(" >>> Dados Inseridos Inválidos <<< ");
         }
-        if (await _clientRepository.CPFExists(client.CPF))
+        if (await _customerRepository.CPFExists(customer.CPF))
         {
             response.Success = false;
             response.Message.Add(" >>> CPF Já Cadastrado <<< ");
         }
-        if (await _clientRepository.EmailExists(client.Email))
+        if (await _customerRepository.EmailExists(customer.Email))
         {
             response.Success = false;
             response.Message.Add(" >>> Email Já Cadastrado <<< ");
         }
-        if (await _clientRepository.PhoneExists(client.Phone))
+        if (await _customerRepository.PhoneExists(customer.Phone))
         {
             response.Success = false;
             response.Message.Add(" >>> Número de telefone Já Cadastrado <<< ");
         }
-        if (!CpfValidate(client.CPF))
+        if (!CpfValidate(customer.CPF))
         {
             response.Success = false;
             response.Message.Add(" >>> Digite um CPF válido <<< ");
         }
-        if (!(client.Phone.Length == 11))
+        if (!(customer.Phone.Length == 11))
         {
             response.Success = false;
             response.Message.Add(" >>> Digite um número de Telefone válido <<< ");
@@ -68,54 +68,54 @@ public class ClientService : IClientService
         {
             return response;
         }
-        var newClient = client.ToClient();
-        var createClient = await _clientRepository.Create(newClient);
-        return new Response<OutputClient> { Success = true, Value = createClient.ToOutputClient() };
+        var newCustomer = customer.ToCustomer();
+        var createCustomer = await _customerRepository.Create(newCustomer);
+        return new Response<OutputCustomer> { Success = true, Value = createCustomer.ToOutputCustomer() };
     }
 
-    public async Task<Response<bool>> Update(long id, InputUpdateClient client)
+    public async Task<Response<bool>> Update(long id, InputUpdateCustomer customer)
     {
-        var clientExists = await _clientRepository.Get(id);
+        var customerExists = await _customerRepository.Get(id);
         var response = new Response<bool>();
-        if (clientExists == null)
+        if (customerExists == null)
         {
             return new Response<bool>() { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
         }
-        if (client is null)
+        if (customer is null)
         {
             return new Response<bool>() { Success = false, Message = { " >>> Dados Inválidos <<<" } };
 
         }
-        if (!string.Equals(client.CPF, clientExists.CPF, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(customer.CPF, customerExists.CPF, StringComparison.OrdinalIgnoreCase))
         {
-            if (await _clientRepository.CPFExists(client.CPF))
+            if (await _customerRepository.CPFExists(customer.CPF))
             {
                 response.Success = false;
                 response.Message.Add(" >>> CPF Já Cadastrado <<< ");
             }
         }
-        if (!string.Equals(client.Email, clientExists.Email, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(customer.Email, customerExists.Email, StringComparison.OrdinalIgnoreCase))
         {
-            if (await _clientRepository.EmailExists(client.Email))
+            if (await _customerRepository.EmailExists(customer.Email))
             {
                 response.Success = false;
                 response.Message.Add(" >>> Email Já Cadastrado <<< ");
             }
         }
-        if (!string.Equals(client.Phone, clientExists.Phone, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(customer.Phone, customerExists.Phone, StringComparison.OrdinalIgnoreCase))
         {
-            if (await _clientRepository.PhoneExists(client.Phone))
+            if (await _customerRepository.PhoneExists(customer.Phone))
             {
                 response.Success = false;
                 response.Message.Add(" >>> Número de Telefone Já Cadastrado <<< ");
             }
         }
-        if (!CpfValidate(client.CPF))
+        if (!CpfValidate(customer.CPF))
         {
             response.Success = false;
             response.Message.Add(" >>> Digite um CPF válido <<< ");
         }
-        if (!(client.Phone.Length == 11))
+        if (!(customer.Phone.Length == 11))
         {
             response.Success = false;
             response.Message.Add(" >>> Digite um número de Telefone válido <<< ");
@@ -124,22 +124,22 @@ public class ClientService : IClientService
         {
             return response;
         }
-        clientExists.Email = client.Email;
-        clientExists.Phone = client.Phone;
-        clientExists.CPF = client.CPF;
-        clientExists.Name = client.Name;
-        _clientRepository.Update(clientExists);
+        customerExists.Email = customer.Email;
+        customerExists.Phone = customer.Phone;
+        customerExists.CPF = customer.CPF;
+        customerExists.Name = customer.Name;
+        _customerRepository.Update(customerExists);
         return new Response<bool> { Success = true, Message = { "Cliente Atualizado com SUCESSO" } };
     }
 
     public async Task<Response<bool>> Delete(long id)
     {
-        var clientExists = await _clientRepository.Get(id);
-        if (clientExists == null)
+        var customerExists = await _customerRepository.Get(id);
+        if (customerExists == null)
         {
             return new Response<bool>() { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
         }
-        await _clientRepository.Delete(id);
+        await _customerRepository.Delete(id);
         return new Response<bool>() { Success = true, Message = { " >>> Cliente deletado com SUCESSO <<<" } };
     }
 

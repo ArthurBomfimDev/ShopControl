@@ -3,8 +3,8 @@
 namespace ProjetoTeste.Arguments.Arguments.Order
 {
     [method: JsonConstructor]
-    public class InputCreateOrder(long clientId)
+    public class InputCreateOrder(long customerId)
     {
-        public long ClientId { get; set; } = clientId;
+        public long CustomerId { get; set; } = customerId;
     }
 }

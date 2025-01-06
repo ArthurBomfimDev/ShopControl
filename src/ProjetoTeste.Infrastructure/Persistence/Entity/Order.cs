@@ -3,17 +3,17 @@
 public class Order : BaseEntity
 {
 
-    public long ClientId { get; set; }
-    public Client Client { get; set; }
+    public long CustomerId { get; set; }
+    public Customer Customer { get; set; }
     public List<ProductOrder> ProductOrders { get; set; }
     public DateOnly OrderDate { get; set; }
-    public decimal Total { get; set; }
+    public decimal Total { get ; set; }
 
     public Order() { }
 
     public Order(long clientId, DateOnly orderDate)
     {
-        ClientId = clientId;
+        CustomerId = clientId;
         OrderDate = orderDate;
     }
 }

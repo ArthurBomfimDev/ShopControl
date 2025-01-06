@@ -10,12 +10,12 @@ namespace ProjetoTeste.Infrastructure.Application.Service;
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly IClientRepository _clientRepository;
+    private readonly ICustomerRepository _clientRepository;
     private readonly IProductRepository _productRepository;
     private readonly IProductOrderRepository _productOrderRepository;
     private readonly IBrandRepository _brandRepository;
 
-    public OrderService(IOrderRepository orderRepository, IClientRepository clientRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository, IBrandRepository brandRepository)
+    public OrderService(IOrderRepository orderRepository, ICustomerRepository clientRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository, IBrandRepository brandRepository)
     {
         _orderRepository = orderRepository;
         _clientRepository = clientRepository;
@@ -27,15 +27,144 @@ public class OrderService : IOrderService
     public async Task<Response<List<OutputOrder>>> GetAll()
     {
         var orderList = await _orderRepository.GetProductOrders();
-        var outputOrder = orderList.Select(o => new OutputOrder(o.Id, o.ClientId, (from i in o.ProductOrders select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList();
+        var outputOrder = orderList.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ProductOrders select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList();
         return new Response<List<OutputOrder>> { Success = true, Value = outputOrder };
     }
 
     public async Task<Response<List<OutputOrder>>> Get(long id)
     {
         var order = await _orderRepository.GetProductOrdersId(id);
-        return new Response<List<OutputOrder>> { Success = true, Value = order.Select(o => new OutputOrder(o.Id, o.ClientId, (from i in o.ProductOrders select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
+        return new Response<List<OutputOrder>> { Success = true, Value = order.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ProductOrders select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
     }
+
+    #region "LINQ"
+    public async Task<Decimal> Total()
+    {
+        var order = await _orderRepository.GetProductOrders();
+        var total = (from i in order
+                    select i.Total).Sum();
+
+        return total;
+    }
+
+    public async Task<List<ProductSell>> ProductSell()
+    {
+        var order = await _orderRepository.GetProductOrders();
+        var totalSeller = (from i in order
+                           from j in i.ProductOrders
+                           group j by j.ProductId into g
+                           select new
+                           {
+                               productId = g.Key,
+                               totalSeller = g.Sum(p => p.Quantity),
+                               totalPrice = g.Sum(p => p.SubTotal)
+                           }).ToList();
+        return totalSeller.Select(p => new ProductSell(p.productId, p.totalSeller, p.totalPrice)).ToList();
+    }
+
+    public async Task<OutputSellProduct> BestSellerProduct()
+    {
+        var totalSeller = await ProductSell();
+        var BestSeller = totalSeller.MaxBy(x => x.totalSeller);
+        var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
+        var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
+        return output;
+    }
+
+    public async Task<List<OutputSellProduct>> TopSellers()
+    {
+        var totalSeller = await ProductSell();
+        var top = totalSeller.OrderByDescending(t => t.totalSeller).Take(5);
+        var list = new List<OutputSellProduct>();
+        foreach (var item in top)
+        {
+            var bestSellerProduct = await _productRepository.Get(item.productId);
+            list.Add(new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, item.totalSeller));
+        }
+        list.OrderBy(p => p.QuantitySold);
+        return list;
+    }
+
+    public async Task<OutputSellProduct> LesatSoldProduct()
+    {
+        var totalSeller = await ProductSell();
+        var BestSeller = totalSeller.MinBy(x => x.totalSeller);
+        var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
+        var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
+        return output;
+    }
+
+    public async Task<List<Buy>> ClientOrder()
+    {
+        var order = await _orderRepository.GetProductOrdersLINQ();
+        var buyer = (from i in order
+                     from j in i.ProductOrders
+                     group j by i.CustomerId into g
+                     select new
+                     {
+                         ClientId = g.Key,
+                         Orders = g.Select(p => p.OrderId),
+                         TotalBuyer = g.Sum(p => p.Quantity),
+                         TotalPrice = g.Sum(p => p.SubTotal)
+                     }).ToList();
+        return buyer.Select(b => new Buy(b.ClientId, b.Orders, b.TotalBuyer, b.TotalPrice)).ToList();
+    }
+
+    public async Task<OutputCustomerOrder> BiggestBuyer()
+    {
+        var order = await ClientOrder();
+        var buyer = order.MaxBy(b => b.TotalBuyer);
+        var client = await _clientRepository.Get(buyer.ClientId);
+        return new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice);
+    }
+
+    public async Task<OutputCustomerOrder> BiggestBuyerPrice()
+    {
+        var order = await ClientOrder();
+        var buyer = order.MaxBy(b => b.TotalPrice);
+        var client = await _clientRepository.Get(buyer.ClientId);
+        return new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice);
+    }
+
+    public async Task<OutputBrandBestSeller> BrandBestSeller()
+    {
+        var order = await _orderRepository.GetProductOrdersLINQ();
+        var brandShere = (from i in order
+                          from j in i.ProductOrders
+                          group j by j.ProductId into g
+                          select new
+                          {
+                              productId = g.Key,
+                              totalSeller = g.Sum(p => p.Quantity),
+                              totalPrice = g.Sum(p => p.SubTotal),
+                              brandId = _productRepository.BrandId(g.Key)
+                          }).ToList();
+        var brandBestSeller = (from i in brandShere
+                               group i by i.brandId into g
+                               select new
+                               {
+                                   brandId = g.Key,
+                                   TotalSell = g.Sum(b => b.totalSeller),
+                                   TotalPrice = g.Sum(b => b.totalPrice),
+                               }).MaxBy(b => b.TotalSell);
+        var brand = await _brandRepository.Get(brandBestSeller.brandId);
+        return new OutputBrandBestSeller(brand.Id, brand.Name, brand.Code, brand.Description, brandBestSeller.TotalSell, brandBestSeller.TotalPrice);
+    }
+
+    public async Task<decimal> Avarege()
+    {
+        var order = await _orderRepository.GetProductOrders();
+        var avarage = (from i in order
+                       from j in i.ProductOrders
+                       group j by j.OrderId into g
+                       select new
+                       {
+                           OrderId = g.Key,
+                           avaragePrice = g.Average(o => o.SubTotal),
+                       }).MaxBy(o => o.avaragePrice);
+        return avarage.avaragePrice;
+    }
+    #endregion 
 
     public async Task<Response<bool>> ValidadeteId(long id)
     {
@@ -49,7 +178,7 @@ public class OrderService : IOrderService
 
     public async Task<Response<OutputOrder>> Create(InputCreateOrder input)
     {
-        var clientExists = await _clientRepository.Get(input.ClientId);
+        var clientExists = await _clientRepository.Get(input.CustomerId);
         if (clientExists is null)
         {
             return new Response<OutputOrder> { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
@@ -103,6 +232,7 @@ public class OrderService : IOrderService
 
         await _productOrderRepository.Update(productOrder);
         await _orderRepository.Update(order);
+
         return new Response<OutputProductOrder> { Success = true, Value = productOrder.ToOuputProductOrder() };
     }
 
@@ -115,134 +245,6 @@ public class OrderService : IOrderService
         }
         _orderRepository.Delete(id);
         return new Response<OutputOrder> { Success = true, Message = { " >>> Pedido Deletado com Sucesso <<<" } };
-    }
-
-
-    public async Task<Decimal> Total()
-    {
-        var order = await _orderRepository.GetProductOrders();
-        var total = (from i in order
-                    select i.Total).Sum();
-
-        return total;
-    }
-
-    public async Task<List<ProductSell>> ProductSell()
-    {
-        var order = await _orderRepository.GetProductOrders();
-        var totalSeller = (from i in order
-                           from j in i.ProductOrders
-                           group j by j.ProductId into g
-                           select new
-                           {
-                               productId = g.Key,
-                               totalSeller = g.Sum(p => p.Quantity),
-                               totalPrice = g.Sum(p => p.SubTotal)
-                           }).ToList();
-        return totalSeller.Select(p => new ProductSell(p.productId, p.totalSeller, p.totalPrice)).ToList();
-    }
-
-    public async Task<OutputSellProduct> BestSellerProduct()
-    {
-        var totalSeller = await ProductSell();
-        var BestSeller = totalSeller.MaxBy(x => x.totalSeller);
-        var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
-        var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
-        return output;
-    }
-
-    public async Task<List<OutputSellProduct>> TopSellers()
-    {
-        var totalSeller = await ProductSell();
-        var top = totalSeller.OrderByDescending(t => t.totalSeller).Take(5);
-        var list = new List<OutputSellProduct>();
-        foreach (var item in top)
-        {
-            var bestSellerProduct = await _productRepository.Get(item.productId);
-            list.Add(new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, item.totalSeller));
-        }
-        list.OrderBy(p => p.QuantitySold);
-        return list;
-    }
-
-    public async Task<OutputSellProduct> WortsSellerProduct()
-    {
-        var totalSeller = await ProductSell();
-        var BestSeller = totalSeller.MinBy(x => x.totalSeller);
-        var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
-        var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
-        return output;
-    }
-
-    public async Task<List<Buy>> ClientOrder()
-    {
-        var order = await _orderRepository.GetProductOrdersLINQ();
-        var buyer = (from i in order
-                     from j in i.ProductOrders
-                     group j by i.ClientId into g
-                     select new
-                     {
-                         ClientId = g.Key,
-                         Orders = g.Select(p => p.OrderId),
-                         TotalBuyer = g.Sum(p => p.Quantity),
-                         TotalPrice = g.Sum(p => p.SubTotal)
-                     }).ToList();
-        return buyer.Select(b => new Buy(b.ClientId, b.Orders, b.TotalBuyer, b.TotalPrice)).ToList();
-    }
-
-    public async Task<OutputClientOrder> BiggestBuyer()
-    {
-        var order = await ClientOrder();
-        var buyer = order.MaxBy(b => b.TotalBuyer);
-        var client = await _clientRepository.Get(buyer.ClientId);
-        return new OutputClientOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice);
-    }
-
-    public async Task<OutputClientOrder> BiggestBuyerPrice()
-    {
-        var order = await ClientOrder();
-        var buyer = order.MaxBy(b => b.TotalPrice);
-        var client = await _clientRepository.Get(buyer.ClientId);
-        return new OutputClientOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice);
-    }
-
-    public async Task<OutputBrandBestSeller> BrandBestSeller()
-    {
-        var order = await _orderRepository.GetProductOrdersLINQ();
-        var brandShere = (from i in order
-                          from j in i.ProductOrders
-                          group j by j.ProductId into g
-                          select new
-                          {
-                              productId = g.Key,
-                              totalSeller = g.Sum(p => p.Quantity),
-                              totalPrice = g.Sum(p => p.SubTotal),
-                              brandId = _productRepository.BrandId(g.Key)
-                          }).ToList();
-        var brandBestSeller = (from i in brandShere
-                               group i by i.brandId into g
-                               select new
-                               {
-                                   brandId = g.Key,
-                                   TotalSell = g.Sum(b => b.totalSeller),
-                                   TotalPrice = g.Sum(b => b.totalPrice),
-                               }).MaxBy(b => b.TotalSell);
-        var brand = await _brandRepository.Get(brandBestSeller.brandId);
-        return new OutputBrandBestSeller(brand.Id, brand.Name, brand.Code, brand.Description, brandBestSeller.TotalSell, brandBestSeller.TotalPrice);
-    }
-
-    public async Task<decimal> Avarege()
-    {
-        var order = await _orderRepository.GetProductOrders();
-        var avarage = (from i in order
-                       from j in i.ProductOrders
-                       group j by j.OrderId into g
-                       select new
-                       {
-                           OrderId = g.Key,
-                           avaragePrice = g.Average(o => o.SubTotal),
-                       }).MaxBy(o => o.avaragePrice);
-        return avarage.avaragePrice;
     }
 
 }

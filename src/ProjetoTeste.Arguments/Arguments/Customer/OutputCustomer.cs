@@ -3,7 +3,7 @@
 namespace ProjetoTeste.Arguments.Arguments.Client
 {
     [method: JsonConstructor]
-    public class OutputClient(long id, string name, string cPF, string email, string phone)
+    public class OutputCustomer(long id, string name, string cPF, string email, string phone)
     {
         public long id { get; private set; } = id;
         public string Name { get; private set; } = name;

@@ -12,10 +12,10 @@ public interface IOrderService
     Task<Response<OutputOrder>> Create(InputCreateOrder input);
     Task<Response<OutputProductOrder>> Add(InputCreateProductOrder input);
     Task<OutputSellProduct> BestSellerProduct();
-    Task<OutputSellProduct> WortsSellerProduct();
+    Task<OutputSellProduct> LesatSoldProduct();
     Task<List<OutputSellProduct>> TopSellers();
-    Task<OutputClientOrder> BiggestBuyer();
-    Task<OutputClientOrder> BiggestBuyerPrice();
+    Task<OutputCustomerOrder> BiggestBuyer();
+    Task<OutputCustomerOrder> BiggestBuyerPrice();
     Task<OutputBrandBestSeller> BrandBestSeller();
     Task<decimal> Avarege();
     Task<decimal> Total();

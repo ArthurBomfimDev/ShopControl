@@ -9,7 +9,7 @@ public class Response<TValue>
     public List<string?> Message { get; set; } = new List<string?>();
     public TValue? Value { get; set; }
 
-    public static implicit operator Response<TValue>(ActionResult<OutputClient> v)
+    public static implicit operator Response<TValue>(ActionResult<OutputCustomer> v)
     {
         throw new NotImplementedException();
     }

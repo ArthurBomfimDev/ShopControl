@@ -5,9 +5,9 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Mapping;
 
-public class ClientConfiguration : IEntityTypeConfiguration<Client>
+public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
-    public void Configure(EntityTypeBuilder<Client> builder)
+    public void Configure(EntityTypeBuilder<Customer> builder)
     {
         builder.ToTable("cliente");
 

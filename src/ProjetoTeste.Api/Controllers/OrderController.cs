@@ -3,7 +3,6 @@ using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductsOrder;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 namespace ProjetoTeste.Api.Controllers;
 
 public class OrderController : BaseController
@@ -36,14 +35,14 @@ public class OrderController : BaseController
         return Ok(order);
     }
 
-    [HttpGet("WorstSellerProduct")]
-    public async Task<ActionResult<OutputSellProduct>> GetWortsSeller()
+    [HttpGet("LesatSoldProduct")]
+    public async Task<ActionResult<OutputSellProduct>> LesatSoldProduct()
     {
-        var order = await _orderService.WortsSellerProduct();
+        var order = await _orderService.LesatSoldProduct();
         return Ok(order);
     }
 
-    [HttpGet("BestSellersProduct")]
+    [HttpGet("BestSellingProducts")]
     public async Task<ActionResult<OutputSellProduct>> GetBestSellers()
     {
         var order = await _orderService.TopSellers();
@@ -51,14 +50,14 @@ public class OrderController : BaseController
     }
 
     [HttpGet("BiggestBuyerQuantity")]
-    public async Task<ActionResult<OutputClientOrder>> BiggestBuyer()
+    public async Task<ActionResult<OutputCustomerOrder>> BiggestBuyer()
     {
         var client = await _orderService.BiggestBuyer();
         return Ok(client);
     }
 
     [HttpGet("BiggestBuyerPrice")]
-    public async Task<ActionResult<OutputClientOrder>> BiggestBuyerPrice()
+    public async Task<ActionResult<OutputCustomerOrder>> BiggestBuyerPrice()
     {
         var client = await _orderService.BiggestBuyerPrice();
         return Ok(client);
@@ -106,12 +105,6 @@ public class OrderController : BaseController
         }
         return Ok(add.Value);
     }
-
-    //[HttpPut]
-    //public async Task<ActionResult> Update(long id, InputUpdateOrder input)
-    //{
-    //    var update = await _orderService.Update
-    //}
 
     [HttpDelete]
     public async Task<ActionResult> Delete(long id)

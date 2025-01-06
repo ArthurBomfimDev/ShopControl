@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace ProjetoTeste.Arguments.Arguments.Client;
 
 [method: JsonConstructor]
-public class InputCreateClient(string name, string cPF, string email, string phone)
+public class InputCreateCustomer(string name, string cPF, string email, string phone)
 {
     public string Name { get; private set; } = name;
     [Required]
