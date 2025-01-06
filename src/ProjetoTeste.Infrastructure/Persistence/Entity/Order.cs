@@ -7,7 +7,7 @@ public class Order : BaseEntity
     public Customer Customer { get; set; }
     public List<ProductOrder> ProductOrders { get; set; }
     public DateOnly OrderDate { get; set; }
-    public decimal Total { get ; set; }
+    public decimal Total { get; set; }
 
     public Order() { }
 

@@ -42,7 +42,7 @@ public class OrderService : IOrderService
     {
         var order = await _orderRepository.GetProductOrders();
         var total = (from i in order
-                    select i.Total).Sum();
+                     select i.Total).Sum();
 
         return total;
     }
