@@ -8,27 +8,25 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
+        builder.HasOne(p => p.Brand).WithMany(b => b.ListProduct).HasForeignKey(p => p.BrandId).HasConstraintName("fkey_id_marca");
+
         builder.ToTable("produto");
 
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Name).HasColumnName("nome")
-            .IsRequired()
-            .HasMaxLength(24);
+        builder.Property(p => p.Name).HasColumnName("nome");
+        builder.Property(p => p.Name).IsRequired();
+        builder.Property(p => p.Name).HasMaxLength(24);
 
-        builder.Property(p => p.Code).HasColumnName("codigo")
-            .IsRequired()
-            .HasMaxLength(16);
+        builder.Property(p => p.Code).HasColumnName("codigo");
+        builder.Property(p => p.Code).IsRequired();
+        builder.Property(p => p.Code).HasMaxLength(16);
 
-        builder.Property(p => p.Description).HasColumnName("descricao")
-            .IsRequired()
-            .HasMaxLength(100);
+        builder.Property(p => p.Description).HasColumnName("descricao");
+        builder.Property(p => p.Description).IsRequired();
+        builder.Property(p => p.Description).HasMaxLength(100);
 
-        builder.Property(p => p.BrandId).HasColumnName("marca_id")
-            .IsRequired();
-
-        builder.HasOne(p => p.Brand)
-            .WithMany(b => b.ListProduct)
-            .HasForeignKey(p => p.BrandId);
+        builder.Property(p => p.BrandId).HasColumnName("marca_id");
+        builder.Property(p => p.BrandId).IsRequired();
     }
 }
