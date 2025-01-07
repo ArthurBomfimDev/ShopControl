@@ -1,9 +1,9 @@
-﻿using ProjetoTeste.Arguments.Arguments.Client;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Client;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
@@ -22,13 +22,13 @@ public class CustomerService : ICustomerService
     public async Task<BaseResponse<List<OutputCustomer>>> GetAll()
     {
         var clientList = await _customerRepository.GetAllAsync();
-        return new BaseResponse<List<OutputCustomer>>() { Success = true, Value = (from i in clientList select i.ToOutputCustomer()).ToList() };
+        return new BaseResponse<List<OutputCustomer>>() { Success = true, Content = (from i in clientList select i.ToOutputCustomer()).ToList() };
     }
 
     public async Task<BaseResponse<OutputCustomer>> Get(long id)
     {
         var customer = await _customerRepository.Get(id);
-        return new BaseResponse<OutputCustomer> { Success = true, Value = customer.ToOutputCustomer() };
+        return new BaseResponse<OutputCustomer> { Success = true, Content = customer.ToOutputCustomer() };
     }
 
     public async Task<BaseResponse<OutputCustomer>> Create(InputCreateCustomer customer)
@@ -70,7 +70,7 @@ public class CustomerService : ICustomerService
         }
         var newCustomer = customer.ToCustomer();
         var createCustomer = await _customerRepository.Create(newCustomer);
-        return new BaseResponse<OutputCustomer> { Success = true, Value = createCustomer.ToOutputCustomer() };
+        return new BaseResponse<OutputCustomer> { Success = true, Content = createCustomer.ToOutputCustomer() };
     }
 
     public async Task<BaseResponse<bool>> Update(long id, InputUpdateCustomer customer)

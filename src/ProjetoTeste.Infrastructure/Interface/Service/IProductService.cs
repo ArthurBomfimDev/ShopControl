@@ -1,5 +1,5 @@
-﻿using ProjetoTeste.Arguments.Arguments.Products;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Products;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service;
 

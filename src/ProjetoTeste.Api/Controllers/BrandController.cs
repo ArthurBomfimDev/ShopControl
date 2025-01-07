@@ -22,7 +22,7 @@ public class BrandController : BaseController
         {
             return NotFound(brandList.Message);
         }
-        return Ok(brandList.Value);
+        return Ok(brandList.Content);
     }
 
     [HttpGet("{id}")]
@@ -33,7 +33,7 @@ public class BrandController : BaseController
         {
             return NotFound(brand.Message);
         }
-        return Ok(brand.Value);
+        return Ok(brand.Content);
     }
 
     [HttpPost]
@@ -44,7 +44,7 @@ public class BrandController : BaseController
         {
             return BadRequest(createdBrand.Message);
         }
-        return Ok(createdBrand.Value);
+        return Ok(createdBrand.Content);
     }
 
     [HttpPut]

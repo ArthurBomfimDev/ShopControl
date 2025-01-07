@@ -1,6 +1,6 @@
-﻿using ProjetoTeste.Arguments.Arguments.Order;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductsOrder;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service;
 

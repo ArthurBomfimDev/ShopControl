@@ -19,14 +19,14 @@ public class OrderController : BaseController
     public async Task<ActionResult<List<OutputOrder>>> GetAll()
     {
         var get = await _orderService.GetAll();
-        return Ok(get.Value);
+        return Ok(get.Content);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<List<OutputOrder>>> Get(long id)
     {
         var get = await _orderService.Get(id);
-        return Ok(get.Value);
+        return Ok(get.Content);
     }
 
     [HttpGet("BestSellerProduct")]
@@ -34,7 +34,7 @@ public class OrderController : BaseController
     {
         var order = await _orderService.BestSellerProduct();
         if (!order.Success) return BadRequest(order.Message);
-        return Ok(order.Value);
+        return Ok(order.Content);
     }
 
     [HttpGet("LesatSoldProduct")]
@@ -42,7 +42,7 @@ public class OrderController : BaseController
     {
         var order = await _orderService.LeastSoldProduct();
         if (!order.Success) return BadRequest(order.Message);
-        return Ok(order.Value);
+        return Ok(order.Content);
     }
 
     [HttpGet("BestSellingProducts")]
@@ -50,7 +50,7 @@ public class OrderController : BaseController
     {
         var order = await _orderService.TopSellers();
         if (!order.Success) return BadRequest(order.Message);
-        return Ok(order.Value);
+        return Ok(order.Content);
     }
 
     [HttpGet("BiggestBuyer/Quantity")]
@@ -58,7 +58,7 @@ public class OrderController : BaseController
     {
         var client = await _orderService.BiggestBuyer();
         if (!client.Success) return BadRequest(client.Message);
-        return Ok(client.Value);
+        return Ok(client.Content);
     }
 
     [HttpGet("BiggestBuyer/Price")]
@@ -66,7 +66,7 @@ public class OrderController : BaseController
     {
         var client = await _orderService.BiggestBuyerPrice();
         if (!client.Success) return BadRequest(client.Message);
-        return Ok(client.Value);
+        return Ok(client.Content);
     }
 
     [HttpGet("BrandBestSeller")]
@@ -74,14 +74,14 @@ public class OrderController : BaseController
     {
         var brand = await _orderService.BrandBestSeller();
         if (!brand.Success) return BadRequest(brand.Message);
-        return Ok(brand.Value);
+        return Ok(brand.Content);
     }
     [HttpGet("MostAvarege")]
     public async Task<ActionResult> MostAvarege()
     {
         var avarage = await _orderService.Avarege();
         if (!avarage.Success) return BadRequest(avarage.Message);
-        var response = "Maior Média de vendas: " + avarage.Value;
+        var response = "Maior Média de vendas: " + avarage.Content;
         return Ok(response);
     }
 
@@ -90,7 +90,7 @@ public class OrderController : BaseController
     {
         var total = await _orderService.Total();
         if (!total.Success) return BadRequest(total.Message);
-        return Ok(total.Value);
+        return Ok(total.Content);
     }
 
     [HttpPost]
@@ -101,7 +101,7 @@ public class OrderController : BaseController
         {
             return BadRequest(create.Message);
         }
-        return Ok(create.Value);
+        return Ok(create.Content);
     }
 
     [HttpPost("Add")]
@@ -112,7 +112,7 @@ public class OrderController : BaseController
         {
             return BadRequest(add.Message);
         }
-        return Ok(add.Value);
+        return Ok(add.Content);
     }
 
     [HttpDelete]

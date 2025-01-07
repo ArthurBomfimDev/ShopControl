@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Client;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Api.Controllers;
 
@@ -19,14 +19,14 @@ public class CustomerController : BaseController
     public async Task<ActionResult<List<OutputCustomer>>> GetAll()
     {
         var get = await _customerService.GetAll();
-        return Ok(get.Value);
+        return Ok(get.Content);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult> Get(long id)
     {
         var get = await _customerService.Get(id);
-        return Ok(get.Value);
+        return Ok(get.Content);
     }
 
     [HttpPost]
@@ -37,7 +37,7 @@ public class CustomerController : BaseController
         {
             return BadRequest(createClient.Message);
         }
-        return Ok(createClient.Value);
+        return Ok(createClient.Content);
     }
 
     [HttpPut]

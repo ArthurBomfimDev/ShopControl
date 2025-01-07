@@ -22,7 +22,7 @@ public class ProductController : BaseController
         {
             return BadRequest(productList.Message);
         }
-        return Ok(productList.Value);
+        return Ok(productList.Content);
     }
 
     [HttpGet("{id}")]
@@ -33,7 +33,7 @@ public class ProductController : BaseController
         {
             return BadRequest(product.Message);
         }
-        return Ok(product.Value);
+        return Ok(product.Content);
     }
 
     [HttpPost]
@@ -44,7 +44,7 @@ public class ProductController : BaseController
         {
             return BadRequest(createProduct.Message);
         }
-        return Ok(createProduct.Value);
+        return Ok(createProduct.Content);
     }
 
     [HttpPut]

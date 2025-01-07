@@ -1,5 +1,4 @@
-﻿using ProjetoTeste.Arguments.Arguments.Brands;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Interface.Repositories;
 

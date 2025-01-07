@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Arguments.Arguments.Order;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductsOrder;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
@@ -28,13 +29,13 @@ public class OrderService : IOrderService
     {
         var orderList = await _orderRepository.GetProductOrders();
         var outputOrder = orderList.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList();
-        return new BaseResponse<List<OutputOrder>> { Success = true, Value = outputOrder };
+        return new BaseResponse<List<OutputOrder>> { Success = true, Content = outputOrder };
     }
 
     public async Task<BaseResponse<List<OutputOrder>>> Get(long id)
     {
         var order = await _orderRepository.GetProductOrdersId(id);
-        return new BaseResponse<List<OutputOrder>> { Success = true, Value = order.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
+        return new BaseResponse<List<OutputOrder>> { Success = true, Content = order.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
     }
 
     #region "Relatorio"
@@ -46,7 +47,7 @@ public class OrderService : IOrderService
         var total = (from i in order
                      select i.Total).Sum();
 
-        return new BaseResponse<decimal> { Success = true, Value = total };
+        return new BaseResponse<decimal> { Success = true, Content = total };
     }
 
     public async Task<BaseResponse<List<ProductSell>>> ProductSell()
@@ -62,7 +63,7 @@ public class OrderService : IOrderService
                                totalSeller = g.Sum(p => p.Quantity),
                                totalPrice = g.Sum(p => p.SubTotal)
                            }).ToList();
-        return new BaseResponse<List<ProductSell>>() { Success = true, Value = totalSeller.Select(p => new ProductSell(p.productId, p.totalSeller, p.totalPrice)).ToList() };
+        return new BaseResponse<List<ProductSell>>() { Success = true, Content = totalSeller.Select(p => new ProductSell(p.productId, p.totalSeller, p.totalPrice)).ToList() };
     }
 
     public async Task<BaseResponse<OutputSellProduct>> BestSellerProduct()
@@ -70,9 +71,9 @@ public class OrderService : IOrderService
         var totalSeller = await ProductSell();
         if (!totalSeller.Success)
             return new BaseResponse<OutputSellProduct>() { Success = false, Message = totalSeller.Message };
-        var BestSeller = totalSeller.Value.MaxBy(x => x.totalSeller);
+        var BestSeller = totalSeller.Content.MaxBy(x => x.totalSeller);
         var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
-        var output = new BaseResponse<OutputSellProduct> { Success = true, Value = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller) };
+        var output = new BaseResponse<OutputSellProduct> { Success = true, Content = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller) };
         return output;
     }
 
@@ -83,7 +84,7 @@ public class OrderService : IOrderService
         {
             return new BaseResponse<List<OutputSellProduct>>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         }
-        var top = totalSeller.Value.OrderByDescending(t => t.totalSeller).Take(5);
+        var top = totalSeller.Content.OrderByDescending(t => t.totalSeller).Take(5);
         var list = new List<OutputSellProduct>();
         foreach (var item in top)
         {
@@ -91,7 +92,7 @@ public class OrderService : IOrderService
             list.Add(new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, item.totalSeller));
         }
         list.OrderBy(p => p.QuantitySold);
-        return new BaseResponse<List<OutputSellProduct>>() { Success = true, Value = list };
+        return new BaseResponse<List<OutputSellProduct>>() { Success = true, Content = list };
     }
 
     public async Task<BaseResponse<OutputSellProduct>> LeastSoldProduct()
@@ -101,10 +102,10 @@ public class OrderService : IOrderService
         {
             return new BaseResponse<OutputSellProduct>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         }
-        var BestSeller = totalSeller.Value.MinBy(x => x.totalSeller);
+        var BestSeller = totalSeller.Content.MinBy(x => x.totalSeller);
         var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
         var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
-        return new BaseResponse<OutputSellProduct>() { Success = true, Value = output };
+        return new BaseResponse<OutputSellProduct>() { Success = true, Content = output };
     }
 
     public async Task<BaseResponse<List<Buy>>> ClientOrder()
@@ -122,7 +123,7 @@ public class OrderService : IOrderService
                          TotalBuyer = g.Sum(p => p.Quantity),
                          TotalPrice = g.Sum(p => p.SubTotal)
                      }).ToList();
-        return new BaseResponse<List<Buy>>() { Success = true, Value = buyer.Select(b => new Buy(b.ClientId, b.Orders, b.TotalBuyer, b.TotalPrice)).ToList() };
+        return new BaseResponse<List<Buy>>() { Success = true, Content = buyer.Select(b => new Buy(b.ClientId, b.Orders, b.TotalBuyer, b.TotalPrice)).ToList() };
     }
 
     public async Task<BaseResponse<OutputCustomerOrder>> BiggestBuyer()
@@ -130,9 +131,9 @@ public class OrderService : IOrderService
         var order = await ClientOrder();
         if (!order.Success)
             return new BaseResponse<OutputCustomerOrder>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
-        var buyer = order.Value.MaxBy(b => b.TotalBuyer);
+        var buyer = order.Content.MaxBy(b => b.TotalBuyer);
         var client = await _clientRepository.Get(buyer.ClientId);
-        return new BaseResponse<OutputCustomerOrder>() { Success = true, Value = new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice) };
+        return new BaseResponse<OutputCustomerOrder>() { Success = true, Content = new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice) };
     }
 
     public async Task<BaseResponse<OutputCustomerOrder>> BiggestBuyerPrice()
@@ -140,9 +141,9 @@ public class OrderService : IOrderService
         var order = await ClientOrder();
         if (!order.Success)
             return new BaseResponse<OutputCustomerOrder>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
-        var buyer = order.Value.MaxBy(b => b.TotalPrice);
+        var buyer = order.Content.MaxBy(b => b.TotalPrice);
         var client = await _clientRepository.Get(buyer.ClientId);
-        return new BaseResponse<OutputCustomerOrder>() { Success = true, Value = new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice) };
+        return new BaseResponse<OutputCustomerOrder>() { Success = true, Content = new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice) };
     }
 
     public async Task<BaseResponse<OutputBrandBestSeller>> BrandBestSeller()
@@ -169,7 +170,7 @@ public class OrderService : IOrderService
                                    TotalPrice = g.Sum(b => b.totalPrice),
                                }).MaxBy(b => b.TotalSell);
         var brand = await _brandRepository.Get(brandBestSeller.brandId);
-        return new BaseResponse<OutputBrandBestSeller>() { Success = true, Value = new OutputBrandBestSeller(brand.Id, brand.Name, brand.Code, brand.Description, brandBestSeller.TotalSell, brandBestSeller.TotalPrice) };
+        return new BaseResponse<OutputBrandBestSeller>() { Success = true, Content = new OutputBrandBestSeller(brand.Id, brand.Name, brand.Code, brand.Description, brandBestSeller.TotalSell, brandBestSeller.TotalPrice) };
     }
 
     public async Task<BaseResponse<decimal>> Avarege()
@@ -185,10 +186,11 @@ public class OrderService : IOrderService
                            OrderId = g.Key,
                            avaragePrice = g.Average(o => o.SubTotal),
                        }).MaxBy(o => o.avaragePrice);
-        return new BaseResponse<decimal>() { Success = true, Value = avarage.avaragePrice };
+        return new BaseResponse<decimal>() { Success = true, Content = avarage.avaragePrice };
     }
     #endregion 
 
+    // Seperar em validate para update, create e delete
     public async Task<BaseResponse<bool>> ValidateId(long id)
     {
         var orderExists = await Get(id);
@@ -196,7 +198,7 @@ public class OrderService : IOrderService
         {
             return new BaseResponse<bool> { Success = false, Message = { " >>> Pedido com o Id digitado NÃO encontrado <<<" } };
         }
-        return new BaseResponse<bool> { Success = false };
+        return new BaseResponse<bool> { Success = true };
     }
 
     public async Task<BaseResponse<OutputOrder>> Create(InputCreateOrder input)
@@ -207,7 +209,7 @@ public class OrderService : IOrderService
             return new BaseResponse<OutputOrder> { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
         }
         var createOrder = await _orderRepository.Create(input.ToOrder());
-        return new BaseResponse<OutputOrder> { Success = true, Value = createOrder.ToOutputOrder() };
+        return new BaseResponse<OutputOrder> { Success = true, Content = createOrder.ToOutputOrder() };
     }
 
     public async Task<BaseResponse<OutputProductOrder>> CreateProductOrder(InputCreateProductOrder input)
@@ -255,7 +257,7 @@ public class OrderService : IOrderService
         await _productOrderRepository.Update(productOrder);
         await _orderRepository.Update(order);
 
-        return new BaseResponse<OutputProductOrder> { Success = true, Value = productOrder.ToOuputProductOrder() };
+        return new BaseResponse<OutputProductOrder> { Success = true, Content = productOrder.ToOuputProductOrder() };
     }
 
     // Alterar valor total e estoque

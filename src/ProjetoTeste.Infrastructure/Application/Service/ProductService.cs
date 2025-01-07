@@ -1,8 +1,10 @@
-﻿using ProjetoTeste.Arguments.Arguments.Products;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Products;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
+
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
 
@@ -24,19 +26,19 @@ public class ProductService : IProductService
         {
             return new BaseResponse<Product>() { Success = false, Message = { " >>> Produto com o Id digitado NÃO encontrado <<<" } };
         }
-        return new BaseResponse<Product>() { Success = true, Value = productExist };
+        return new BaseResponse<Product>() { Success = true, Content = productExist };
     }
 
     public async Task<BaseResponse<List<OutputProduct>>> GetAll()
     {
         var productList = await _productRepository.GetAllAsync();
-        return new BaseResponse<List<OutputProduct>> { Success = true, Value = (from i in productList select i.ToOutputProduct()).ToList() };
+        return new BaseResponse<List<OutputProduct>> { Success = true, Content = (from i in productList select i.ToOutputProduct()).ToList() };
     }
 
     public async Task<BaseResponse<OutputProduct>> Get(long id)
     {
         var product = await _productRepository.Get(id);
-        return new BaseResponse<OutputProduct> { Success = true, Value = product.ToOutputProduct() };
+        return new BaseResponse<OutputProduct> { Success = true, Content = product.ToOutputProduct() };
     }
 
     public async Task<BaseResponse<Product>> ValidationInput(Product input)
@@ -73,7 +75,7 @@ public class ProductService : IProductService
         {
             return response;
         }
-        return new BaseResponse<Product>() { Success = true, Value = input };
+        return new BaseResponse<Product>() { Success = true, Content = input };
     }
 
     public async Task<BaseResponse<OutputProduct>> Create(InputCreateProduct product)
@@ -84,14 +86,14 @@ public class ProductService : IProductService
             return new BaseResponse<OutputProduct> { Success = false, Message = productExists.Message };
         }
         var createProduct = await _productRepository.Create(product.ToProduct());
-        return new BaseResponse<OutputProduct> { Success = true, Value = createProduct.ToOutputProduct() };
+        return new BaseResponse<OutputProduct> { Success = true, Content = createProduct.ToOutputProduct() };
     }
 
     public async Task<BaseResponse<bool>> Update(long id, InputUpdateProduct input)
     {
         var response = new BaseResponse<bool>();
         var idExists = await ValidationId(id);
-        var product = idExists.Value;
+        var product = idExists.Content;
         if (!idExists.Success)
         {
             response.Message.Add(idExists.Message[0]);
@@ -146,7 +148,7 @@ public class ProductService : IProductService
     public async Task<BaseResponse<bool>> Delete(long id)
     {
         var response = await ValidationId(id);
-        var product = response.Value;
+        var product = response.Content;
         if (product is null)
         {
             response.Success = false;

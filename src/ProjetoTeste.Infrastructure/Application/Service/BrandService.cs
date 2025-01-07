@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Arguments.Arguments.Brands;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Brands;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
@@ -22,7 +23,7 @@ public class BrandService : IBrandService
         return new BaseResponse<List<OutputBrand>>
         {
             Success = true,
-            Value = (from i in brandList select i.ToOutputBrand()).ToList(),
+            Content = (from i in brandList select i.ToOutputBrand()).ToList(),
         };
     }
 
@@ -31,7 +32,7 @@ public class BrandService : IBrandService
         var brand = await _brandRepository.Get(id);
         return new BaseResponse<OutputBrand>
         {
-            Value = brand.ToOutputBrand(),
+            Content = brand.ToOutputBrand(),
             Success = true,
         };
     }
@@ -49,7 +50,7 @@ public class BrandService : IBrandService
         }
         return new BaseResponse<Brand>
         {
-            Value = brand,
+            Content = brand,
             Success = true,
         };
     }
@@ -83,7 +84,7 @@ public class BrandService : IBrandService
         }
         return new BaseResponse<OutputBrand>
         {
-            Value = createBrand.ToOutputBrand(),
+            Content = createBrand.ToOutputBrand(),
             Success = true,
         };
     }
@@ -91,7 +92,7 @@ public class BrandService : IBrandService
     public async Task<BaseResponse<bool>> Update(long id, InputUpdateBrand brand)
     {
         var response = await BrandExists(id);
-        var brandExists = response.Value;
+        var brandExists = response.Content;
 
         if (brand is null)
         {
@@ -130,7 +131,7 @@ public class BrandService : IBrandService
     public async Task<BaseResponse<bool>> Delete(long id)
     {
         var response = await BrandExists(id);
-        var brandExists = response.Value;
+        var brandExists = response.Content;
         if (brandExists is null)
         {
             return new BaseResponse<bool> { Success = false, Message = response.Message };

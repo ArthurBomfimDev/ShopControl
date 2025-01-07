@@ -9,16 +9,15 @@ namespace ProjetoTeste.Infrastructure.Persistence.Context
         // Construtor que injeta as opções do DbContext
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Customer> Clients { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Brand> Brands { get; set; }
+        public DbSet<Customer> Client { get; set; }
+        public DbSet<Order> Order { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<Brand> Brand { get; set; }
+        public DbSet<ProductOrder> ProductOrder { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(CustomerConfiguration).Assembly);
-
-            base.OnModelCreating(modelBuilder); // Boa prática: chama o método base
         }
     }
 }
