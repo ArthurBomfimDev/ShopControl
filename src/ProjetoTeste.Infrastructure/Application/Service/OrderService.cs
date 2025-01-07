@@ -38,18 +38,21 @@ public class OrderService : IOrderService
     }
 
     #region "LINQ"
-    public async Task<Decimal> Total()
+    public async Task<Response<Decimal>> Total()
     {
         var order = await _orderRepository.GetProductOrders();
+        if (order.Count() == 0)
+            return new Response<decimal> { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         var total = (from i in order
                      select i.Total).Sum();
 
-        return total;
+        return new Response<decimal> { Success = true, Value = total };
     }
 
-    public async Task<List<ProductSell>> ProductSell()
+    public async Task<Response<List<ProductSell>>> ProductSell()
     {
         var order = await _orderRepository.GetProductOrders();
+        if (order.Count() == 0) return new Response<List<ProductSell>>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         var totalSeller = (from i in order
                            from j in i.ListProductOrder
                            group j by j.ProductId into g
@@ -59,17 +62,15 @@ public class OrderService : IOrderService
                                totalSeller = g.Sum(p => p.Quantity),
                                totalPrice = g.Sum(p => p.SubTotal)
                            }).ToList();
-        return totalSeller.Select(p => new ProductSell(p.productId, p.totalSeller, p.totalPrice)).ToList();
+        return new Response<List<ProductSell>>() { Success = true, Value = totalSeller.Select(p => new ProductSell(p.productId, p.totalSeller, p.totalPrice)).ToList() };
     }
 
     public async Task<Response<OutputSellProduct>> BestSellerProduct()
     {
         var totalSeller = await ProductSell();
-        if(totalSeller is null)
-        {
-            return new Response<OutputSellProduct>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
-        }
-        var BestSeller = totalSeller.MaxBy(x => x.totalSeller);
+        if (!totalSeller.Success)
+            return new Response<OutputSellProduct>() { Success = false, Message = totalSeller.Message };
+        var BestSeller = totalSeller.Value.MaxBy(x => x.totalSeller);
         var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
         var output = new Response<OutputSellProduct> { Success = true, Value = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller) };
         return output;
@@ -78,11 +79,11 @@ public class OrderService : IOrderService
     public async Task<Response<List<OutputSellProduct>>> TopSellers()
     {
         var totalSeller = await ProductSell();
-        if (totalSeller is null)
+        if (!totalSeller.Success)
         {
             return new Response<List<OutputSellProduct>>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         }
-        var top = totalSeller.OrderByDescending(t => t.totalSeller).Take(5);
+        var top = totalSeller.Value.OrderByDescending(t => t.totalSeller).Take(5);
         var list = new List<OutputSellProduct>();
         foreach (var item in top)
         {
@@ -90,25 +91,27 @@ public class OrderService : IOrderService
             list.Add(new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, item.totalSeller));
         }
         list.OrderBy(p => p.QuantitySold);
-        return new Response<List<OutputSellProduct>>() { Success = false, Value = list };
+        return new Response<List<OutputSellProduct>>() { Success = true, Value = list };
     }
 
-    public async Task<Response<OutputSellProduct>> LesatSoldProduct()
+    public async Task<Response<OutputSellProduct>> LeastSoldProduct()
     {
         var totalSeller = await ProductSell();
-        if (totalSeller is null)
+        if (!totalSeller.Success)
         {
             return new Response<OutputSellProduct>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         }
-        var BestSeller = totalSeller.MinBy(x => x.totalSeller);
+        var BestSeller = totalSeller.Value.MinBy(x => x.totalSeller);
         var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
         var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
         return new Response<OutputSellProduct>() { Success = true, Value = output };
     }
 
-    public async Task<List<Buy>> ClientOrder()
+    public async Task<Response<List<Buy>>> ClientOrder()
     {
         var order = await _orderRepository.GetProductOrdersLINQ();
+        if (order.Count() == 0)
+            return new Response<List<Buy>>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         var buyer = (from i in order
                      from j in i.ListProductOrder
                      group j by i.CustomerId into g
@@ -119,28 +122,34 @@ public class OrderService : IOrderService
                          TotalBuyer = g.Sum(p => p.Quantity),
                          TotalPrice = g.Sum(p => p.SubTotal)
                      }).ToList();
-        return buyer.Select(b => new Buy(b.ClientId, b.Orders, b.TotalBuyer, b.TotalPrice)).ToList();
+        return new Response<List<Buy>>() { Success = true, Value = buyer.Select(b => new Buy(b.ClientId, b.Orders, b.TotalBuyer, b.TotalPrice)).ToList() };
     }
 
-    public async Task<OutputCustomerOrder> BiggestBuyer()
+    public async Task<Response<OutputCustomerOrder>> BiggestBuyer()
     {
         var order = await ClientOrder();
-        var buyer = order.MaxBy(b => b.TotalBuyer);
+        if (!order.Success)
+            return new Response<OutputCustomerOrder>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+        var buyer = order.Value.MaxBy(b => b.TotalBuyer);
         var client = await _clientRepository.Get(buyer.ClientId);
-        return new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice);
+        return new Response<OutputCustomerOrder>() { Success = true, Value = new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice) };
     }
 
-    public async Task<OutputCustomerOrder> BiggestBuyerPrice()
+    public async Task<Response<OutputCustomerOrder>> BiggestBuyerPrice()
     {
         var order = await ClientOrder();
-        var buyer = order.MaxBy(b => b.TotalPrice);
+        if (!order.Success)
+            return new Response<OutputCustomerOrder>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+        var buyer = order.Value.MaxBy(b => b.TotalPrice);
         var client = await _clientRepository.Get(buyer.ClientId);
-        return new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice);
+        return new Response<OutputCustomerOrder>() { Success = true, Value = new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice) };
     }
 
-    public async Task<OutputBrandBestSeller> BrandBestSeller()
+    public async Task<Response<OutputBrandBestSeller>> BrandBestSeller()
     {
         var order = await _orderRepository.GetProductOrdersLINQ();
+        if (order.Count() == 0)
+            return new Response<OutputBrandBestSeller>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         var brandShere = (from i in order
                           from j in i.ListProductOrder
                           group j by j.ProductId into g
@@ -160,12 +169,14 @@ public class OrderService : IOrderService
                                    TotalPrice = g.Sum(b => b.totalPrice),
                                }).MaxBy(b => b.TotalSell);
         var brand = await _brandRepository.Get(brandBestSeller.brandId);
-        return new OutputBrandBestSeller(brand.Id, brand.Name, brand.Code, brand.Description, brandBestSeller.TotalSell, brandBestSeller.TotalPrice);
+        return new Response<OutputBrandBestSeller>() { Success = true, Value = new OutputBrandBestSeller(brand.Id, brand.Name, brand.Code, brand.Description, brandBestSeller.TotalSell, brandBestSeller.TotalPrice) };
     }
 
-    public async Task<decimal> Avarege()
+    public async Task<Response<decimal>> Avarege()
     {
         var order = await _orderRepository.GetProductOrders();
+        if (order.Count() == 0)
+            return new Response<decimal>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
         var avarage = (from i in order
                        from j in i.ListProductOrder
                        group j by j.OrderId into g
@@ -174,11 +185,11 @@ public class OrderService : IOrderService
                            OrderId = g.Key,
                            avaragePrice = g.Average(o => o.SubTotal),
                        }).MaxBy(o => o.avaragePrice);
-        return avarage.avaragePrice;
+        return new Response<decimal>() { Success = true, Value = avarage.avaragePrice };
     }
     #endregion 
 
-    public async Task<Response<bool>> ValidadeteId(long id)
+    public async Task<Response<bool>> ValidateId(long id)
     {
         var orderExists = await Get(id);
         if (orderExists is null)
@@ -250,7 +261,7 @@ public class OrderService : IOrderService
 
     public async Task<Response<OutputOrder>> Delete(long id)
     {
-        var orderExists = await ValidadeteId(id);
+        var orderExists = await ValidateId(id);
         if (!orderExists.Success)
         {
             return new Response<OutputOrder> { Success = false, Message = orderExists.Message };
