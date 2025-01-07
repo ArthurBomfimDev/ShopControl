@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-namespace ProjetoTeste.Arguments.Arguments.Brands;
+namespace ProjetoTeste.Arguments.Arguments.Brand;
 
 [method: JsonConstructor]
 public class InputCreateBrand(string name, string code, string description)

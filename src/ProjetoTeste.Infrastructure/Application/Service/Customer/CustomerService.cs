@@ -1,12 +1,12 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Arguments.Arguments.Client;
+using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using System.Text.RegularExpressions;
 
-namespace ProjetoTeste.Infrastructure.Application.Service;
+namespace ProjetoTeste.Infrastructure.Application.Service.Customer;
 
 public class CustomerService : ICustomerService
 {

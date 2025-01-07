@@ -30,7 +30,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<TEntity?> Create(TEntity? entity)
+        public async Task<TEntity?> Create(List<TEntity>? entity)
         {
             await _dbSet.AddAsync(entity);
             if (entity == null) return entity;
@@ -38,10 +38,11 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             return entity;
         }
 
-        public async Task<TEntity?> Update(TEntity? entity)
+        public async List<TEntity>? Update(List<TEntity>? entity)
         {
-            _dbSet.Update(entity);
-            return entity;
+            var listUpdate = (from i in entity
+             select _dbSet.Update(i)).ToList();
+            return listUpdate;
         }
 
         public async Task<bool> Delete(long id)

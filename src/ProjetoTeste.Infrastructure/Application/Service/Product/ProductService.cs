@@ -1,12 +1,12 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Arguments.Arguments.Products;
+using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 
-namespace ProjetoTeste.Infrastructure.Application.Service;
+namespace ProjetoTeste.Infrastructure.Application.Service.Product;
 
 public class ProductService : IProductService
 {

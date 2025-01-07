@@ -18,22 +18,28 @@ public class BrandController : BaseController
     public async Task<ActionResult<List<OutputBrand?>>> GetAll()
     {
         var brandList = await _brandService.GetAll();
-        if (!brandList.Success)
-        {
-            return NotFound(brandList.Message);
-        }
-        return Ok(brandList.Content);
+        return Ok(brandList);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<OutputBrand?>> Get(int id)
     {
         var brand = await _brandService.Get(id);
-        if (!brand.Success)
-        {
-            return NotFound(brand.Message);
-        }
-        return Ok(brand.Content);
+        return Ok(brand);
+    }
+
+    [HttpGet("Products")]
+    public async Task<ActionResult<List<OutputBrand?>>> GetAllAndProducts()
+    {
+        var brandList = await _brandService.GetAllAndProduct();
+        return Ok(brandList);
+    }
+
+    [HttpGet("Products{id}")]
+    public async Task<ActionResult<List<OutputBrand?>>> GetAndProducts(long id)
+    {
+        var brandList = await _brandService.GetAndProduct(id);
+        return Ok(brandList);
     }
 
     [HttpPost]
@@ -47,7 +53,7 @@ public class BrandController : BaseController
         return Ok(createdBrand.Content);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<ActionResult> Update(long id, InputUpdateBrand input)
     {
         var updateBrand = await _brandService.Update(id, input);
@@ -58,7 +64,7 @@ public class BrandController : BaseController
         return Ok(updateBrand.Message);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(long id)
     {
         var deleteBrand = await _brandService.Delete(id);

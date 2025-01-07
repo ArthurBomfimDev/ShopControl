@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ProjetoTeste.Arguments.Arguments.ProductsOrder;
+namespace ProjetoTeste.Arguments.Arguments.ProductOrder;
 
 [method: JsonConstructor]
 public class OutputProductOrder(long orderId, long productId, decimal unitPrice, int quantity, decimal subTotal)

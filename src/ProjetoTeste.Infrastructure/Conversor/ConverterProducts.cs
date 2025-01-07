@@ -1,4 +1,4 @@
-﻿using ProjetoTeste.Arguments.Arguments.Products;
+﻿using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 namespace ProjetoTeste.Infrastructure.Conversor;
 
@@ -11,11 +11,11 @@ public static class ConverterProducts
 
     public static Product? ToProduct(this InputCreateProduct? product)
     {
-        return product == null ? null : new Product(product.Name, product.Code, product.Description, product.Price, product.BrandId, product.Stock);
+        return product == null ? null : new Product(product.Name, product.Code, product.Description, product.Price, product.BrandId, product.Stock, default);
     }
 
     public static Product? ToProduct(this InputUpdateProduct? product)
     {
-        return product == null ? null : new Product(product.Name, product.Code, product.Description, product.Price, product.BrandId, product.Stock);
+        return product == null ? null : new Product(product.Name, product.Code, product.Description, product.Price, product.BrandId, product.Stock, default);
     }
 }

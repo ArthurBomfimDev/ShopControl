@@ -1,8 +1,13 @@
-﻿using ProjetoTeste.Infrastructure.Application.Service;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
+﻿using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Repository;
+using ProjetoTeste.Infrastructure.Persistence;
+using ProjetoTeste.Infrastructure.Application.Service.Product;
+using ProjetoTeste.Infrastructure.Application.Service.Brand;
+using ProjetoTeste.Infrastructure.Application.Service.Customer;
+using ProjetoTeste.Infrastructure.Application.Service.Order;
+
 namespace ProjetoTeste.Api.Extensions;
 
 public static class InjectionDependencyExtension

@@ -1,12 +1,12 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Order;
-using ProjetoTeste.Arguments.Arguments.ProductsOrder;
+using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
-namespace ProjetoTeste.Infrastructure.Application.Service;
+namespace ProjetoTeste.Infrastructure.Application.Service.Order;
 
 public class OrderService : IOrderService
 {
@@ -39,7 +39,7 @@ public class OrderService : IOrderService
     }
 
     #region "Relatorio"
-    public async Task<BaseResponse<Decimal>> Total()
+    public async Task<BaseResponse<decimal>> Total()
     {
         var order = await _orderRepository.GetProductOrders();
         if (order.Count() == 0)

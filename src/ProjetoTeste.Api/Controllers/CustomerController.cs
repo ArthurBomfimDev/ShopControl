@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Arguments.Arguments.Client;
+using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
@@ -40,7 +40,7 @@ public class CustomerController : BaseController
         return Ok(createClient.Content);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<ActionResult> Update(long Id, InputUpdateCustomer input)
     {
         BaseResponse<bool> update = await _customerService.Update(Id, input);
@@ -51,7 +51,7 @@ public class CustomerController : BaseController
         return Ok(update.Message);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(long id)
     {
         BaseResponse<bool> delete = await _customerService.Delete(id);

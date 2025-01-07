@@ -1,4 +1,4 @@
-﻿using ProjetoTeste.Arguments.Arguments.Client;
+﻿using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Conversor;
@@ -12,6 +12,6 @@ public static class CustomerConverter
 
     public static Customer? ToCustomer(this InputCreateCustomer customer)
     {
-        return customer == null ? null : new Customer(customer.Name, customer.CPF, customer.Email, customer.Phone);
+        return customer == null ? null : new Customer(customer.Name, customer.CPF, customer.Email, customer.Phone, default);
     }
 }

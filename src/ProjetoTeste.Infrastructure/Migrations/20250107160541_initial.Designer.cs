@@ -12,7 +12,7 @@ using ProjetoTeste.Infrastructure.Persistence.Context;
 namespace ProjetoTeste.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250106172208_initial")]
+    [Migration("20250107160541_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -67,9 +67,8 @@ namespace ProjetoTeste.Infrastructure.Migrations
                     b.Property<string>("CPF")
                         .IsRequired()
                         .HasMaxLength(11)
-                        .HasColumnType("char(11)")
-                        .HasColumnName("cpf")
-                        .IsFixedLength();
+                        .HasColumnType("varchar(11)")
+                        .HasColumnName("cpf");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -86,9 +85,8 @@ namespace ProjetoTeste.Infrastructure.Migrations
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(15)
-                        .HasColumnType("char(15)")
-                        .HasColumnName("telefone")
-                        .IsFixedLength();
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("telefone");
 
                     b.HasKey("Id");
 
@@ -107,8 +105,8 @@ namespace ProjetoTeste.Infrastructure.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("cliente_id");
 
-                    b.Property<DateOnly>("OrderDate")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime(6)")
                         .HasColumnName("data_do_pedido");
 
                     b.Property<decimal>("Total")
@@ -119,7 +117,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("pedidos", (string)null);
+                    b.ToTable("pedido", (string)null);
                 });
 
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.Product", b =>
@@ -162,7 +160,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.ToTable("produtos", (string)null);
+                    b.ToTable("produto", (string)null);
                 });
 
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.ProductOrder", b =>
@@ -186,10 +184,8 @@ namespace ProjetoTeste.Infrastructure.Migrations
                         .HasColumnName("quantidade");
 
                     b.Property<decimal>("SubTotal")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("decimal(65,30)")
-                        .HasColumnName("subtotal")
-                        .HasComputedColumnSql("quantidade * preco_unitario");
+                        .HasColumnName("subtotal");
 
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(65,30)")
@@ -201,7 +197,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("pedido_de_produtos", (string)null);
+                    b.ToTable("pedido_de_produto", (string)null);
                 });
 
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.Order", b =>
@@ -221,7 +217,8 @@ namespace ProjetoTeste.Infrastructure.Migrations
                         .WithMany("ListProduct")
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fkey_id_marca");
 
                     b.Navigation("Brand");
                 });

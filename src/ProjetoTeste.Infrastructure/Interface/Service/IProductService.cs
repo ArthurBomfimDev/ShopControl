@@ -1,5 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Arguments.Arguments.Products;
+using ProjetoTeste.Arguments.Arguments.Product;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service;
 

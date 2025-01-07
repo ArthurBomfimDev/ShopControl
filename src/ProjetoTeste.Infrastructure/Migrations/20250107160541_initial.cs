@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetoTeste.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Teste : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,11 +23,11 @@ namespace ProjetoTeste.Infrastructure.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     nome = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    cpf = table.Column<string>(type: "char(11)", fixedLength: true, maxLength: 11, nullable: false)
+                    cpf = table.Column<string>(type: "varchar(11)", maxLength: 11, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     email = table.Column<string>(type: "varchar(64)", maxLength: 64, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    telefone = table.Column<string>(type: "char(15)", fixedLength: true, maxLength: 15, nullable: false)
+                    telefone = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -55,20 +56,20 @@ namespace ProjetoTeste.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "pedidos",
+                name: "pedido",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     cliente_id = table.Column<long>(type: "bigint", nullable: false),
-                    data_do_pedido = table.Column<DateOnly>(type: "date", nullable: false),
-                    total = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
+                    total = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
+                    data_do_pedido = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_pedidos", x => x.Id);
+                    table.PrimaryKey("PK_pedido", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_pedidos_cliente_cliente_id",
+                        name: "FK_pedido_cliente_cliente_id",
                         column: x => x.cliente_id,
                         principalTable: "cliente",
                         principalColumn: "Id",
@@ -77,7 +78,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "produtos",
+                name: "produto",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -94,9 +95,9 @@ namespace ProjetoTeste.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_produtos", x => x.Id);
+                    table.PrimaryKey("PK_produto", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_produtos_marca_marca_id",
+                        name: "fkey_id_marca",
                         column: x => x.marca_id,
                         principalTable: "marca",
                         principalColumn: "Id",
@@ -105,7 +106,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "pedido_de_produtos",
+                name: "pedido_de_produto",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -114,44 +115,44 @@ namespace ProjetoTeste.Infrastructure.Migrations
                     produto_id = table.Column<long>(type: "bigint", nullable: false),
                     quantidade = table.Column<int>(type: "int", nullable: false),
                     preco_unitario = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    subtotal = table.Column<decimal>(type: "decimal(65,30)", nullable: false, computedColumnSql: "quantidade * preco_unitario")
+                    subtotal = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_pedido_de_produtos", x => x.Id);
+                    table.PrimaryKey("PK_pedido_de_produto", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_pedido_de_produtos_pedidos_pedido_id",
+                        name: "FK_pedido_de_produto_pedido_pedido_id",
                         column: x => x.pedido_id,
-                        principalTable: "pedidos",
+                        principalTable: "pedido",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_pedido_de_produtos_produtos_produto_id",
+                        name: "FK_pedido_de_produto_produto_produto_id",
                         column: x => x.produto_id,
-                        principalTable: "produtos",
+                        principalTable: "produto",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_pedido_de_produtos_pedido_id",
-                table: "pedido_de_produtos",
-                column: "pedido_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_pedido_de_produtos_produto_id",
-                table: "pedido_de_produtos",
-                column: "produto_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_pedidos_cliente_id",
-                table: "pedidos",
+                name: "IX_pedido_cliente_id",
+                table: "pedido",
                 column: "cliente_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_produtos_marca_id",
-                table: "produtos",
+                name: "IX_pedido_de_produto_pedido_id",
+                table: "pedido_de_produto",
+                column: "pedido_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_pedido_de_produto_produto_id",
+                table: "pedido_de_produto",
+                column: "produto_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_produto_marca_id",
+                table: "produto",
                 column: "marca_id");
         }
 
@@ -159,13 +160,13 @@ namespace ProjetoTeste.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "pedido_de_produtos");
+                name: "pedido_de_produto");
 
             migrationBuilder.DropTable(
-                name: "pedidos");
+                name: "pedido");
 
             migrationBuilder.DropTable(
-                name: "produtos");
+                name: "produto");
 
             migrationBuilder.DropTable(
                 name: "cliente");

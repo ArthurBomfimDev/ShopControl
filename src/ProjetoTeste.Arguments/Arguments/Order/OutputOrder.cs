@@ -1,4 +1,4 @@
-﻿using ProjetoTeste.Arguments.Arguments.ProductsOrder;
+﻿using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments.Order;

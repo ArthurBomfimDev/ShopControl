@@ -16,7 +16,7 @@ public class Product : BaseEntity
     public Product()
     { }
 
-    public Product(string name, string code, string description, decimal price, long brandId, long stock)
+    public Product(string name, string code, string description, decimal price, long brandId, long stock, List<ProductOrder>? listProductOrder)
     {
         Name = name;
         Code = code;
@@ -24,5 +24,6 @@ public class Product : BaseEntity
         Price = price;
         BrandId = brandId;
         Stock = stock;
+        ListProductOrder = listProductOrder;
     }
 }

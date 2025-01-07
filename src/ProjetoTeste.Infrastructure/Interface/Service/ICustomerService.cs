@@ -1,5 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Arguments.Arguments.Client;
+using ProjetoTeste.Arguments.Arguments.Customer;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service;
 

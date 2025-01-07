@@ -14,4 +14,14 @@ public class BrandRepository : Repository<Brand>, IBrandRepository
     {
         return await _dbSet.AnyAsync(x => x.Code == code);
     }
+
+    public async Task<List<Brand>> GetAllAndProduct()
+    {
+        return await _context.Brand.Include(i => i.ListProduct).ToListAsync();
+    }
+
+    public async Task<List<Brand>> GetAndProduct(long id)
+    {
+        return await _context.Brand.Include(i => i.ListProduct).Where(i => i.Id == id).ToListAsync();
+    }
 }

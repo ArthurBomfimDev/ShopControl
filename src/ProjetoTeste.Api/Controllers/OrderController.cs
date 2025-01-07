@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProjetoTeste.Arguments.Arguments.Order;
-using ProjetoTeste.Arguments.Arguments.ProductsOrder;
+using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
@@ -104,8 +104,8 @@ public class OrderController : BaseController
         return Ok(create.Content);
     }
 
-    [HttpPost("Add")]
-    public async Task<ActionResult<OutputOrder>> Add(InputCreateProductOrder input)
+    [HttpPost("CreateProductOrder")]
+    public async Task<ActionResult<OutputOrder>> CreateProductOrder(InputCreateProductOrder input)
     {
         var add = await _orderService.CreateProductOrder(input);
         if (!add.Success)
@@ -115,7 +115,7 @@ public class OrderController : BaseController
         return Ok(add.Content);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(long id)
     {
         var delete = await _orderService.Delete(id);

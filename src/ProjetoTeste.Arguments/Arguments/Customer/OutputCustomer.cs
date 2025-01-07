@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ProjetoTeste.Arguments.Arguments.Client
+namespace ProjetoTeste.Arguments.Arguments.Customer
 {
     [method: JsonConstructor]
     public class OutputCustomer(long id, string name, string cPF, string email, string phone)

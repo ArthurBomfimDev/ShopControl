@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ProjetoTeste.Arguments.Arguments.ProductsOrder;
+namespace ProjetoTeste.Arguments.Arguments.ProductOrder;
 
 [method: JsonConstructor]
 public class InputCreateProductOrder(long orderId, long productId, int quantity)

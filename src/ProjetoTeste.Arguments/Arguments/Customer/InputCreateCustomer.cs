@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace ProjetoTeste.Arguments.Arguments.Client;
+namespace ProjetoTeste.Arguments.Arguments.Customer;
 
 [method: JsonConstructor]
 public class InputCreateCustomer(string name, string cPF, string email, string phone)

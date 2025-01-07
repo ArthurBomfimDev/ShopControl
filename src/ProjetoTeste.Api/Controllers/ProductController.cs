@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjetoTeste.Arguments.Arguments.Products;
+using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
@@ -47,7 +47,7 @@ public class ProductController : BaseController
         return Ok(createProduct.Content);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<ActionResult> Update(long id, InputUpdateProduct input)
     {
         var updateProduct = await _productService.Update(id, input);
@@ -58,7 +58,7 @@ public class ProductController : BaseController
         return Ok(updateProduct.Message);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(long id)
     {
         var deletePrdocut = await _productService.Delete(id);

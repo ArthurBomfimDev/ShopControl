@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-namespace ProjetoTeste.Arguments.Arguments.Products;
+namespace ProjetoTeste.Arguments.Arguments.Product;
 
 [method: JsonConstructor]
 public class OutputProduct(long id, string name, string code, string description, decimal price, long brandId, long stock)

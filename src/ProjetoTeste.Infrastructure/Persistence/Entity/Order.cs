@@ -14,9 +14,10 @@ public class Order : BaseEntity
 
     public Order() { }
 
-    public Order(long clientId, DateTime orderDate)
+    public Order(long clientId, DateTime orderDate, List<ProductOrder> listProductOrder)
     {
         CustomerId = clientId;
         OrderDate = orderDate;
+        ListProductOrder = listProductOrder;
     }
 }

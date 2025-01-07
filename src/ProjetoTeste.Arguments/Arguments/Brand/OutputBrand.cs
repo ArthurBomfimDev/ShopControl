@@ -1,6 +1,6 @@
-﻿using ProjetoTeste.Arguments.Arguments.Products;
+﻿using ProjetoTeste.Arguments.Arguments.Product;
 using System.Text.Json.Serialization;
-namespace ProjetoTeste.Arguments.Arguments.Brands;
+namespace ProjetoTeste.Arguments.Arguments.Brand;
 
 [method: JsonConstructor]
 public class OutputBrand(long id, string name, string code, string description, List<OutputProduct> listProduct)

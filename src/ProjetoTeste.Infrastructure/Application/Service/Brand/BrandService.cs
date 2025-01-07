@@ -1,11 +1,11 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Arguments.Arguments.Brands;
+using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
-namespace ProjetoTeste.Infrastructure.Application.Service;
+namespace ProjetoTeste.Infrastructure.Application;
 
 public class BrandService : IBrandService
 {
@@ -17,38 +17,42 @@ public class BrandService : IBrandService
     }
 
     // Tirar o response
-    public async Task<BaseResponse<List<OutputBrand>>> GetAll()
+    public async Task<List<OutputBrand>> GetAll()
     {
         var brandList = await _brandRepository.GetAllAsync();
-        return new BaseResponse<List<OutputBrand>>
-        {
-            Success = true,
-            Content = (from i in brandList select i.ToOutputBrand()).ToList(),
-        };
+        return (from i in brandList select i.ToOutputBrand()).ToList();
     }
 
-    public async Task<BaseResponse<OutputBrand>> Get(long id)
+    public async Task<OutputBrand> Get(long id)
     {
         var brand = await _brandRepository.Get(id);
-        return new BaseResponse<OutputBrand>
-        {
-            Content = brand.ToOutputBrand(),
-            Success = true,
-        };
+        return brand.ToOutputBrand();
     }
 
-    public async Task<BaseResponse<Brand>> BrandExists(long id)
+    public async Task<List<OutputBrand>> GetAllAndProduct()
+    {
+        var brandListwithProducts = await _brandRepository.GetAllAndProduct();
+        return (from i in brandListwithProducts select i.ToOutputBrand()).ToList();
+    }
+
+    public async Task<List<OutputBrand>> GetAndProduct(long id)
+    {
+        var brandListwithProducts = await _brandRepository.GetAndProduct(id);
+        return (from i in brandListwithProducts select i.ToOutputBrand()).ToList();
+    }
+
+    public async Task<BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>> BrandExists(long id)
     {
         var brand = await _brandRepository.Get(id);
         if (brand == null)
         {
-            return new BaseResponse<Brand>
+            return new BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>
             {
                 Success = false,
                 Message = { " >>> Marca com o Id digitado NÃO encontrada <<<" }
             };
         }
-        return new BaseResponse<Brand>
+        return new BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>
         {
             Content = brand,
             Success = true,
@@ -56,15 +60,15 @@ public class BrandService : IBrandService
     }
 
     // Seprar as validações
-    public async Task<BaseResponse<OutputBrand>> Create(InputCreateBrand input)
+    public async Task<BaseResponse<OutputBrand>> Create(List<InputCreateBrand> input)
     {
-        if (input is null)
+        if (input.Count() == 0)
         {
             return new BaseResponse<OutputBrand> { Message = { " >>> Dados Inseridos Inválidos <<<" }, Success = false };
         }
         var response = new BaseResponse<OutputBrand>();
         // Trocar para lista de cod
-        var CodeExists = await _brandRepository.Exist(input.Code);
+        var CodeExists = await _brandRepository.Exist(input.);
         if (CodeExists)
         {
             response.Message.Add(" >>> Erro - Codigo de Marca já cadastrado <<<");
