@@ -1,4 +1,6 @@
-﻿namespace ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
+
+namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 public class Product : BaseEntity
 {
     public string Name { get; set; }

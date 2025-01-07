@@ -2,7 +2,6 @@
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
-using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application.Service;
@@ -10,59 +9,60 @@ namespace ProjetoTeste.Infrastructure.Application.Service;
 public class BrandService : IBrandService
 {
     private readonly IBrandRepository _brandRepository;
-    private readonly IUnitOfWork _unitOfWork;
 
-    public BrandService(IBrandRepository brandRepository, IUnitOfWork unitOfWork)
+    public BrandService(IBrandRepository brandRepository)
     {
         _brandRepository = brandRepository;
-        _unitOfWork = unitOfWork;
     }
 
-    public async Task<Response<List<OutputBrand>>> GetAll()
+    // Tirar o response
+    public async Task<BaseResponse<List<OutputBrand>>> GetAll()
     {
         var brandList = await _brandRepository.GetAllAsync();
-        return new Response<List<OutputBrand>>
+        return new BaseResponse<List<OutputBrand>>
         {
             Success = true,
             Value = (from i in brandList select i.ToOutputBrand()).ToList(),
         };
     }
 
-    public async Task<Response<OutputBrand>> Get(long id)
+    public async Task<BaseResponse<OutputBrand>> Get(long id)
     {
         var brand = await _brandRepository.Get(id);
-        return new Response<OutputBrand>
+        return new BaseResponse<OutputBrand>
         {
             Value = brand.ToOutputBrand(),
             Success = true,
         };
     }
 
-    public async Task<Response<Brand>> BrandExists(long id)
+    public async Task<BaseResponse<Brand>> BrandExists(long id)
     {
         var brand = await _brandRepository.Get(id);
         if (brand == null)
         {
-            return new Response<Brand>
+            return new BaseResponse<Brand>
             {
                 Success = false,
                 Message = { " >>> Marca com o Id digitado NÃO encontrada <<<" }
             };
         }
-        return new Response<Brand>
+        return new BaseResponse<Brand>
         {
             Value = brand,
             Success = true,
         };
     }
 
-    public async Task<Response<OutputBrand>> Create(InputCreateBrand input)
+    // Seprar as validações
+    public async Task<BaseResponse<OutputBrand>> Create(InputCreateBrand input)
     {
         if (input is null)
         {
-            return new Response<OutputBrand> { Message = { " >>> Dados Inseridos Inválidos <<<" }, Success = false };
+            return new BaseResponse<OutputBrand> { Message = { " >>> Dados Inseridos Inválidos <<<" }, Success = false };
         }
-        var response = new Response<OutputBrand>();
+        var response = new BaseResponse<OutputBrand>();
+        // Trocar para lista de cod
         var CodeExists = await _brandRepository.Exist(input.Code);
         if (CodeExists)
         {
@@ -70,6 +70,7 @@ public class BrandService : IBrandService
             response.Success = false;
             return response;
         }
+        // Trocar para lista (create)
         var createBrand = await _brandRepository.Create(input.ToBrand());
         if (createBrand is null)
         {
@@ -80,14 +81,14 @@ public class BrandService : IBrandService
         {
             return response;
         }
-        return new Response<OutputBrand>
+        return new BaseResponse<OutputBrand>
         {
             Value = createBrand.ToOutputBrand(),
             Success = true,
         };
     }
 
-    public async Task<Response<bool>> Update(long id, InputUpdateBrand brand)
+    public async Task<BaseResponse<bool>> Update(long id, InputUpdateBrand brand)
     {
         var response = await BrandExists(id);
         var brandExists = response.Value;
@@ -99,7 +100,7 @@ public class BrandService : IBrandService
         }
         if (brandExists is null)
         {
-            return new Response<bool> { Message = response.Message, Success = false };
+            return new BaseResponse<bool> { Message = response.Message, Success = false };
         }
         var codeExists = await _brandRepository.Exist(brand.Code);
         if (brandExists.Code != brand.Code && codeExists)
@@ -108,7 +109,7 @@ public class BrandService : IBrandService
         }
         if (!response.Success)
         {
-            return new Response<bool>() { Message = response.Message, Success = false };
+            return new BaseResponse<bool>() { Message = response.Message, Success = false };
         }
         brandExists.Name = brand.Name;
         brandExists.Code = brand.Code;
@@ -121,18 +122,18 @@ public class BrandService : IBrandService
         }
         if (!response.Success)
         {
-            return new Response<bool> { Success = false, Message = response.Message };
+            return new BaseResponse<bool> { Success = false, Message = response.Message };
         }
-        return new Response<bool> { Success = true, Message = { " >>> Marca Atualizada com SUCESSO <<<" } };
+        return new BaseResponse<bool> { Success = true, Message = { " >>> Marca Atualizada com SUCESSO <<<" } };
     }
 
-    public async Task<Response<bool>> Delete(long id)
+    public async Task<BaseResponse<bool>> Delete(long id)
     {
         var response = await BrandExists(id);
         var brandExists = response.Value;
         if (brandExists is null)
         {
-            return new Response<bool> { Success = false, Message = response.Message };
+            return new BaseResponse<bool> { Success = false, Message = response.Message };
         }
         bool brandDelete = await _brandRepository.Delete(id);
         if (!brandDelete)
@@ -140,6 +141,6 @@ public class BrandService : IBrandService
             response.Success = false;
             response.Message.Add(" >>> ERRO - Marca não apagada - Dados digitados errados ou incompletos <<<");
         }
-        return new Response<bool> { Message = { " >>> Marca DELETADA com SUCESSO <<<" }, Success = true };
+        return new BaseResponse<bool> { Message = { " >>> Marca DELETADA com SUCESSO <<<" }, Success = true };
     }
 }

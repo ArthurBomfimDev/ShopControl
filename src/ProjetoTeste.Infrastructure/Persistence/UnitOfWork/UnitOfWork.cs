@@ -2,7 +2,7 @@
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Context;
 
-namespace ProjetoTeste.Infrastructure.Persistence.Repository;
+namespace ProjetoTeste.Infrastructure.Persistence;
 
 public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {

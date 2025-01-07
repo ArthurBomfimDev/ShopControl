@@ -8,7 +8,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.ToTable("produtos");
+        builder.ToTable("produto");
 
         builder.HasKey(p => p.Id);
 
@@ -29,7 +29,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.HasOne(p => p.Brand)
             .WithMany(b => b.ListProduct)
-            .HasForeignKey(p => p.BrandId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasForeignKey(p => p.BrandId);
     }
 }

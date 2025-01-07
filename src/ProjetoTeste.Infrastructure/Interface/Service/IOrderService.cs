@@ -6,17 +6,17 @@ namespace ProjetoTeste.Infrastructure.Interface.Service;
 
 public interface IOrderService
 {
-    Task<Response<List<OutputOrder>>> GetAll();
-    Task<Response<List<OutputOrder>>> Get(long id);
-    Task<Response<OutputOrder>> Delete(long id);
-    Task<Response<OutputOrder>> Create(InputCreateOrder input);
-    Task<Response<OutputProductOrder>> Add(InputCreateProductOrder input);
-    Task<Response<OutputSellProduct>> BestSellerProduct();
-    Task<Response<OutputSellProduct>> LeastSoldProduct();
-    Task<Response<List<OutputSellProduct>>> TopSellers();
-    Task<Response<OutputCustomerOrder>> BiggestBuyer();
-    Task<Response<OutputCustomerOrder>> BiggestBuyerPrice();
-    Task<Response<OutputBrandBestSeller>> BrandBestSeller();
-    Task<Response<decimal>> Avarege();
-    Task<Response<decimal>> Total();
+    Task<BaseResponse<List<OutputOrder>>> GetAll();
+    Task<BaseResponse<List<OutputOrder>>> Get(long id);
+    Task<BaseResponse<OutputOrder>> Delete(long id);
+    Task<BaseResponse<OutputOrder>> Create(InputCreateOrder input);
+    Task<BaseResponse<OutputProductOrder>> CreateProductOrder(InputCreateProductOrder input);
+    Task<BaseResponse<OutputSellProduct>> BestSellerProduct();
+    Task<BaseResponse<OutputSellProduct>> LeastSoldProduct();
+    Task<BaseResponse<List<OutputSellProduct>>> TopSellers();
+    Task<BaseResponse<OutputCustomerOrder>> BiggestBuyer();
+    Task<BaseResponse<OutputCustomerOrder>> BiggestBuyerPrice();
+    Task<BaseResponse<OutputBrandBestSeller>> BrandBestSeller();
+    Task<BaseResponse<decimal>> Avarege();
+    Task<BaseResponse<decimal>> Total();
 }

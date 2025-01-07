@@ -5,9 +5,9 @@ namespace ProjetoTeste.Infrastructure.Interface.Service;
 
 public interface ICustomerService
 {
-    Task<Response<List<OutputCustomer>>> GetAll();
-    Task<Response<OutputCustomer>> Get(long id);
-    Task<Response<bool>> Delete(long id);
-    Task<Response<OutputCustomer>> Create(InputCreateCustomer client);
-    Task<Response<bool>> Update(long id, InputUpdateCustomer client);
+    Task<BaseResponse<List<OutputCustomer>>> GetAll();
+    Task<BaseResponse<OutputCustomer>> Get(long id);
+    Task<BaseResponse<bool>> Delete(long id);
+    Task<BaseResponse<OutputCustomer>> Create(InputCreateCustomer client);
+    Task<BaseResponse<bool>> Update(long id, InputUpdateCustomer client);
 }

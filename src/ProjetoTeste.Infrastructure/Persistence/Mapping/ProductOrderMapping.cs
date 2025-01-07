@@ -22,8 +22,7 @@ public class ProductOrderConfiguration : IEntityTypeConfiguration<ProductOrder>
             .IsRequired();
 
         builder.Property(p => p.SubTotal).HasColumnName("subtotal")
-            .HasComputedColumnSql("quantidade * preco_unitario")
-            .ValueGeneratedOnAddOrUpdate();
+            .IsRequired();
 
         builder.HasOne(p => p.Order)
             .WithMany(o => o.ListProductOrder)

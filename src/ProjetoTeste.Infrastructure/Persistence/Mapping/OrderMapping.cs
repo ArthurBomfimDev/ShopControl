@@ -15,18 +15,12 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.HasOne(o => o.Customer)
             .WithMany(p => p.ListOrder)
-            .HasForeignKey(o => o.CustomerId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasForeignKey(o => o.CustomerId);
 
         builder.Property(o => o.OrderDate).HasColumnName("data_do_pedido")
             .IsRequired();
 
         builder.Property(o => o.Total).HasColumnName("total")
             .IsRequired();
-
-        builder.HasMany(o => o.ListProductOrder)
-            .WithOne()
-            .HasForeignKey(po => po.OrderId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

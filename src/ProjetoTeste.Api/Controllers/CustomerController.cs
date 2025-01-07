@@ -32,7 +32,7 @@ public class CustomerController : BaseController
     [HttpPost]
     public async Task<ActionResult> Create(InputCreateCustomer input)
     {
-        Response<OutputCustomer> createClient = await _customerService.Create(input);
+        BaseResponse<OutputCustomer> createClient = await _customerService.Create(input);
         if (!createClient.Success)
         {
             return BadRequest(createClient.Message);
@@ -43,7 +43,7 @@ public class CustomerController : BaseController
     [HttpPut]
     public async Task<ActionResult> Update(long Id, InputUpdateCustomer input)
     {
-        Response<bool> update = await _customerService.Update(Id, input);
+        BaseResponse<bool> update = await _customerService.Update(Id, input);
         if (!update.Success)
         {
             return BadRequest(update.Message);
@@ -54,7 +54,7 @@ public class CustomerController : BaseController
     [HttpDelete]
     public async Task<ActionResult> Delete(long id)
     {
-        Response<bool> delete = await _customerService.Delete(id);
+        BaseResponse<bool> delete = await _customerService.Delete(id);
         if (!delete.Success)
         {
             return BadRequest(delete.Message);

@@ -107,7 +107,7 @@ public class OrderController : BaseController
     [HttpPost("Add")]
     public async Task<ActionResult<OutputOrder>> Add(InputCreateProductOrder input)
     {
-        var add = await _orderService.Add(input);
+        var add = await _orderService.CreateProductOrder(input);
         if (!add.Success)
         {
             return BadRequest(add.Message);

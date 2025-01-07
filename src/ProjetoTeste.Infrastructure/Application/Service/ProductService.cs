@@ -17,31 +17,31 @@ public class ProductService : IProductService
         _brandRepository = brandRepository;
     }
 
-    public async Task<Response<Product>> ValidationId(long id)
+    public async Task<BaseResponse<Product>> ValidationId(long id)
     {
         var productExist = await _productRepository.Get(id);
         if (productExist is null)
         {
-            return new Response<Product>() { Success = false, Message = { " >>> Produto com o Id digitado NÃO encontrado <<<" } };
+            return new BaseResponse<Product>() { Success = false, Message = { " >>> Produto com o Id digitado NÃO encontrado <<<" } };
         }
-        return new Response<Product>() { Success = true, Value = productExist };
+        return new BaseResponse<Product>() { Success = true, Value = productExist };
     }
 
-    public async Task<Response<List<OutputProduct>>> GetAll()
+    public async Task<BaseResponse<List<OutputProduct>>> GetAll()
     {
         var productList = await _productRepository.GetAllAsync();
-        return new Response<List<OutputProduct>> { Success = true, Value = (from i in productList select i.ToOutputProduct()).ToList() };
+        return new BaseResponse<List<OutputProduct>> { Success = true, Value = (from i in productList select i.ToOutputProduct()).ToList() };
     }
 
-    public async Task<Response<OutputProduct>> Get(long id)
+    public async Task<BaseResponse<OutputProduct>> Get(long id)
     {
         var product = await _productRepository.Get(id);
-        return new Response<OutputProduct> { Success = true, Value = product.ToOutputProduct() };
+        return new BaseResponse<OutputProduct> { Success = true, Value = product.ToOutputProduct() };
     }
 
-    public async Task<Response<Product>> ValidationInput(Product input)
+    public async Task<BaseResponse<Product>> ValidationInput(Product input)
     {
-        var response = new Response<Product>();
+        var response = new BaseResponse<Product>();
         if (input is null)
         {
             response.Success = false;
@@ -73,23 +73,23 @@ public class ProductService : IProductService
         {
             return response;
         }
-        return new Response<Product>() { Success = true, Value = input };
+        return new BaseResponse<Product>() { Success = true, Value = input };
     }
 
-    public async Task<Response<OutputProduct>> Create(InputCreateProduct product)
+    public async Task<BaseResponse<OutputProduct>> Create(InputCreateProduct product)
     {
         var productExists = await ValidationInput(product.ToProduct());
         if (!productExists.Success)
         {
-            return new Response<OutputProduct> { Success = false, Message = productExists.Message };
+            return new BaseResponse<OutputProduct> { Success = false, Message = productExists.Message };
         }
         var createProduct = await _productRepository.Create(product.ToProduct());
-        return new Response<OutputProduct> { Success = true, Value = createProduct.ToOutputProduct() };
+        return new BaseResponse<OutputProduct> { Success = true, Value = createProduct.ToOutputProduct() };
     }
 
-    public async Task<Response<bool>> Update(long id, InputUpdateProduct input)
+    public async Task<BaseResponse<bool>> Update(long id, InputUpdateProduct input)
     {
-        var response = new Response<bool>();
+        var response = new BaseResponse<bool>();
         var idExists = await ValidationId(id);
         var product = idExists.Value;
         if (!idExists.Success)
@@ -140,10 +140,10 @@ public class ProductService : IProductService
             return response;
         }
         await _productRepository.Update(update);
-        return new Response<bool> { Success = true, Message = { " >>> Produto Atualizado com SUCESSO <<<" } };
+        return new BaseResponse<bool> { Success = true, Message = { " >>> Produto Atualizado com SUCESSO <<<" } };
     }
 
-    public async Task<Response<bool>> Delete(long id)
+    public async Task<BaseResponse<bool>> Delete(long id)
     {
         var response = await ValidationId(id);
         var product = response.Value;
@@ -153,7 +153,7 @@ public class ProductService : IProductService
             response.Message.Add(" >>> Produto com o Id digitado NÃO encontrado <<<");
         }
         await _productRepository.Delete(id);
-        return new Response<bool> { Success = true, Message = { " >>> Produto deletado com sucesso <<<" } };
+        return new BaseResponse<bool> { Success = true, Message = { " >>> Produto deletado com sucesso <<<" } };
     }
 
 }

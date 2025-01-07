@@ -19,21 +19,21 @@ public class CustomerService : ICustomerService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Response<List<OutputCustomer>>> GetAll()
+    public async Task<BaseResponse<List<OutputCustomer>>> GetAll()
     {
         var clientList = await _customerRepository.GetAllAsync();
-        return new Response<List<OutputCustomer>>() { Success = true, Value = (from i in clientList select i.ToOutputCustomer()).ToList() };
+        return new BaseResponse<List<OutputCustomer>>() { Success = true, Value = (from i in clientList select i.ToOutputCustomer()).ToList() };
     }
 
-    public async Task<Response<OutputCustomer>> Get(long id)
+    public async Task<BaseResponse<OutputCustomer>> Get(long id)
     {
         var customer = await _customerRepository.Get(id);
-        return new Response<OutputCustomer> { Success = true, Value = customer.ToOutputCustomer() };
+        return new BaseResponse<OutputCustomer> { Success = true, Value = customer.ToOutputCustomer() };
     }
 
-    public async Task<Response<OutputCustomer>> Create(InputCreateCustomer customer)
+    public async Task<BaseResponse<OutputCustomer>> Create(InputCreateCustomer customer)
     {
-        var response = new Response<OutputCustomer>();
+        var response = new BaseResponse<OutputCustomer>();
         if (customer is null)
         {
             response.Success = false;
@@ -70,20 +70,20 @@ public class CustomerService : ICustomerService
         }
         var newCustomer = customer.ToCustomer();
         var createCustomer = await _customerRepository.Create(newCustomer);
-        return new Response<OutputCustomer> { Success = true, Value = createCustomer.ToOutputCustomer() };
+        return new BaseResponse<OutputCustomer> { Success = true, Value = createCustomer.ToOutputCustomer() };
     }
 
-    public async Task<Response<bool>> Update(long id, InputUpdateCustomer customer)
+    public async Task<BaseResponse<bool>> Update(long id, InputUpdateCustomer customer)
     {
         var customerExists = await _customerRepository.Get(id);
-        var response = new Response<bool>();
+        var response = new BaseResponse<bool>();
         if (customerExists == null)
         {
-            return new Response<bool>() { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
+            return new BaseResponse<bool>() { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
         }
         if (customer is null)
         {
-            return new Response<bool>() { Success = false, Message = { " >>> Dados Inválidos <<<" } };
+            return new BaseResponse<bool>() { Success = false, Message = { " >>> Dados Inválidos <<<" } };
 
         }
         if (!string.Equals(customer.CPF, customerExists.CPF, StringComparison.OrdinalIgnoreCase))
@@ -129,18 +129,18 @@ public class CustomerService : ICustomerService
         customerExists.CPF = customer.CPF;
         customerExists.Name = customer.Name;
         _customerRepository.Update(customerExists);
-        return new Response<bool> { Success = true, Message = { "Cliente Atualizado com SUCESSO" } };
+        return new BaseResponse<bool> { Success = true, Message = { "Cliente Atualizado com SUCESSO" } };
     }
 
-    public async Task<Response<bool>> Delete(long id)
+    public async Task<BaseResponse<bool>> Delete(long id)
     {
         var customerExists = await _customerRepository.Get(id);
         if (customerExists == null)
         {
-            return new Response<bool>() { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
+            return new BaseResponse<bool>() { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
         }
         await _customerRepository.Delete(id);
-        return new Response<bool>() { Success = true, Message = { " >>> Cliente deletado com SUCESSO <<<" } };
+        return new BaseResponse<bool>() { Success = true, Message = { " >>> Cliente deletado com SUCESSO <<<" } };
     }
 
     public bool CpfValidate(string cpf)

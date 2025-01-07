@@ -1,11 +1,13 @@
-﻿namespace ProjetoTeste.Infrastructure.Interface.Repositories;
+﻿using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 
-public interface IRepository<T> where T : class
+namespace ProjetoTeste.Infrastructure.Interface.Repositories;
+
+public interface IRepository<TEntity> where TEntity : BaseEntity, new()
 {
-    Task<List<T?>> GetAllAsync();
-    List<T?> GetAll();
-    Task<T?> Get(long id);
-    Task<T?> Create(T entity);
-    Task<T?> Update(T entity);
+    Task<List<TEntity?>> GetAllAsync();
+    List<TEntity?> GetAll();
+    Task<TEntity?> Get(long id);
+    Task<TEntity?> Create(TEntity entity);
+    Task<TEntity?> Update(TEntity entity);
     Task<bool> Delete(long id);
 }

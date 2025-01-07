@@ -23,12 +23,10 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 
         builder.Property(c => c.CPF).HasColumnName("cpf")
             .IsRequired()
-            .HasMaxLength(11)
-            .IsFixedLength();
+            .HasMaxLength(11);
 
         builder.Property(c => c.Phone).HasColumnName("telefone")
             .IsRequired()
-            .HasMaxLength(15)
-            .IsFixedLength();
+            .HasMaxLength(15);
     }
 }

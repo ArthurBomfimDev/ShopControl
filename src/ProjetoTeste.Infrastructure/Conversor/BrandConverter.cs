@@ -3,11 +3,10 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Conversor;
 
-public static class ConverterBrand
+public static class BrandConverter
 {
     public static OutputBrand? ToOutputBrand(this Brand brand)
     {
-        if (brand is null) return null;
         return brand == null ? null : new OutputBrand(brand.Id, brand.Name, brand.Code, brand.Description);
     }
 
