@@ -11,7 +11,7 @@ public static class AddControllersAndConfigureJsonOptions
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         });
-        
+
         return services;
     }
 

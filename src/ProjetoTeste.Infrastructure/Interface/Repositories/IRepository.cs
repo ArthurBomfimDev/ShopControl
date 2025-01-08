@@ -6,9 +6,8 @@ public interface IRepository<TEntity> where TEntity : BaseEntity, new()
 {
     Task<List<TEntity?>> GetAllAsync();
     List<TEntity?> GetAll();
-    Task<TEntity?> Get(long id);
-    Task<TEntity?> Create(List<TEntity> entity);
-    Task<TEntity?> Update(List<TEntity> entity);
-    Task<bool> Delete(long id);
-    List<TEntity>? Update(List<TEntity>? entity);
+    Task<List<TEntity>> Get(List<long> ids);
+    Task<List<TEntity>?> Create(List<TEntity> entityList);
+    Task<bool> Update(List<TEntity> entityList);
+    Task<bool> Delete(List<TEntity> entityList);
 }

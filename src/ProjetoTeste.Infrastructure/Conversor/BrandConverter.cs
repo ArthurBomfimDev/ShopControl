@@ -1,4 +1,4 @@
-﻿using ProjetoTeste.Arguments.Arguments.Brands;
+﻿using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
@@ -8,7 +8,7 @@ public static class BrandConverter
 {
     public static OutputBrand? ToOutputBrand(this Brand? brand)
     {
-        return brand == null ? null : new OutputBrand(brand.Id, brand.Name, brand.Code, brand.Description, brand.ListProduct.Select(b => new OutputProduct(b.Id,b.Name,b.Code,b.Description,b.Price,b.BrandId,b.Stock)).ToList());
+        return brand == null ? null : new OutputBrand(brand.Id, brand.Name, brand.Code, brand.Description, brand.ListProduct == null ? null : brand.ListProduct.Select(b => new OutputProduct(b.Id, b.Name, b.Code, b.Description, b.Price, b.BrandId, b.Stock)).ToList());
     }
 
     public static Brand? ToBrand(this InputCreateBrand brand)

@@ -37,7 +37,7 @@ public class ProductController : BaseController
     }
 
     [HttpPost]
-    public async Task<ActionResult<OutputProduct>> Create(InputCreateProduct input)
+    public async Task<ActionResult<OutputProduct>> Create(List<InputCreateProduct> input)
     {
         var createProduct = await _productService.Create(input);
         if (createProduct.Success == false)
@@ -48,7 +48,7 @@ public class ProductController : BaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(long id, InputUpdateProduct input)
+    public async Task<ActionResult> Update(long id, List<InputUpdateProduct> input)
     {
         var updateProduct = await _productService.Update(id, input);
         if (!updateProduct.Success)

@@ -10,10 +10,12 @@ namespace ProjetoTeste.Infrastructure.Application;
 public class BrandService : IBrandService
 {
     private readonly IBrandRepository _brandRepository;
+    private readonly BrandValidateService _brandValidadeService;
 
-    public BrandService(IBrandRepository brandRepository)
+    public BrandService(IBrandRepository brandRepository, BrandValidateService brandValidadeService)
     {
         _brandRepository = brandRepository;
+        _brandValidadeService = brandValidadeService;
     }
 
     // Tirar o response
@@ -23,10 +25,11 @@ public class BrandService : IBrandService
         return (from i in brandList select i.ToOutputBrand()).ToList();
     }
 
-    public async Task<OutputBrand> Get(long id)
+    public async Task<List<OutputBrand>> Get(List<long> ids)
     {
-        var brand = await _brandRepository.Get(id);
-        return brand.ToOutputBrand();
+        var brand = await _brandRepository.Get(ids);
+        return (from i in brand
+                select i.ToOutputBrand()).ToList();
     }
 
     public async Task<List<OutputBrand>> GetAllAndProduct()
@@ -41,111 +44,77 @@ public class BrandService : IBrandService
         return (from i in brandListwithProducts select i.ToOutputBrand()).ToList();
     }
 
-    public async Task<BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>> BrandExists(long id)
-    {
-        var brand = await _brandRepository.Get(id);
-        if (brand == null)
-        {
-            return new BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>
-            {
-                Success = false,
-                Message = { " >>> Marca com o Id digitado NÃO encontrada <<<" }
-            };
-        }
-        return new BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>
-        {
-            Content = brand,
-            Success = true,
-        };
-    }
+    //public async Task<BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>> BrandExists(long id)
+    //{
+    //    var brand = await _brandRepository.Get(id);
+    //    if (brand == null)
+    //    {
+    //        return new BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>
+    //        {
+    //            Success = false,
+    //            Message = { " >>> Marca com o Id digitado NÃO encontrada <<<" }
+    //        };
+    //    }
+    //    return new BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>
+    //    {
+    //        Content = brand,
+    //        Success = true,
+    //    };
+    //}
 
-    // Seprar as validações
-    public async Task<BaseResponse<OutputBrand>> Create(List<InputCreateBrand> input)
+    public async Task<BaseResponse<List<OutputBrand>>> Create(List<InputCreateBrand> input)
     {
-        if (input.Count() == 0)
+        var response = await _brandValidadeService.ValidateCreate(input);
+        if (!response.Success)
         {
-            return new BaseResponse<OutputBrand> { Message = { " >>> Dados Inseridos Inválidos <<<" }, Success = false };
+            return new BaseResponse<List<OutputBrand>>() { Success = false, Message = response.Message };
         }
-        var response = new BaseResponse<OutputBrand>();
-        // Trocar para lista de cod
-        var CodeExists = await _brandRepository.Exist(input.);
-        if (CodeExists)
-        {
-            response.Message.Add(" >>> Erro - Codigo de Marca já cadastrado <<<");
-            response.Success = false;
-            return response;
-        }
-        // Trocar para lista (create)
-        var createBrand = await _brandRepository.Create(input.ToBrand());
-        if (createBrand is null)
+
+        var brand = (from i in response.Content
+                     select new Brand(i.Name, i.Code, i.Description, default)).ToList();
+
+        var createBrand = await _brandRepository.Create(brand);
+
+        if (createBrand.Count() == 0)
         {
             response.Message.Add(" >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<");
-            response.Success = false;
+            return new BaseResponse<List<OutputBrand>>() { Success = false, Message = response.Message };
         }
-        if (!response.Success)
+
+        return new BaseResponse<List<OutputBrand>>
         {
-            return response;
-        }
-        return new BaseResponse<OutputBrand>
-        {
-            Content = createBrand.ToOutputBrand(),
+            Content = (from i in createBrand select i.ToOutputBrand()).ToList(),
             Success = true,
+            Message = response.Message
         };
     }
 
-    public async Task<BaseResponse<bool>> Update(long id, InputUpdateBrand brand)
+    public async Task<BaseResponse<bool>> Update(List<long> ids, List<InputUpdateBrand> brand)
     {
-        var response = await BrandExists(id);
-        var brandExists = response.Content;
+        var brandUpdateList = await _brandValidadeService.ValidateUpdate(ids, brand);
+        if (!brandUpdateList.Success)
+        {
+            return new BaseResponse<bool>() { Success = false, Message = brandUpdateList.Message };
+        }
+        var brandUpdate = await _brandRepository.Update(brandUpdateList.Content);
 
-        if (brand is null)
+        if (!brandUpdate)
         {
-            response.Success = false;
-            response.Message.Add(" >>> Dados Inseridos Inválidos <<<");
+            var erro = new BaseResponse<bool>() { Success = false, Message = brandUpdateList.Message };
+            erro.Message.Add(" >>> Não foi possivel atualizar a Marca <<<");
+            return erro;
         }
-        if (brandExists is null)
+
+        foreach (var item in brandUpdateList.Content)
         {
-            return new BaseResponse<bool> { Message = response.Message, Success = false };
+            brandUpdateList.Message.Add($" >>> A Marca: {item.Name} com Id: {item.Id} foi Atualizada com SUCESSO <<<");
         }
-        var codeExists = await _brandRepository.Exist(brand.Code);
-        if (brandExists.Code != brand.Code && codeExists)
-        {
-            response.Message.Add(" >>> Código não pode ser Alterado - Em Uso por outra Marca <<<");
-        }
-        if (!response.Success)
-        {
-            return new BaseResponse<bool>() { Message = response.Message, Success = false };
-        }
-        brandExists.Name = brand.Name;
-        brandExists.Code = brand.Code;
-        brandExists.Description = brand.Description;
-        var brandUpdate = _brandRepository.Update(brandExists);
-        if (brandUpdate is null)
-        {
-            response.Success = false;
-            response.Message.Add(" >>> ERRO - Marca não atualizada - Dados digitados errados ou incompletos <<<");
-        }
-        if (!response.Success)
-        {
-            return new BaseResponse<bool> { Success = false, Message = response.Message };
-        }
-        return new BaseResponse<bool> { Success = true, Message = { " >>> Marca Atualizada com SUCESSO <<<" } };
+        return new BaseResponse<bool> { Success = true, Message = brandUpdateList.Message };
     }
 
-    public async Task<BaseResponse<bool>> Delete(long id)
+    public async Task<BaseResponse<bool>> Delete(List<long> ids)
     {
-        var response = await BrandExists(id);
-        var brandExists = response.Content;
-        if (brandExists is null)
-        {
-            return new BaseResponse<bool> { Success = false, Message = response.Message };
-        }
-        bool brandDelete = await _brandRepository.Delete(id);
-        if (!brandDelete)
-        {
-            response.Success = false;
-            response.Message.Add(" >>> ERRO - Marca não apagada - Dados digitados errados ou incompletos <<<");
-        }
-        return new BaseResponse<bool> { Message = { " >>> Marca DELETADA com SUCESSO <<<" }, Success = true };
+        var response = await _brandValidadeService.ValidadeDelete(ids);
+        return response;
     }
 }

@@ -116,7 +116,7 @@ public class OrderController : BaseController
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(long id)
+    public async Task<ActionResult> Delete(List<long> id)
     {
         var delete = await _orderService.Delete(id);
         if (!delete.Success)

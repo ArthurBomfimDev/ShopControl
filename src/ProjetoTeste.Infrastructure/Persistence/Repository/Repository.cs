@@ -25,30 +25,34 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             return _dbSet.ToList();
         }
 
-        public async Task<TEntity?> Get(long id)
+        public async Task<List<TEntity>> Get(List<long> ids)
         {
-            return await _dbSet.FindAsync(id);
+            var entityList = new List<TEntity>();
+            foreach (var id in ids)
+            {
+                var entity = await _dbSet.FindAsync(id);
+                if (entity != null) entityList.Add(entity);
+            }
+            return entityList;
         }
 
-        public async Task<TEntity?> Create(List<TEntity>? entity)
+        public async Task<List<TEntity>?> Create(List<TEntity>? entityList)
         {
-            await _dbSet.AddAsync(entity);
-            if (entity == null) return entity;
+            await _dbSet.AddRangeAsync(entityList);
             await _context.SaveChangesAsync();
-            return entity;
+            return entityList;
         }
 
-        public async List<TEntity>? Update(List<TEntity>? entity)
+        public async Task<bool> Update(List<TEntity>? entityList)
         {
-            var listUpdate = (from i in entity
-             select _dbSet.Update(i)).ToList();
-            return listUpdate;
+            _dbSet.UpdateRange(entityList);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<bool> Delete(long id)
+        public async Task<bool> Delete(List<TEntity> entityList)
         {
-            var entityRemove = await _dbSet.FindAsync(id);
-            _dbSet.Remove(entityRemove);
+            _dbSet.RemoveRange(entityList);
             return true;
         }
         public async void SaveChances()

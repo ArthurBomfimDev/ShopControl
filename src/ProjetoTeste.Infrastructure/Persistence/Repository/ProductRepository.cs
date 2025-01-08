@@ -20,11 +20,9 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             throw new NotImplementedException();
         }
 
-        public long BrandId(long id)
+        public async Task<List<long>> BrandId(List<long> ids)
         {
-            var product = _dbSet.Find(id);
-            return product.BrandId;
+            return await _context.Product.Where(i => ids.Contains(i.BrandId)).Select(i => i.BrandId).ToListAsync();
         }
-
     }
 }

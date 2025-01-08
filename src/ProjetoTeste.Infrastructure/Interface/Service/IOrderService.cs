@@ -8,7 +8,7 @@ public interface IOrderService
 {
     Task<BaseResponse<List<OutputOrder>>> GetAll();
     Task<BaseResponse<List<OutputOrder>>> Get(long id);
-    Task<BaseResponse<OutputOrder>> Delete(long id);
+    Task<BaseResponse<OutputOrder>> Delete(List<long> ids);
     Task<BaseResponse<OutputOrder>> Create(InputCreateOrder input);
     Task<BaseResponse<OutputProductOrder>> CreateProductOrder(InputCreateProductOrder input);
     Task<BaseResponse<OutputSellProduct>> BestSellerProduct();

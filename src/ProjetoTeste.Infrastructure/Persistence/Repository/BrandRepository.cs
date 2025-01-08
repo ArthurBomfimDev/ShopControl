@@ -10,9 +10,15 @@ public class BrandRepository : Repository<Brand>, IBrandRepository
     public BrandRepository(AppDbContext context) : base(context)
     {
     }
-    public async Task<bool> Exist(string code)
+
+    public bool BrandExists(long id)
     {
-        return await _dbSet.AnyAsync(x => x.Code == code);
+        return _dbSet.Any(x => x.Id == id);
+    }
+
+    public bool CodeExists(string code)
+    {
+        return _dbSet.Any(x => x.Code == code);
     }
 
     public async Task<List<Brand>> GetAllAndProduct()

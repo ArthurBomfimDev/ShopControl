@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProjetoTeste.Arguments.Arguments.Brands;
+using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
@@ -22,9 +23,9 @@ public class BrandController : BaseController
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<OutputBrand?>> Get(int id)
+    public async Task<ActionResult<OutputBrand?>> Get(List<long> ids)
     {
-        var brand = await _brandService.Get(id);
+        var brand = await _brandService.Get(ids);
         return Ok(brand);
     }
 
@@ -43,31 +44,31 @@ public class BrandController : BaseController
     }
 
     [HttpPost]
-    public async Task<ActionResult<OutputBrand>> Create(InputCreateBrand brand)
+    public async Task<ActionResult<BaseResponse<List<OutputBrand>>>> Create(List<InputCreateBrand> brand)
     {
         var createdBrand = await _brandService.Create(brand);
         if (!createdBrand.Success)
         {
             return BadRequest(createdBrand.Message);
         }
-        return Ok(createdBrand.Content);
+        return Ok(createdBrand);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(long id, InputUpdateBrand input)
+    [HttpPut]
+    public async Task<ActionResult> Update([FromQuery] List<long> ids, [FromBody] List<InputUpdateBrand> input)
     {
-        var updateBrand = await _brandService.Update(id, input);
+        var updateBrand = await _brandService.Update(ids, input);
         if (!updateBrand.Success)
         {
             return BadRequest(updateBrand.Message);
         }
-        return Ok(updateBrand.Message);
+        return Ok(updateBrand);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(long id)
+    [HttpDelete]
+    public async Task<ActionResult> Delete(List<long> ids)
     {
-        var deleteBrand = await _brandService.Delete(id);
+        var deleteBrand = await _brandService.Delete(ids);
         if (!deleteBrand.Success)
         {
             return BadRequest(deleteBrand.Message);

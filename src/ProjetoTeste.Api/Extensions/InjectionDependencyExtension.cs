@@ -1,12 +1,9 @@
-﻿using ProjetoTeste.Infrastructure.Interface.Repositories;
+﻿using ProjetoTeste.Infrastructure.Application;
+using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
-using ProjetoTeste.Infrastructure.Persistence.Repository;
 using ProjetoTeste.Infrastructure.Persistence;
-using ProjetoTeste.Infrastructure.Application.Service.Product;
-using ProjetoTeste.Infrastructure.Application.Service.Brand;
-using ProjetoTeste.Infrastructure.Application.Service.Customer;
-using ProjetoTeste.Infrastructure.Application.Service.Order;
+using ProjetoTeste.Infrastructure.Persistence.Repository;
 
 namespace ProjetoTeste.Api.Extensions;
 
@@ -21,6 +18,7 @@ public static class InjectionDependencyExtension
         services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBrandService, BrandService>();
+        services.AddScoped<BrandValidateService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<ICustomerService, CustomerService>();

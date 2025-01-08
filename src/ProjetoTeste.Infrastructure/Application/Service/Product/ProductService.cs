@@ -5,8 +5,7 @@ using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
-namespace ProjetoTeste.Infrastructure.Application.Service;
-namespace ProjetoTeste.Infrastructure.Application.Service.Product;
+namespace ProjetoTeste.Infrastructure.Application;
 
 public class ProductService : IProductService
 {
@@ -19,14 +18,14 @@ public class ProductService : IProductService
         _brandRepository = brandRepository;
     }
 
-    public async Task<BaseResponse<Product>> ValidationId(long id)
+    public async Task<BaseResponse<Product>> ValidationId(List<long> id)
     {
         var productExist = await _productRepository.Get(id);
         if (productExist is null)
         {
             return new BaseResponse<Product>() { Success = false, Message = { " >>> Produto com o Id digitado NÃO encontrado <<<" } };
         }
-        return new BaseResponse<Product>() { Success = true, Content = productExist };
+        return new BaseResponse<Product>() { Success = true/*, Content = productExist */};
     }
 
     public async Task<BaseResponse<List<OutputProduct>>> GetAll()
@@ -35,10 +34,10 @@ public class ProductService : IProductService
         return new BaseResponse<List<OutputProduct>> { Success = true, Content = (from i in productList select i.ToOutputProduct()).ToList() };
     }
 
-    public async Task<BaseResponse<OutputProduct>> Get(long id)
+    public async Task<BaseResponse<OutputProduct>> Get(List<long> id)
     {
         var product = await _productRepository.Get(id);
-        return new BaseResponse<OutputProduct> { Success = true, Content = product.ToOutputProduct() };
+        return new BaseResponse<OutputProduct> { Success = true/*, Content = product.ToOutputProduct()*/ };
     }
 
     public async Task<BaseResponse<Product>> ValidationInput(Product input)
@@ -65,12 +64,12 @@ public class ProductService : IProductService
             response.Success = false;
             response.Message.Add(" >>> Não é possivél criar Produto Com Preço Negativo <<<");
         }
-        var brand = await _brandRepository.Get(input.BrandId);
-        if (brand is null)
-        {
-            response.Success = false;
-            response.Message.Add(" >>> Não é possivél criar Produto sem Marca Existente <<<");
-        }
+        ////var brand = await _brandRepository.Get(input.BrandId);
+        //if (brand is null)
+        //{
+        //    response.Success = false;
+        //    response.Message.Add(" >>> Não é possivél criar Produto sem Marca Existente <<<");
+        //}
         if (!response.Success)
         {
             return response;
@@ -78,84 +77,90 @@ public class ProductService : IProductService
         return new BaseResponse<Product>() { Success = true, Content = input };
     }
 
-    public async Task<BaseResponse<OutputProduct>> Create(InputCreateProduct product)
+    public async Task<BaseResponse<List<OutputProduct>>> Create(List<InputCreateProduct> product)
     {
-        var productExists = await ValidationInput(product.ToProduct());
-        if (!productExists.Success)
-        {
-            return new BaseResponse<OutputProduct> { Success = false, Message = productExists.Message };
-        }
-        var createProduct = await _productRepository.Create(product.ToProduct());
-        return new BaseResponse<OutputProduct> { Success = true, Content = createProduct.ToOutputProduct() };
+        //var productExists = await ValidationInput(product.ToProduct());
+        //if (!productExists.Success)
+        //{
+        //    return new BaseResponse<OutputProduct> { Success = false, Message = productExists.Message };
+        //}
+        var newProduct = (from i in product
+                          select new Product(i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock, default)).ToList();
+        var createProduct = await _productRepository.Create(newProduct);
+        return new BaseResponse<List<OutputProduct>> { Success = true, Content = (from i in createProduct select new OutputProduct(i.Id, i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock)).ToList() };
     }
 
-    public async Task<BaseResponse<bool>> Update(long id, InputUpdateProduct input)
+    public async Task<BaseResponse<bool>> Update(long id, List<InputUpdateProduct> input)
     {
-        var response = new BaseResponse<bool>();
-        var idExists = await ValidationId(id);
-        var product = idExists.Content;
-        if (!idExists.Success)
-        {
-            response.Message.Add(idExists.Message[0]);
-        }
-        if (input is null)
-        {
-            response.Success = false;
-            response.Message.Add(">>> Dados Inseridos Incompletos ou Inexistentes <<<");
-        }
-        bool codeExists = await _productRepository.Exist(input.Code);
-        if (input.Code != product.Code && codeExists)
-        {
-            response.Success = false;
-            response.Message.Add(" >>> Já existe um Produto Cadastrado com esse Código <<<");
-        }
-        if (input.Stock < 0)
-        {
-            response.Success = false;
-            response.Message.Add(" >>> Não é possivél criar Produto Com Stock Negativo <<<");
-        }
-        if (input.Price < 0)
-        {
-            response.Success = false;
-            response.Message.Add(" >>> Não é possivél criar Produto Com Preço Negativo <<<");
-        }
-        var brand = await _brandRepository.Get(input.BrandId);
-        if (brand is null)
-        {
-            response.Success = false;
-            response.Message.Add(" >>> Não é possivél criar Produto sem Marca Existente <<<");
-        }
-        if (!response.Success)
-        {
-            return response;
-        }
-        var update = product;
-        update.Name = input.Name;
-        update.Code = input.Code;
-        update.Stock = input.Stock;
-        update.Price = input.Price;
-        update.Description = input.Description;
-        update.BrandId = input.BrandId;
-        if (update is null)
-        {
-            response.Message.Add(" >>> Dados Inseridos Incompletos ou Inexistentes <<<");
-            return response;
-        }
-        await _productRepository.Update(update);
+        //var response = new BaseResponse<bool>();
+        //var idExists = await ValidationId(id);
+        //var product = idExists.Content;
+        //if (!idExists.Success)
+        //{
+        //    response.Message.Add(idExists.Message[0]);
+        //}
+        //if (input is null)
+        //{
+        //    response.Success = false;
+        //    response.Message.Add(">>> Dados Inseridos Incompletos ou Inexistentes <<<");
+        //}
+        //bool codeExists = await _productRepository.Exist(input.Code);
+        //if (input.Code != product.Code && codeExists)
+        //{
+        //    response.Success = false;
+        //    response.Message.Add(" >>> Já existe um Produto Cadastrado com esse Código <<<");
+        //}
+        //if (input.Stock < 0)
+        //{
+        //    response.Success = false;
+        //    response.Message.Add(" >>> Não é possivél criar Produto Com Stock Negativo <<<");
+        //}
+        //if (input.Price < 0)
+        //{
+        //    response.Success = false;
+        //    response.Message.Add(" >>> Não é possivél criar Produto Com Preço Negativo <<<");
+        //}
+        //var brand = await _brandRepository.Get(input.BrandId);
+        //if (brand is null)
+        //{
+        //    response.Success = false;
+        //    response.Message.Add(" >>> Não é possivél criar Produto sem Marca Existente <<<");
+        //}
+        //if (!response.Success)
+        //{
+        //    return response;
+        //}
+        //var update = product;
+        //update.Name = input.Name;
+        //update.Code = input.Code;
+        //update.Stock = input.Stock;
+        //update.Price = input.Price;
+        //update.Description = input.Description;
+        //update.BrandId = input.BrandId;
+        //if (update is null)
+        //{
+        //    response.Message.Add(" >>> Dados Inseridos Incompletos ou Inexistentes <<<");
+        //    return response;
+        //}
+        //await _productRepository.Update(update);
         return new BaseResponse<bool> { Success = true, Message = { " >>> Produto Atualizado com SUCESSO <<<" } };
     }
 
     public async Task<BaseResponse<bool>> Delete(long id)
     {
-        var response = await ValidationId(id);
-        var product = response.Content;
-        if (product is null)
-        {
-            response.Success = false;
-            response.Message.Add(" >>> Produto com o Id digitado NÃO encontrado <<<");
-        }
-        await _productRepository.Delete(id);
+        //var response = await ValidationId(id);
+        //var product = response.Content;
+        //if (product is null)
+        //{
+        //    response.Success = false;
+        //    response.Message.Add(" >>> Produto com o Id digitado NÃO encontrado <<<");
+        //}
+        //await _productRepository.Delete(id);
         return new BaseResponse<bool> { Success = true, Message = { " >>> Produto deletado com sucesso <<<" } };
     }
 
+    public Task<BaseResponse<OutputProduct>> Get(long id)
+    {
+        throw new NotImplementedException();
+    }
 }
