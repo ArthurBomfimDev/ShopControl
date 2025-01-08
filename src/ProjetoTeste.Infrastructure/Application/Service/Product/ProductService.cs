@@ -5,7 +5,7 @@ using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
-
+namespace ProjetoTeste.Infrastructure.Application.Service;
 namespace ProjetoTeste.Infrastructure.Application.Service.Product;
 
 public class ProductService : IProductService
