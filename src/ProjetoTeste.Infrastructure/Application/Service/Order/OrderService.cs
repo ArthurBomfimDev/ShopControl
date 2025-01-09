@@ -42,7 +42,7 @@ public class OrderService : IOrderService
     {
         var order = await _orderRepository.GetProductOrders();
         if (order.Count() == 0)
-            return new BaseResponse<decimal> { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+            return new BaseResponse<decimal> { Success = false, Message =  new List<Notification> { new Notification { Message = " >>> Lista De Pedidos Vazia <<<", Type = EnumNotificationType.Error } } };
         var total = (from i in order
                      select i.Total).Sum();
 
@@ -52,7 +52,7 @@ public class OrderService : IOrderService
     public async Task<BaseResponse<List<ProductSell>>> ProductSell()
     {
         var order = await _orderRepository.GetProductOrders();
-        if (order.Count() == 0) return new BaseResponse<List<ProductSell>>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+        if (order.Count() == 0) return new BaseResponse<List<ProductSell>>() { Success = false, Message = new List<Notification> { new Notification { Message = " >>> Lista De Pedidos Vazia <<<", Type = EnumNotificationType.Error } } };
         var totalSeller = (from i in order
                            from j in i.ListProductOrder
                            group j by j.ProductId into g
@@ -268,7 +268,7 @@ public class OrderService : IOrderService
         //    return new BaseResponse<OutputOrder> { Success = false, Message = orderExists.Message };
         //}
         //_orderRepository.Delete(id);
-        return new BaseResponse<OutputOrder> { Success = true, Message = { " >>> Pedido Deletado com Sucesso <<<" } };
+        return new BaseResponse<OutputOrder> { Success = true, Message = new List<Notification> { new Notification { Message = " >>> Pedido Deletado com Sucesso <<<", Type = EnumNotificationType.Success } } };
     }
 
     public Task<BaseResponse<OutputOrder>> Create(InputCreateOrder input)

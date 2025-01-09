@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Arguments.Arguments.Base;
+﻿using Microsoft.CodeAnalysis.Elfie.Extensions;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
@@ -20,26 +21,51 @@ public class BrandValidateService
     {
         if (input.Count() == 0)
         {
-            return new BaseResponse<List<InputCreateBrand>>() { Message = { " >>> Dados Inseridos Inválidos <<<" }, Success = false };
+            return new BaseResponse<List<InputCreateBrand>>()
+            {
+                Message = new List<Notification>
+            { new Notification
+            {
+                Message = " >>> Dados Inseridos Inválidos <<<",
+                Type = EnumNotificationType.Error
+            }},
+                Success = false
+            };
         }
 
         var response = new BaseResponse<List<InputCreateBrand>>();
         // validar tamanhos por exemplo code, nome description...
-        var CodeExists = (from i in input
-                          where _brandRepository.CodeExists(i.Code) == true
-                          select i).ToList();
-        foreach (var item in CodeExists)
+
+        var repeatedCode = (from i in input
+                            where input.Count(j => j.Code == i.Code) > 1
+                            select i).ToList();
+        foreach (var brand in repeatedCode)
         {
-            response.Message.Add($" >>> Erro - A marca de nome: {item.Name} o código: {item.Code} não pode ser cadastrado, por já estar em uso <<<");
+            response.Message.Add(new Notification { Message = $" >>> Erro - A marca de nome: {brand.Name} o código: {brand.Code} não pode ser cadastrado, por ser repetido <<<", Type = EnumNotificationType.Error });
+            input.Remove(brand);
         }
 
-        if (CodeExists.Count == input.Count)
+        if (input.Count == 0)
         {
             response.Success = false;
             return response;
         }
 
-        var validateCreate = (input.Except(CodeExists)).ToList();
+        var codeExists = (from i in input
+                          where _brandRepository.CodeExists(i.Code) == true
+                          select i).ToList();
+        foreach (var item in codeExists)
+        {
+            response.Message.Add(new Notification { Message = $" >>> Erro - A marca de nome: {item.Name} o código: {item.Code} não pode ser cadastrado, por já estar em uso <<<", Type = EnumNotificationType.Error });
+        }
+
+        if (codeExists.Count == input.Count)
+        {
+            response.Success = false;
+            return response;
+        }
+
+        var validateCreate = (input.Except(codeExists)).ToList();
         response.Content = validateCreate;
         return response;
     }
@@ -49,7 +75,7 @@ public class BrandValidateService
         var response = new BaseResponse<List<Brand>>();
         if (ids.Count() != input.Count)
         {
-            return new BaseResponse<List<Brand>>() { Success = false, Message = { " >>> ERRO - A Quantidade de Id's Digitados é Diferente da Quantdade de Marcas <<<" } };
+            return new BaseResponse<List<Brand>>() { Success = false, Message = new List<Notification> { new Notification { Message = " >>> ERRO - A Quantidade de Id's Digitados é Diferente da Quantdade de Marcas <<<", Type = EnumNotificationType.Error } } };
         }
 
         var notIdExist = (from i in ids
@@ -59,7 +85,7 @@ public class BrandValidateService
         {
             for (int i = 0; i < notIdExist.Count; i++)
             {
-                response.Message.Add($" >>> Marca com id: {ids[notIdExist[i]]} não encontrada <<<");
+                response.Message.Add(new Notification { Message = $" >>> Marca com id: {ids[notIdExist[i]]} não encontrada <<<", Type = EnumNotificationType.Error });
                 ids.Remove(ids[notIdExist[i]]);
                 input.Remove(input[notIdExist[i]]);
             }
@@ -68,6 +94,15 @@ public class BrandValidateService
         {
             response.Success = false;
             return response;
+        }
+
+        var repeatedCode = (from i in input
+                            where input.Count(j => j.Code == i.Code) > 1
+                            select i).ToList();
+        foreach (var brand in repeatedCode)
+        {
+            response.Message.Add(new Notification { Message = $" >>> Erro - A marca de nome: {brand.Name} o código: {brand.Code} não pode ser cadastrado, por ser repetido <<<", Type = EnumNotificationType.Error });
+            input.Remove(brand);
         }
 
         var brandList = await _brandRepository.Get(ids);
@@ -81,7 +116,7 @@ public class BrandValidateService
         {
             for (int i = 0; i < codeExists.Count; i++)
             {
-                response.Message.Add($" >>> Marca: {input[codeExists[i]].Name} o código: {input[codeExists[i]].Code} não pode ser alterado - Em uso por outra marca <<<");
+                response.Message.Add(new Notification { Message = $" >>> Marca: {input[codeExists[i]].Name} o código: {input[codeExists[i]].Code} não pode ser alterado - Em uso por outra marca <<<", Type = EnumNotificationType.Error });
                 ids.Remove(ids[codeExists[i]]);
                 input.Remove(input[codeExists[i]]);
                 brandList.Remove(brandList[codeExists[i]]);
@@ -94,7 +129,7 @@ public class BrandValidateService
             return response;
         }
 
-        for (int i = 0; i < brandList.Count() ; i++)
+        for (int i = 0; i < brandList.Count(); i++)
         {
             brandList[i].Name = input[i].Name;
             brandList[i].Code = input[i].Code;
@@ -116,7 +151,7 @@ public class BrandValidateService
         {
             foreach (var id in idExist)
             {
-                response.Message.Add($" >>> Marca com Id: {id} não Existe <<<");
+                response.Message.Add(new Notification { Message = $" >>> Marca com Id: {id} não Existe <<<", Type = EnumNotificationType.Error });
             }
             ids = (ids.Except(idExist)).ToList();
         }
@@ -126,7 +161,7 @@ public class BrandValidateService
         {
             foreach (var id in withProduct)
             {
-                response.Message.Add($" >>> Marca com id: {id} não pode ser deletada - Possui produtos <<<");
+                response.Message.Add(new Notification { Message = $" >>> Marca com id: {id} não pode ser deletada - Possui produtos <<<", Type = EnumNotificationType.Error });
             }
         }
 
@@ -137,7 +172,7 @@ public class BrandValidateService
             await _brandRepository.Delete(brandDelete);
             foreach (var id in withoutProduct)
             {
-                response.Message.Add($" >>> Marca com Id: {id} deletada com sucesso <<<");
+                response.Message.Add(new Notification { Message = $" >>> Marca com Id: {id} deletada com sucesso <<<", Type = EnumNotificationType.Success });
             }
         }
         return response;

@@ -23,7 +23,7 @@ public class ProductService : IProductService
         var productExist = await _productRepository.Get(id);
         if (productExist is null)
         {
-            return new BaseResponse<Product>() { Success = false, Message = { " >>> Produto com o Id digitado NÃO encontrado <<<" } };
+            return new BaseResponse<Product>() { Success = false, Message = new List<Notification> { new Notification { Message = " >>> Produto com o Id digitado NÃO encontrado <<<", Type = EnumNotificationType.Error } } };
         }
         return new BaseResponse<Product>() { Success = true/*, Content = productExist */};
     }
@@ -46,23 +46,23 @@ public class ProductService : IProductService
         if (input is null)
         {
             response.Success = false;
-            response.Message.Add(">>> Dados Inseridos Incompletos ou Inexistentes <<<");
+            response.Message.Add(new Notification { Message = ">>> Dados Inseridos Incompletos ou Inexistentes <<<", Type = EnumNotificationType.Error });
         }
         bool codeExists = await _productRepository.Exist(input.Code);
         if (codeExists)
         {
             response.Success = false;
-            response.Message.Add(" >>> Já existe um Produto Cadastrado com esse Código <<<");
+            response.Message.Add(new Notification { Message = " >>> Já existe um Produto Cadastrado com esse Código <<<", Type = EnumNotificationType.Error });
         }
         if (input.Stock < 0)
         {
             response.Success = false;
-            response.Message.Add(" >>> Não é possivél criar Produto Com Stock Negativo <<<");
+            response.Message.Add(new Notification { Message = " >>> Não é possivél criar Produto Com Stock Negativo <<<", Type = EnumNotificationType.Error });
         }
         if (input.Price < 0)
         {
             response.Success = false;
-            response.Message.Add(" >>> Não é possivél criar Produto Com Preço Negativo <<<");
+            response.Message.Add(new Notification { Message = " >>> Não é possivél criar Produto Com Preço Negativo <<<", Type = EnumNotificationType.Error });
         }
         ////var brand = await _brandRepository.Get(input.BrandId);
         //if (brand is null)
@@ -143,7 +143,7 @@ public class ProductService : IProductService
         //    return response;
         //}
         //await _productRepository.Update(update);
-        return new BaseResponse<bool> { Success = true, Message = { " >>> Produto Atualizado com SUCESSO <<<" } };
+        return new BaseResponse<bool> { Success = true, Message = new List<Notification> { new Notification { Message = " >>> Produto Atualizado com SUCESSO <<<", Type = EnumNotificationType.Success } } };
     }
 
     public async Task<BaseResponse<bool>> Delete(long id)
@@ -156,7 +156,7 @@ public class ProductService : IProductService
         //    response.Message.Add(" >>> Produto com o Id digitado NÃO encontrado <<<");
         //}
         //await _productRepository.Delete(id);
-        return new BaseResponse<bool> { Success = true, Message = { " >>> Produto deletado com sucesso <<<" } };
+        return new BaseResponse<bool> { Success = true, Message = new List<Notification> { new Notification { Message = " >>> Produto deletado com sucesso <<<", Type = EnumNotificationType.Success } } };
     }
 
     public Task<BaseResponse<OutputProduct>> Get(long id)

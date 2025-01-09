@@ -77,7 +77,7 @@ public class BrandService : IBrandService
 
         if (createBrand.Count() == 0)
         {
-            response.Message.Add(" >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<");
+            response.Message.Add( new Notification { Message = " >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<", Type = EnumNotificationType.Error });
             return new BaseResponse<List<OutputBrand>>() { Success = false, Message = response.Message };
         }
 
@@ -101,13 +101,13 @@ public class BrandService : IBrandService
         if (!brandUpdate)
         {
             var erro = new BaseResponse<bool>() { Success = false, Message = brandUpdateList.Message };
-            erro.Message.Add(" >>> Não foi possivel atualizar a Marca <<<");
+            erro.Message.Add(new Notification { Message = " >>> Não foi possivel atualizar a Marca <<<", Type = EnumNotificationType.Error });
             return erro;
         }
 
         foreach (var item in brandUpdateList.Content)
         {
-            brandUpdateList.Message.Add($" >>> A Marca: {item.Name} com Id: {item.Id} foi Atualizada com SUCESSO <<<");
+            brandUpdateList.Message.Add(new Notification { Message = $" >>> A Marca: {item.Name} com Id: {item.Id} foi Atualizada com SUCESSO <<<", Type = EnumNotificationType.Success });
         }
         return new BaseResponse<bool> { Success = true, Message = brandUpdateList.Message };
     }
