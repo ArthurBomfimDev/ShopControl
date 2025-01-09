@@ -4,7 +4,6 @@ using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
-using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application;
 

@@ -12,16 +12,16 @@ public class BrandConfiguration : IEntityTypeConfiguration<Brand>
 
         builder.HasKey(b => b.Id);
 
-        builder.Property(b => b.Name).HasColumnName("nome")
-            .IsRequired()
-            .HasMaxLength(24);
+        builder.Property(b => b.Name).HasColumnName("nome");
+        builder.Property(b => b.Name).IsRequired();
+        builder.Property(b => b.Name).HasMaxLength(24);
 
-        builder.Property(b => b.Code).HasColumnName("codigo")
-            .IsRequired()
-            .HasMaxLength(16);
+        builder.Property(b => b.Code).HasColumnName("codigo");
+        builder.Property(b => b.Code).IsRequired();
+        builder.Property(b => b.Code).HasMaxLength(16);
 
-        builder.Property(b => b.Description).HasColumnName("descricao")
-            .IsRequired()
-            .HasMaxLength(100);
+        builder.Property(b => b.Description).HasColumnName("descricao");
+        builder.Property(b => b.Description).IsRequired();
+        builder.Property(b => b.Description).HasMaxLength(100);
     }
 }

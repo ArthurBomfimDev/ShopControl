@@ -42,7 +42,7 @@ public class OrderService : IOrderService
     {
         var order = await _orderRepository.GetProductOrders();
         if (order.Count() == 0)
-            return new BaseResponse<decimal> { Success = false, Message =  new List<Notification> { new Notification { Message = " >>> Lista De Pedidos Vazia <<<", Type = EnumNotificationType.Error } } };
+            return new BaseResponse<decimal> { Success = false, Message = new List<Notification> { new Notification { Message = " >>> Lista De Pedidos Vazia <<<", Type = EnumNotificationType.Error } } };
         var total = (from i in order
                      select i.Total).Sum();
 

@@ -77,7 +77,7 @@ public class BrandService : IBrandService
 
         if (createBrand.Count() == 0)
         {
-            response.Message.Add( new Notification { Message = " >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<", Type = EnumNotificationType.Error });
+            response.Message.Add(new Notification { Message = " >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<", Type = EnumNotificationType.Error });
             return new BaseResponse<List<OutputBrand>>() { Success = false, Message = response.Message };
         }
 
