@@ -4,167 +4,78 @@ using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
+using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
 public class CustomerService : ICustomerService
 {
     private readonly ICustomerRepository _customerRepository;
+    private readonly CustomerValidateService _customerValidateRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CustomerService(ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
+    public CustomerService(ICustomerRepository customerRepository, IUnitOfWork unitOfWork, CustomerValidateService customerValidateRepository)
     {
         _customerRepository = customerRepository;
         _unitOfWork = unitOfWork;
+        _customerValidateRepository = customerValidateRepository;
     }
 
     public async Task<BaseResponse<List<OutputCustomer>>> GetAll()
     {
-        var clientList = await _customerRepository.GetAllAsync();
-        return new BaseResponse<List<OutputCustomer>>() { Success = true, Content = (from i in clientList select i.ToOutputCustomer()).ToList() };
+        var customerList = await _customerRepository.GetAllAsync();
+        return new BaseResponse<List<OutputCustomer>>() { Success = true, Content = (from i in customerList select i.ToOutputCustomer()).ToList() };
     }
 
-    public async Task<BaseResponse<OutputCustomer>> Get(List<long> ids)
+    public async Task<BaseResponse<List<OutputCustomer>>> Get(List<long> ids)
     {
-        var customer = await _customerRepository.Get(ids);
-        return new BaseResponse<OutputCustomer> { Success = true/*, Content = customer.ToOutputCustomer() */};
+        var customerList = await _customerRepository.Get(ids);
+        return new BaseResponse<List<OutputCustomer>> { Success = true, Content = (from i in customerList select i.ToOutputCustomer()).ToList() };
     }
 
-    //public async Task<BaseResponse<OutputCustomer>> Create(InputCreateCustomer customer)
-    //{
-    //    var response = new BaseResponse<OutputCustomer>();
-    //    if (customer is null)
-    //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> Dados Inseridos Inválidos <<< ");
-    //    }
-    //    if (await _customerRepository.CPFExists(customer.CPF))
-    //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> CPF Já Cadastrado <<< ");
-    //    }
-    //    if (await _customerRepository.EmailExists(customer.Email))
-    //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> Email Já Cadastrado <<< ");
-    //    }
-    //    if (await _customerRepository.PhoneExists(customer.Phone))
-    //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> Número de telefone Já Cadastrado <<< ");
-    //    }
-    //    if (!CpfValidate(customer.CPF))
-    //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> Digite um CPF válido <<< ");
-    //    }
-    //    if (!(customer.Phone.Length == 11))
-    //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> Digite um número de Telefone válido <<< ");
-    //    }
-    //    if (!response.Success)
-    //    {
-    //        return response;
-    //    }
-    //    var newCustomer = customer.ToCustomer();
-    //    var createCustomer = await _customerRepository.Create(newCustomer);
-    //    return new BaseResponse<OutputCustomer> { Success = true, Content = createCustomer.ToOutputCustomer() };
-    //}
-
-    //public async Task<BaseResponse<bool>> Update(long id, InputUpdateCustomer customer)
-    //{
-    //    var customerExists = await _customerRepository.Get(id);
-    //    var response = new BaseResponse<bool>();
-    //    if (customerExists == null)
-    //    {
-    //        return new BaseResponse<bool>() { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
-    //    }
-    //    if (customer is null)
-    //    {
-    //        return new BaseResponse<bool>() { Success = false, Message = { " >>> Dados Inválidos <<<" } };
-
-    //    }
-    //    if (!string.Equals(customer.CPF, customerExists.CPF, StringComparison.OrdinalIgnoreCase))
-    //    {
-    //        if (await _customerRepository.CPFExists(customer.CPF))
-    //        {
-    //            response.Success = false;
-    //            response.Message.Add(" >>> CPF Já Cadastrado <<< ");
-    //        }
-    //    }
-    //    if (!string.Equals(customer.Email, customerExists.Email, StringComparison.OrdinalIgnoreCase))
-    //    {
-    //        if (await _customerRepository.EmailExists(customer.Email))
-    //        {
-    //            response.Success = false;
-    //            response.Message.Add(" >>> Email Já Cadastrado <<< ");
-    //        }
-    //    }
-    //    if (!string.Equals(customer.Phone, customerExists.Phone, StringComparison.OrdinalIgnoreCase))
-    //    {
-    //        if (await _customerRepository.PhoneExists(customer.Phone))
-    //        {
-    //            response.Success = false;
-    //            response.Message.Add(" >>> Número de Telefone Já Cadastrado <<< ");
-    //        }
-    //    }
-    //    if (!CpfValidate(customer.CPF))
-    //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> Digite um CPF válido <<< ");
-    //    }
-    //    if (!(customer.Phone.Length == 11))
-    //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> Digite um número de Telefone válido <<< ");
-    //    }
-    //    if (!response.Success)
-    //    {
-    //        return response;
-    //    }
-    //    customerExists.Email = customer.Email;
-    //    customerExists.Phone = customer.Phone;
-    //    customerExists.CPF = customer.CPF;
-    //    customerExists.Name = customer.Name;
-    //    _customerRepository.Update(customerExists);
-    //    return new BaseResponse<bool> { Success = true, Message = { "Cliente Atualizado com SUCESSO" } };
-    //}
-
-    public async Task<BaseResponse<bool>> Delete(List<long> id)
+    public async Task<BaseResponse<List<OutputCustomer>>> Create(List<InputCreateCustomer> client)
     {
-        var customerExists = await _customerRepository.Get(id);
-        if (customerExists == null)
+        var inputCreateValidate = await _customerValidateRepository.ValidateCreate(client);
+        if (!inputCreateValidate.Success) return new BaseResponse<List<OutputCustomer>>() { Success = false, Message = inputCreateValidate.Message };
+
+        var customerList = (from i in inputCreateValidate.Content
+                           select new Customer(i.Name, i.CPF, i.Email, i.Phone, default)).ToList();
+
+        var createcustomerList = await _customerRepository.Create(customerList);
+
+        return new BaseResponse<List<OutputCustomer>>() { Success = true, Message = inputCreateValidate.Message, Content = (from i in customerList
+                                                                                                              select new OutputCustomer(i.Id,i.Name, i.CPF, i.Email, i.Phone)).ToList()};
+    }
+
+    public async Task<BaseResponse<bool>> Update(List<long> idList, List<InputUpdateCustomer> client)
+    {
+        var validateUpdate = await _customerValidateRepository.ValidateUpdate(idList, client);
+        if (!validateUpdate.Success)
         {
-            return new BaseResponse<bool>() { Success = false, Message = new List<Notification> { new Notification { Message = " >>> Cliente com o Id digitado NÃO encontrado <<<", Type = EnumNotificationType.Error } } };
+            return new BaseResponse<bool>() { Success = false, Message = validateUpdate.Message };
         }
-        var delete = await _customerRepository.Get(id);
-        await _customerRepository.Delete(delete);
-        return new BaseResponse<bool>() { Success = true, Message = new List<Notification> { new Notification { Message = " >>> Cliente deletado com SUCESSO <<<", Type = EnumNotificationType.Success } } };
+
+        var customerUpdateList = await _customerRepository.Update(validateUpdate.Content);
+        
+        foreach(var customer in validateUpdate.Content)
+        {
+            validateUpdate.Message.Add(new Notification { Message = $" >>> Cliente: {customer.Name} com Id: {customer.Id} foi atualizado com SUCESSO <<<", Type = EnumNotificationType.Success });
+        }
+        return new BaseResponse<bool>() { Success = true, Message = validateUpdate.Message };
     }
 
-    Task<BaseResponse<List<OutputCustomer>>> ICustomerService.GetAll()
+    public async Task<BaseResponse<bool>> Delete(List<long> idList)
     {
-        throw new NotImplementedException();
-    }
-
-    Task<BaseResponse<OutputCustomer>> ICustomerService.Get(long id)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<BaseResponse<bool>> ICustomerService.Delete(long id)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<BaseResponse<OutputCustomer>> ICustomerService.Create(InputCreateCustomer client)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<BaseResponse<bool>> ICustomerService.Update(long id, InputUpdateCustomer client)
-    {
-        throw new NotImplementedException();
+        var customerValidate = await _customerValidateRepository.ValidateDelete(idList);
+        if (!customerValidate.Success)
+        {
+            return new BaseResponse<bool>() { Success = false, Message = customerValidate.Message };
+        }
+        await _customerRepository.Delete(customerValidate.Content);
+        foreach( var customer in customerValidate.Content)
+        {
+            customerValidate.Message.Add(new Notification { Message = $" >>> Cliente: {customer.Name} com Id: {customer.Id} foi deletado com SUCESSO <<<", Type = EnumNotificationType.Success });
+        }
+        return new BaseResponse<bool>() { Success = true, Message = customerValidate.Message };
     }
 }

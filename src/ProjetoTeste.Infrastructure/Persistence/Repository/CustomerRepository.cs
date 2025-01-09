@@ -11,20 +11,25 @@ public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
     }
 
-    public async Task<bool> CPFExists(string cpf)
+    public bool CPFExists(string cpf)
     {
-        return await _dbSet.AnyAsync(x => x.CPF == cpf);
+        return _dbSet.Any(x => x.CPF == cpf);
 
     }
 
-    public async Task<bool> EmailExists(string email)
+    public bool EmailExists(string email)
     {
-        return await _dbSet.AnyAsync(x => x.Email == email);
+        return _dbSet.Any(x => x.Email == email);
     }
 
-    public async Task<bool> PhoneExists(string phone)
+    public bool Exists(long id)
     {
-        return await _dbSet.AnyAsync(x => x.Phone == phone);
+        return _dbSet.Any(x => x.Id == id);
+    }
+
+    public bool PhoneExists(string phone)
+    {
+        return _dbSet.Any(x => x.Phone == phone);
     }
 
 }

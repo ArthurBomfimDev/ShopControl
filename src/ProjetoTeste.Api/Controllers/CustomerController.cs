@@ -22,17 +22,17 @@ public class CustomerController : BaseController
         return Ok(get.Content);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult> Get(long id)
+    [HttpGet("Id")]
+    public async Task<ActionResult> Get([FromQuery] List<long> idList)
     {
-        var get = await _customerService.Get(id);
+        var get = await _customerService.Get(idList);
         return Ok(get.Content);
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(InputCreateCustomer input)
+    public async Task<ActionResult<BaseResponse<List<OutputCustomer>>>> Create(List<InputCreateCustomer> input)
     {
-        BaseResponse<OutputCustomer> createClient = await _customerService.Create(input);
+        var createClient = await _customerService.Create(input);
         if (!createClient.Success)
         {
             return BadRequest(createClient.Message);
@@ -40,10 +40,10 @@ public class CustomerController : BaseController
         return Ok(createClient.Content);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(long Id, InputUpdateCustomer input)
+    [HttpPut]
+    public async Task<ActionResult> Update([FromQuery] List<long> idList, [FromBody] List<InputUpdateCustomer> inputList)
     {
-        BaseResponse<bool> update = await _customerService.Update(Id, input);
+        BaseResponse<bool> update = await _customerService.Update(idList, inputList);
         if (!update.Success)
         {
             return BadRequest(update.Message);
@@ -51,10 +51,10 @@ public class CustomerController : BaseController
         return Ok(update.Message);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(long id)
+    [HttpDelete]
+    public async Task<ActionResult> Delete(List<long> idList)
     {
-        BaseResponse<bool> delete = await _customerService.Delete(id);
+        BaseResponse<bool> delete = await _customerService.Delete(idList);
         if (!delete.Success)
         {
             return BadRequest(delete.Message);
