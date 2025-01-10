@@ -30,58 +30,51 @@ public class OrderController : BaseController
     }
 
     [HttpGet("BestSellerProduct")]
-    public async Task<ActionResult<OutputSellProduct>> GetBestSeller()
+    public async Task<ActionResult<OutputMaxSaleValueProduct>> GetBestSeller()
     {
         var order = await _orderService.BestSellerProduct();
-        if (!order.Success) return BadRequest(order.Message);
-        return Ok(order.Content);
+        return Ok(order);
     }
 
     [HttpGet("LesatSoldProduct")]
-    public async Task<ActionResult<OutputSellProduct>> LesatSoldProduct()
+    public async Task<ActionResult<OutputMaxSaleValueProduct>> LesatSoldProduct()
     {
         var order = await _orderService.LeastSoldProduct();
-        if (!order.Success) return BadRequest(order.Message);
-        return Ok(order.Content);
+        return Ok(order);
     }
 
     [HttpGet("BestSellingProducts")]
-    public async Task<ActionResult<OutputSellProduct>> GetBestSellers()
+    public async Task<ActionResult<OutputMaxSaleValueProduct>> GetBestSellers()
     {
         var order = await _orderService.TopSellers();
-        if (!order.Success) return BadRequest(order.Message);
-        return Ok(order.Content);
+        return Ok(order);
     }
 
     [HttpGet("BiggestBuyer/Quantity")]
     public async Task<ActionResult<OutputCustomerOrder>> BiggestBuyer()
     {
         var client = await _orderService.BiggestBuyer();
-        if (!client.Success) return BadRequest(client.Message);
-        return Ok(client.Content);
+        return Ok(client);
     }
 
     [HttpGet("BiggestBuyer/Price")]
     public async Task<ActionResult<OutputCustomerOrder>> BiggestBuyerPrice()
     {
         var client = await _orderService.BiggestBuyerPrice();
-        if (!client.Success) return BadRequest(client.Message);
-        return Ok(client.Content);
+        return Ok(client);
     }
 
     [HttpGet("BrandBestSeller")]
     public async Task<ActionResult<OutputBrandBestSeller>> Brand()
     {
         var brand = await _orderService.BrandBestSeller();
-        if (!brand.Success) return BadRequest(brand.Message);
-        return Ok(brand.Content);
+        return Ok(brand);
     }
     [HttpGet("MostAvarege")]
     public async Task<ActionResult> MostAvarege()
     {
         var avarage = await _orderService.Avarege();
-        if (!avarage.Success) return BadRequest(avarage.Message);
-        var response = "Maior Média de vendas: " + avarage.Content;
+        var response = "Maior Média de vendas: " + avarage;
         return Ok(response);
     }
 
@@ -89,8 +82,7 @@ public class OrderController : BaseController
     public async Task<ActionResult> Total()
     {
         var total = await _orderService.Total();
-        if (!total.Success) return BadRequest(total.Message);
-        return Ok(total.Content);
+        return Ok(total);
     }
 
     [HttpPost]

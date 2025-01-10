@@ -1,6 +1,5 @@
 ﻿using ProjetoTeste.Infrastructure.Application;
 using ProjetoTeste.Infrastructure.Application.Service.Order;
-using ProjetoTeste.Infrastructure.Application.Service.Product;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;

@@ -11,12 +11,12 @@ public interface IOrderService
     Task<BaseResponse<OutputOrder>> Delete(List<long> ids);
     Task<BaseResponse<OutputOrder>> Create(InputCreateOrder input);
     Task<BaseResponse<OutputProductOrder>> CreateProductOrder(InputCreateProductOrder input);
-    Task<BaseResponse<OutputSellProduct>> BestSellerProduct();
-    Task<BaseResponse<OutputSellProduct>> LeastSoldProduct();
-    Task<BaseResponse<List<OutputSellProduct>>> TopSellers();
-    Task<BaseResponse<OutputCustomerOrder>> BiggestBuyer();
-    Task<BaseResponse<OutputCustomerOrder>> BiggestBuyerPrice();
-    Task<BaseResponse<OutputBrandBestSeller>> BrandBestSeller();
-    Task<BaseResponse<decimal>> Avarege();
-    Task<BaseResponse<decimal>> Total();
+    Task<OutputMaxSaleValueProduct> BestSellerProduct();
+    Task<OutputMaxSaleValueProduct> LeastSoldProduct();
+    Task<List<OutputMaxSaleValueProduct>> TopSellers();
+    Task<OutputCustomerOrder> BiggestBuyer();
+    Task<OutputCustomerOrder> BiggestBuyerPrice();
+    Task<OutputBrandBestSeller> BrandBestSeller();
+    Task<decimal> Avarege();
+    Task<decimal> Total();
 }

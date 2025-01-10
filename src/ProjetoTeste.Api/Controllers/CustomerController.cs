@@ -19,14 +19,21 @@ public class CustomerController : BaseController
     public async Task<ActionResult<List<OutputCustomer>>> GetAll()
     {
         var get = await _customerService.GetAll();
-        return Ok(get.Content);
+        return Ok(get);
     }
 
     [HttpGet("Id")]
-    public async Task<ActionResult> Get([FromQuery] List<long> idList)
+    public async Task<ActionResult> Get(long id)
     {
-        var get = await _customerService.Get(idList);
-        return Ok(get.Content);
+        var get = await _customerService.Get(id);
+        return Ok(get);
+    }
+
+    [HttpGet("Id/Multiple")]
+    public async Task<ActionResult> GetListByListId(List<long> idList)
+    {
+        var get = await _customerService.GetListByListId(idList);
+        return Ok(get);
     }
 
     [HttpPost]

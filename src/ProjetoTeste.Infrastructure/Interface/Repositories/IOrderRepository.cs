@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using ProjetoTeste.Arguments.Arguments.Order;
+using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Interface.Repositories
 {
@@ -6,6 +7,7 @@ namespace ProjetoTeste.Infrastructure.Interface.Repositories
     {
         Task<List<Order>> GetProductOrders();
         Task<List<Order>> GetProductOrdersId(long id);
-        Task<List<Order>> GetProductOrdersLINQ();
+        //Task<List<Order>> GetProductOrdersLINQ();
+        Task<List<OutputMaxSaleValueProduct>> GetMostOrderedProduct();
     }
 }

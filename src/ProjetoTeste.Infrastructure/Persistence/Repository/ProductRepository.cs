@@ -12,7 +12,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         }
         public bool CodeExists(string code)
         {
-            return  _dbSet.Any(x => x.Code == code);
+            return _dbSet.Any(x => x.Code == code);
         }
 
         public Task<bool> ExistUpdate(string code, long id)

@@ -65,7 +65,7 @@ public class CustomerValidateService
         {
             foreach (var customer in cpfValidateList)
             {
-                response.Message.Add(new Notification { Message = $" >>> Cliente: {customer.Name} com CPF: {customer.CPF} é inválido <<< ", Type = EnumNotificationType.Error });
+                response.AddErrorMessage($" >>> Cliente: {customer.Name} com CPF: {customer.CPF} é inválido <<< ");
             }
             inputCreateList = (inputCreateList.Except(cpfValidateList).ToList());
         }
@@ -142,7 +142,7 @@ public class CustomerValidateService
         if (idList.Count != inputUpdateList.Count)
         {
             response.Success = false;
-            response.Message.Add(new Notification { Message = " >>> ERRO - A Quantidade de Id's Digitados é Diferente da Quantdade de Marcas <<<", Type = EnumNotificationType.Error });
+            response.AddErrorMessage(" >>> ERRO - A Quantidade de Id's Digitados é Diferente da Quantdade de Marcas <<<");
             return response;
         }
 
@@ -150,30 +150,30 @@ public class CustomerValidateService
                          where _customerRepository.Exists(i) == false
                          select idList.IndexOf(i)).ToList();
 
-        if(notExists.Count > 0)
+        if (notExists.Count > 0)
         {
-            for(int i = 0; i < notExists.Count; i++)
+            for (int i = 0; i < notExists.Count; i++)
             {
-                response.Message.Add(new Notification {  Message = $" >>> O Cliente com id: {inputUpdateList[notExists[i]]} não existe <<<", Type = EnumNotificationType.Error });
+                response.AddErrorMessage($" >>> O Cliente com id: {inputUpdateList[notExists[i]]} não existe <<<");
                 idList.Remove(idList[notExists[i]]);
                 inputUpdateList.Remove(inputUpdateList[notExists[i]]);
             }
         }
 
-        if(inputUpdateList.Count == 0)
+        if (inputUpdateList.Count == 0)
         {
             response.Success = false;
             return response;
         }
 
         var cpfExists = (from i in inputUpdateList
-                        where CpfValidate(i.CPF) == false
-                        select i).ToList();
-        if(cpfExists.Count > 0)
+                         where CpfValidate(i.CPF) == false
+                         select i).ToList();
+        if (cpfExists.Count > 0)
         {
             foreach (var customer in cpfExists)
             {
-                response.Message.Add(new Notification { Message = $" >>> Cliente: {customer.Name} com CPF: {customer.CPF} é inválido <<< ", Type = EnumNotificationType.Error });
+                response.AddErrorMessage($" >>> Cliente: {customer.Name} com CPF: {customer.CPF} é inválido <<< ");
                 var index = cpfExists.IndexOf(customer);
                 idList.RemoveAt(index);
             }
@@ -182,9 +182,9 @@ public class CustomerValidateService
 
         if (inputUpdateList.Count == 0) { response.Success = false; return response; }
 
-        var existingCustomer = await _customerRepository.Get(idList);
+        var existingCustomer = await _customerRepository.GetListByListId(idList);
 
-        for(int i = 0; i < existingCustomer.Count; i++)
+        for (int i = 0; i < existingCustomer.Count; i++)
         {
             existingCustomer[i].Name = inputUpdateList[i].Name;
             existingCustomer[i].CPF = inputUpdateList[i].CPF;
@@ -200,25 +200,25 @@ public class CustomerValidateService
     {
         var response = new BaseResponse<List<Customer>>();
         var idExists = (from i in idList
-                       where _customerRepository.Exists(i) == false
-                       select i).ToList();
+                        where _customerRepository.Exists(i) == false
+                        select i).ToList();
 
         if (idExists.Count > 0)
         {
             foreach (var id in idExists)
             {
-                response.Message.Add(new Notification { Message = $" >>> O Cliente com Id: {id} não Existe <<<", Type = EnumNotificationType.Error });
+                response.AddErrorMessage($" >>> O Cliente com Id: {id} não Existe <<<");
             }
             idList = idList.Except(idExists).ToList();
         }
 
-        if(idList.Count() == 0)
+        if (idList.Count() == 0)
         {
             response.Success = false;
             return response;
         }
 
-        var customerList = await _customerRepository.Get(idList);
+        var customerList = await _customerRepository.GetListByListId(idList);
         response.Content = customerList;
         return response;
     }

@@ -41,18 +41,23 @@ public class OrderService : IOrderService
     public async Task<BaseResponse<decimal>> Total()
     {
         var order = await _orderRepository.GetProductOrders();
+        var response = new BaseResponse<decimal>();
         if (order.Count() == 0)
-            return new BaseResponse<decimal> { Success = false, Message = new List<Notification> { new Notification { Message = " >>> Lista De Pedidos Vazia <<<", Type = EnumNotificationType.Error } } };
+        {
+            response.Success = false;
+            response.AddErrorMessage(" >>> Lista De Pedidos Vazia <<<");
+        }
+
         var total = (from i in order
                      select i.Total).Sum();
 
-        return new BaseResponse<decimal> { Success = true, Content = total };
+        response.Content = total;
+        return response;
     }
 
     public async Task<BaseResponse<List<ProductSell>>> ProductSell()
     {
         var order = await _orderRepository.GetProductOrders();
-        if (order.Count() == 0) return new BaseResponse<List<ProductSell>>() { Success = false, Message = new List<Notification> { new Notification { Message = " >>> Lista De Pedidos Vazia <<<", Type = EnumNotificationType.Error } } };
         var totalSeller = (from i in order
                            from j in i.ListProductOrder
                            group j by j.ProductId into g
@@ -268,7 +273,8 @@ public class OrderService : IOrderService
         //    return new BaseResponse<OutputOrder> { Success = false, Message = orderExists.Message };
         //}
         //_orderRepository.Delete(id);
-        return new BaseResponse<OutputOrder> { Success = true, Message = new List<Notification> { new Notification { Message = " >>> Pedido Deletado com Sucesso <<<", Type = EnumNotificationType.Success } } };
+        throw new NotImplementedException();
+
     }
 
     public Task<BaseResponse<OutputOrder>> Create(InputCreateOrder input)
@@ -281,19 +287,20 @@ public class OrderService : IOrderService
         throw new NotImplementedException();
     }
 
-    public Task<BaseResponse<OutputSellProduct>> BestSellerProduct()
+    public Task<BaseResponse<OutputMaxSaleValueProduct>> BestSellerProduct()
     {
         throw new NotImplementedException();
     }
 
-    public Task<BaseResponse<OutputSellProduct>> LeastSoldProduct()
+    public Task<BaseResponse<OutputMaxSaleValueProduct>> LeastSoldProduct()
     {
         throw new NotImplementedException();
     }
 
-    public Task<BaseResponse<List<OutputSellProduct>>> TopSellers()
+    public async Task<List<OutputMaxSaleValueProduct>> TopSellers()
     {
-        throw new NotImplementedException();
+        var TopSellers = await _orderRepository.GetMostOrderedProduct();
+        return TopSellers;
     }
 
     public Task<BaseResponse<OutputCustomerOrder>> BiggestBuyer()
@@ -312,6 +319,41 @@ public class OrderService : IOrderService
     }
 
     public Task<BaseResponse<decimal>> Avarege()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<OutputMaxSaleValueProduct> IOrderService.BestSellerProduct()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<OutputMaxSaleValueProduct> IOrderService.LeastSoldProduct()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<OutputCustomerOrder> IOrderService.BiggestBuyer()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<OutputCustomerOrder> IOrderService.BiggestBuyerPrice()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<OutputBrandBestSeller> IOrderService.BrandBestSeller()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<decimal> IOrderService.Avarege()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<decimal> IOrderService.Total()
     {
         throw new NotImplementedException();
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
@@ -18,37 +19,36 @@ public class ProductController : BaseController
     public async Task<ActionResult<List<OutputProduct>>> GetAll()
     {
         var productList = await _productService.GetAll();
-        if (productList.Success == false)
-        {
-            return BadRequest(productList.Message);
-        }
-        return Ok(productList.Content);
+        return Ok(productList);
     }
 
     [HttpGet("Id")]
-    public async Task<ActionResult<OutputProduct>> Get(List<long> idList)
+    public async Task<ActionResult<OutputProduct>> Get(long id)
     {
-        var product = await _productService.Get(idList);
-        if (product.Success == false)
-        {
-            return BadRequest(product.Message);
-        }
-        return Ok(product.Content);
+        var product = await _productService.Get(id);
+        return Ok(product);
+    }
+
+    [HttpGet("Id/Multiple")]
+    public async Task<ActionResult<OutputProduct>> GetListByListId(List<long> idList)
+    {
+        var product = await _productService.GetListByListId(idList);
+        return Ok(product);
     }
 
     [HttpPost]
-    public async Task<ActionResult<OutputProduct>> Create(List<InputCreateProduct> input)
+    public async Task<ActionResult<BaseResponse<List<OutputProduct>>>> Create(List<InputCreateProduct> input)
     {
         var createProduct = await _productService.Create(input);
         if (createProduct.Success == false)
         {
-            return BadRequest(createProduct.Message);
+            return BadRequest(createProduct);
         }
-        return Ok(createProduct.Content);
+        return Ok(createProduct);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(List<long> idList, List<InputUpdateProduct> input)
+    [HttpPut]
+    public async Task<ActionResult> Update([FromQuery] List<long> idList, [FromBody] List<InputUpdateProduct> input)
     {
         var updateProduct = await _productService.Update(idList, input);
         if (!updateProduct.Success)

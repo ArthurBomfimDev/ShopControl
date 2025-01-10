@@ -22,26 +22,32 @@ public class BrandController : BaseController
         return Ok(brandList);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<OutputBrand?>> Get(List<long> ids)
+    [HttpGet("Id")]
+    public async Task<ActionResult<OutputBrand?>> Get(long id)
     {
-        var brand = await _brandService.Get(ids);
+        var brand = await _brandService.Get(id);
+        return Ok(brand);
+    }
+    [HttpGet("Id/Multiple")]
+    public async Task<ActionResult<OutputBrand?>> GetListByListId(List<long> idList)
+    {
+        var brand = await _brandService.GetListByListId(idList);
         return Ok(brand);
     }
 
-    [HttpGet("Products")]
-    public async Task<ActionResult<List<OutputBrand?>>> GetAllAndProducts()
-    {
-        var brandList = await _brandService.GetAllAndProduct();
-        return Ok(brandList);
-    }
+    //[HttpGet("Products")]
+    //public async Task<ActionResult<List<OutputBrand?>>> GetAllAndProducts()
+    //{
+    //    var brandList = await _brandService.GetAllAndProduct();
+    //    return Ok(brandList);
+    //}
 
-    [HttpGet("Products{id}")]
-    public async Task<ActionResult<List<OutputBrand?>>> GetAndProducts(long id)
-    {
-        var brandList = await _brandService.GetAndProduct(id);
-        return Ok(brandList);
-    }
+    //[HttpGet("Products{id}")]
+    //public async Task<ActionResult<List<OutputBrand?>>> GetAndProducts(long id)
+    //{
+    //    var brandList = await _brandService.GetAndProduct(id);
+    //    return Ok(brandList);
+    //}
 
     [HttpPost]
     public async Task<ActionResult<BaseResponse<List<OutputBrand>>>> Create(List<InputCreateBrand> brand)

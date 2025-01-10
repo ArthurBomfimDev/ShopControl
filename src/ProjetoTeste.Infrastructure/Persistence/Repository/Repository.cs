@@ -15,25 +15,19 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             _context = context;
             _dbSet = context.Set<TEntity?>();
         }
-        public async Task<List<TEntity?>> GetAllAsync()
+        public async Task<List<TEntity?>> GetAll()
         {
             return await _dbSet.ToListAsync();
         }
 
-        public List<TEntity?> GetAll()
+        public async Task<List<TEntity>> GetListByListId(List<long> ids)
         {
-            return _dbSet.ToList();
+            return await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
         }
 
-        public async Task<List<TEntity>> Get(List<long> ids)
+        public async Task<TEntity?> Get(long id)
         {
-            var entityList = new List<TEntity>();
-            foreach (var id in ids)
-            {
-                var entity = await _dbSet.FindAsync(id);
-                if (entity != null) entityList.Add(entity);
-            }
-            return entityList;
+            return await _dbSet.FindAsync(id);
         }
 
         public async Task<List<TEntity>?> Create(List<TEntity>? entityList)
@@ -53,11 +47,8 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         public async Task<bool> Delete(List<TEntity> entityList)
         {
             _dbSet.RemoveRange(entityList);
-            return true;
-        }
-        public async void SaveChances()
-        {
             await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

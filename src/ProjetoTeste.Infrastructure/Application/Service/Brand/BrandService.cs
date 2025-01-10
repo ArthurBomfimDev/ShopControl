@@ -18,103 +18,109 @@ public class BrandService : IBrandService
         _brandValidadeService = brandValidadeService;
     }
 
-    // Tirar o response
+    // Tirar o validateCreate
     public async Task<List<OutputBrand>> GetAll()
     {
-        var brandList = await _brandRepository.GetAllAsync();
+        var brandList = await _brandRepository.GetAll();
         return (from i in brandList select i.ToOutputBrand()).ToList();
     }
 
-    public async Task<List<OutputBrand>> Get(List<long> ids)
+    public async Task<OutputBrand> Get(long id)
     {
-        var brand = await _brandRepository.Get(ids);
+        var brand = await _brandRepository.Get(id);
+        return brand.ToOutputBrand();
+    }
+
+    public async Task<List<OutputBrand>> GetListByListId(List<long> ids)
+    {
+        var brand = await _brandRepository.GetListByListId(ids);
         return (from i in brand
                 select i.ToOutputBrand()).ToList();
     }
 
-    public async Task<List<OutputBrand>> GetAllAndProduct()
-    {
-        var brandListwithProducts = await _brandRepository.GetAllAndProduct();
-        return (from i in brandListwithProducts select i.ToOutputBrand()).ToList();
-    }
-
-    public async Task<List<OutputBrand>> GetAndProduct(long id)
-    {
-        var brandListwithProducts = await _brandRepository.GetAndProduct(id);
-        return (from i in brandListwithProducts select i.ToOutputBrand()).ToList();
-    }
-
-    //public async Task<BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>> BrandExists(long id)
+    // colocar no product
+    //public async Task<List<OutputBrand>> GetAllAndProduct()
     //{
-    //    var brand = await _brandRepository.Get(id);
-    //    if (brand == null)
-    //    {
-    //        return new BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>
-    //        {
-    //            Success = false,
-    //            Message = { " >>> Marca com o Id digitado NÃO encontrada <<<" }
-    //        };
-    //    }
-    //    return new BaseResponse<ProjetoTeste.Infrastructure.Persistence.Entity.Brand>
-    //    {
-    //        Content = brand,
-    //        Success = true,
-    //    };
+    //    var brandListwithProducts = await _brandRepository.GetAllAndProduct();
+    //    return (from i in brandListwithProducts select i.ToOutputBrand()).ToList();
+    //}
+
+    //public async Task<List<OutputBrand>> GetAndProduct(long id)
+    //{
+    //    var brandListwithProducts = await _brandRepository.GetAndProduct(id);
+    //    return (from i in brandListwithProducts select i.ToOutputBrand()).ToList();
     //}
 
     public async Task<BaseResponse<List<OutputBrand>>> Create(List<InputCreateBrand> input)
     {
-        var response = await _brandValidadeService.ValidateCreate(input);
-        if (!response.Success)
+        var validateCreate = await _brandValidadeService.ValidateCreate(input);
+        var response = new BaseResponse<List<OutputBrand>>() { Message = validateCreate.Message };
+        if (!validateCreate.Success)
         {
-            return new BaseResponse<List<OutputBrand>>() { Success = false, Message = response.Message };
+            response.Success = false;
+            return response;
         }
 
-        var brand = (from i in response.Content
+        var brand = (from i in validateCreate.Content
                      select new Brand(i.Name, i.Code, i.Description, default)).ToList();
 
         var createBrand = await _brandRepository.Create(brand);
 
         if (createBrand.Count() == 0)
         {
-            response.Message.Add(new Notification { Message = " >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<", Type = EnumNotificationType.Error });
-            return new BaseResponse<List<OutputBrand>>() { Success = false, Message = response.Message };
+            response.AddSuccessMessage(" >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<");
+            return response;
         }
 
-        return new BaseResponse<List<OutputBrand>>
-        {
-            Content = (from i in createBrand select i.ToOutputBrand()).ToList(),
-            Success = true,
-            Message = response.Message
-        };
+        response.Content = (from i in createBrand select i.ToOutputBrand()).ToList();
+        return response;
     }
 
     public async Task<BaseResponse<bool>> Update(List<long> ids, List<InputUpdateBrand> brand)
     {
-        var brandUpdateList = await _brandValidadeService.ValidateUpdate(ids, brand);
-        if (!brandUpdateList.Success)
+        var validateUpdate = await _brandValidadeService.ValidateUpdate(ids, brand);
+        var response = new BaseResponse<bool>() { Message = validateUpdate.Message };
+
+        if (!validateUpdate.Success)
         {
-            return new BaseResponse<bool>() { Success = false, Message = brandUpdateList.Message };
+            response.Success = false;
+            return response;
         }
-        var brandUpdate = await _brandRepository.Update(brandUpdateList.Content);
+        var brandUpdate = await _brandRepository.Update(validateUpdate.Content);
 
         if (!brandUpdate)
         {
-            var erro = new BaseResponse<bool>() { Success = false, Message = brandUpdateList.Message };
-            erro.Message.Add(new Notification { Message = " >>> Não foi possivel atualizar a Marca <<<", Type = EnumNotificationType.Error });
-            return erro;
+            response.Success = false;
+            response.AddErrorMessage(" >>> Não foi possivel atualizar a Marca <<<");
+            return response;
         }
 
-        foreach (var item in brandUpdateList.Content)
+        foreach (var item in validateUpdate.Content)
         {
-            brandUpdateList.Message.Add(new Notification { Message = $" >>> A Marca: {item.Name} com Id: {item.Id} foi Atualizada com SUCESSO <<<", Type = EnumNotificationType.Success });
+            response.AddSuccessMessage($" >>> A Marca: {item.Name} com Id: {item.Id} foi Atualizada com SUCESSO <<<");
         }
-        return new BaseResponse<bool> { Success = true, Message = brandUpdateList.Message };
+        return response;
     }
 
     public async Task<BaseResponse<bool>> Delete(List<long> ids)
     {
-        var response = await _brandValidadeService.ValidadeDelete(ids);
+        var validateCreate = await _brandValidadeService.ValidadeDelete(ids);
+        var response = new BaseResponse<bool>() { Message = validateCreate.Message };
+
+        if (!validateCreate.Success)
+        {
+            response.Success = false;
+            return response;
+        }
+
+        var brandDelete = await _brandRepository.GetListByListId(validateCreate.Content);
+        await _brandRepository.Delete(brandDelete);
+
+        foreach (var id in validateCreate.Content)
+        {
+            response.AddSuccessMessage($" >>> Marca com Id: {id} deletada com sucesso <<<");
+        }
         return response;
     }
+
 }
