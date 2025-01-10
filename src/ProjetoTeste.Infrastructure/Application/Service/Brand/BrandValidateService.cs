@@ -18,7 +18,7 @@ public class BrandValidateService
 
     public async Task<BaseResponse<List<InputCreateBrand>>> ValidateCreate(List<InputCreateBrand> input)
     {
-        if (input.Count() == 0)
+        if (!input.Any())
         {
             return new BaseResponse<List<InputCreateBrand>>()
             {
@@ -44,7 +44,7 @@ public class BrandValidateService
             input.Remove(brand);
         }
 
-        if (input.Count == 0)
+        if (!input.Any())
         {
             response.Success = false;
             return response;
@@ -80,7 +80,7 @@ public class BrandValidateService
         var notIdExist = (from i in ids
                           where _brandRepository.BrandExists(i) == false
                           select ids.IndexOf(i)).ToList();
-        if (notIdExist.Count > 0)
+        if (notIdExist.Any())
         {
             for (int i = 0; i < notIdExist.Count; i++)
             {
@@ -111,7 +111,7 @@ public class BrandValidateService
                           where _brandRepository.CodeExists(i.Code) == true && i.Code != brandList[index].Code
                           select input.IndexOf(i)).ToList();
 
-        if (codeExists.Count > 0)
+        if (codeExists.Any())
         {
             for (int i = 0; i < codeExists.Count; i++)
             {
@@ -146,7 +146,7 @@ public class BrandValidateService
                        where _brandRepository.BrandExists(i) == false
                        select i).ToList();
 
-        if (idExist.Count > 0)
+        if (idExist.Any())
         {
             foreach (var id in idExist)
             {
@@ -156,7 +156,7 @@ public class BrandValidateService
         }
 
         var withProduct = await _productRepository.BrandId(ids);
-        if (withProduct.Count() > 0)
+        if (withProduct.Any())
         {
             foreach (var id in withProduct)
             {
@@ -165,7 +165,7 @@ public class BrandValidateService
         }
 
         List<long> withoutProduct = (ids.Except(withProduct)).ToList();
-        if (withoutProduct.Count() > 0)
+        if (withoutProduct.Any())
         {
             var brandDelete = await _brandRepository.Get(withoutProduct);
             await _brandRepository.Delete(brandDelete);

@@ -25,10 +25,10 @@ public class ProductController : BaseController
         return Ok(productList.Content);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<OutputProduct>> Get(long id)
+    [HttpGet("Id")]
+    public async Task<ActionResult<OutputProduct>> Get(List<long> idList)
     {
-        var product = await _productService.Get(id);
+        var product = await _productService.Get(idList);
         if (product.Success == false)
         {
             return BadRequest(product.Message);
@@ -48,9 +48,9 @@ public class ProductController : BaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(long id, List<InputUpdateProduct> input)
+    public async Task<ActionResult> Update(List<long> idList, List<InputUpdateProduct> input)
     {
-        var updateProduct = await _productService.Update(id, input);
+        var updateProduct = await _productService.Update(idList, input);
         if (!updateProduct.Success)
         {
             return BadRequest(updateProduct.Message);
@@ -58,10 +58,10 @@ public class ProductController : BaseController
         return Ok(updateProduct.Message);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(long id)
+    [HttpDelete]
+    public async Task<ActionResult> Delete([FromQuery] List<long> idList)
     {
-        var deletePrdocut = await _productService.Delete(id);
+        var deletePrdocut = await _productService.Delete(idList);
         if (!deletePrdocut.Success)
         {
             return BadRequest(deletePrdocut.Message);

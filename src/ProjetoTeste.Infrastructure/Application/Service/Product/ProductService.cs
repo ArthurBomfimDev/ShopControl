@@ -1,5 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Product;
+using ProjetoTeste.Infrastructure.Application.Service.Product;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
@@ -11,11 +12,13 @@ public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
     private readonly IBrandRepository _brandRepository;
+    private readonly ProductValidateService _productValidateService;
 
-    public ProductService(IProductRepository productRepository, IBrandRepository brandRepository)
+    public ProductService(IProductRepository productRepository, IBrandRepository brandRepository, ProductValidateService productValidateService)
     {
         _productRepository = productRepository;
         _brandRepository = brandRepository;
+        _productValidateService = productValidateService;
     }
 
     public async Task<BaseResponse<Product>> ValidationId(List<long> id)
@@ -31,66 +34,45 @@ public class ProductService : IProductService
     public async Task<BaseResponse<List<OutputProduct>>> GetAll()
     {
         var productList = await _productRepository.GetAllAsync();
-        return new BaseResponse<List<OutputProduct>> { Success = true, Content = (from i in productList select i.ToOutputProduct()).ToList() };
+        return new BaseResponse<List<OutputProduct>>
+        {
+            Success = true,
+            Content = (from i in productList
+                       select i.ToOutputProduct()).ToList()
+        };
     }
 
-    public async Task<BaseResponse<OutputProduct>> Get(List<long> id)
+    public async Task<BaseResponse<List<OutputProduct>>> Get(List<long> idList)
     {
-        var product = await _productRepository.Get(id);
-        return new BaseResponse<OutputProduct> { Success = true/*, Content = product.ToOutputProduct()*/ };
-    }
-
-    public async Task<BaseResponse<Product>> ValidationInput(Product input)
-    {
-        var response = new BaseResponse<Product>();
-        if (input is null)
+        var product = await _productRepository.Get(idList);
+        return new BaseResponse<List<OutputProduct>>
         {
-            response.Success = false;
-            response.Message.Add(new Notification { Message = ">>> Dados Inseridos Incompletos ou Inexistentes <<<", Type = EnumNotificationType.Error });
-        }
-        bool codeExists = await _productRepository.Exist(input.Code);
-        if (codeExists)
-        {
-            response.Success = false;
-            response.Message.Add(new Notification { Message = " >>> Já existe um Produto Cadastrado com esse Código <<<", Type = EnumNotificationType.Error });
-        }
-        if (input.Stock < 0)
-        {
-            response.Success = false;
-            response.Message.Add(new Notification { Message = " >>> Não é possivél criar Produto Com Stock Negativo <<<", Type = EnumNotificationType.Error });
-        }
-        if (input.Price < 0)
-        {
-            response.Success = false;
-            response.Message.Add(new Notification { Message = " >>> Não é possivél criar Produto Com Preço Negativo <<<", Type = EnumNotificationType.Error });
-        }
-        ////var brand = await _brandRepository.Get(input.BrandId);
-        //if (brand is null)
-        //{
-        //    response.Success = false;
-        //    response.Message.Add(" >>> Não é possivél criar Produto sem Marca Existente <<<");
-        //}
-        if (!response.Success)
-        {
-            return response;
-        }
-        return new BaseResponse<Product>() { Success = true, Content = input };
+            Success = true,
+            Content = (from i in product
+                       select i.ToOutputProduct()).ToList()
+        };
     }
 
     public async Task<BaseResponse<List<OutputProduct>>> Create(List<InputCreateProduct> product)
     {
-        //var productExists = await ValidationInput(product.ToProduct());
-        //if (!productExists.Success)
-        //{
-        //    return new BaseResponse<OutputProduct> { Success = false, Message = productExists.Message };
-        //}
-        var newProduct = (from i in product
+        var productValidate = await _productValidateService.ValidateCreate(product);
+        var response = new BaseResponse<List<OutputProduct>>();
+        if (!productValidate.Success)
+        {
+            response.Message = productValidate.Message;
+            response.Success = false;
+            return response;
+        }
+
+        var newProduct = (from i in productValidate.Content
                           select new Product(i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock, default)).ToList();
         var createProduct = await _productRepository.Create(newProduct);
-        return new BaseResponse<List<OutputProduct>> { Success = true, Content = (from i in createProduct select new OutputProduct(i.Id, i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock)).ToList() };
+        response.Message = productValidate.Message;
+        response.Content = (from i in createProduct select new OutputProduct(i.Id, i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock)).ToList();
+        return response;
     }
 
-    public async Task<BaseResponse<bool>> Update(long id, List<InputUpdateProduct> input)
+    public async Task<BaseResponse<bool>> Update(List<long> idList, List<InputUpdateProduct> input)
     {
         //var response = new BaseResponse<bool>();
         //var idExists = await ValidationId(id);
@@ -146,21 +128,23 @@ public class ProductService : IProductService
         return new BaseResponse<bool> { Success = true, Message = new List<Notification> { new Notification { Message = " >>> Produto Atualizado com SUCESSO <<<", Type = EnumNotificationType.Success } } };
     }
 
-    public async Task<BaseResponse<bool>> Delete(long id)
+    public async Task<BaseResponse<bool>> Delete(List<long> idList)
     {
-        //var response = await ValidationId(id);
-        //var product = response.Content;
-        //if (product is null)
-        //{
-        //    response.Success = false;
-        //    response.Message.Add(" >>> Produto com o Id digitado NÃO encontrado <<<");
-        //}
-        //await _productRepository.Delete(id);
-        return new BaseResponse<bool> { Success = true, Message = new List<Notification> { new Notification { Message = " >>> Produto deletado com sucesso <<<", Type = EnumNotificationType.Success } } };
-    }
+        var response = new BaseResponse<bool>();
+        var deleteValidate = await _productValidateService.ValidateDelete(idList);
+        if (!deleteValidate.Success)
+        {
+            response.Success = false;
+            response.Message = deleteValidate.Message;
+            return response;
+        }
 
-    public Task<BaseResponse<OutputProduct>> Get(long id)
-    {
-        throw new NotImplementedException();
+        var productList = await _productRepository.Get(idList);
+        await _productRepository.Delete(productList);
+        foreach (var product in productList)
+        {
+            response.Message.Add(new Notification { Message = $" >>> Produto: {product.Name} com Id: {product.Id} foi deletado com sucesso <<<", Type = EnumNotificationType.Success });
+        }
+        return response;
     }
 }
