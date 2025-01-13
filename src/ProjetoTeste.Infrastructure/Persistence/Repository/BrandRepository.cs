@@ -18,12 +18,12 @@ public class BrandRepository : Repository<Brand>, IBrandRepository
 
     public async Task<List<Brand>> GetListByListICode(List<string> listCode)
     {
-
+        return await _dbSet.Where(i => listCode.Contains(i.Code)).ToListAsync();
     }
 
     public async  Task<Brand> GetByCode(string code)
     {
-        return await _dbSet.First(x => x.Code == code);
+        return await _dbSet.FirstOrDefaultAsync(x => x.Code == code);
     }
 
     public async Task<List<Brand>> GetAllAndProduct()
