@@ -38,230 +38,230 @@ public class OrderService : IOrderService
     }
 
     #region "Relatorio"
-    public async Task<BaseResponse<decimal>> Total()
-    {
-        var order = await _orderRepository.GetProductOrders();
-        var response = new BaseResponse<decimal>();
-        if (order.Count() == 0)
-        {
-            response.Success = false;
-            response.AddErrorMessage(" >>> Lista De Pedidos Vazia <<<");
-        }
-
-        var total = (from i in order
-                     select i.Total).Sum();
-
-        response.Content = total;
-        return response;
-    }
-
-    public async Task<BaseResponse<List<ProductSell>>> ProductSell()
-    {
-        var order = await _orderRepository.GetProductOrders();
-        var totalSeller = (from i in order
-                           from j in i.ListProductOrder
-                           group j by j.ProductId into g
-                           select new
-                           {
-                               productId = g.Key,
-                               totalSeller = g.Sum(p => p.Quantity),
-                               totalPrice = g.Sum(p => p.SubTotal)
-                           }).ToList();
-        return new BaseResponse<List<ProductSell>>() { Success = true, Content = totalSeller.Select(p => new ProductSell(p.productId, p.totalSeller, p.totalPrice)).ToList() };
-    }
-
-    //public async Task<BaseResponse<OutputSellProduct>> BestSellerProduct()
+    //public async task<baseresponse<decimal>> total()
     //{
-    //    var totalSeller = await ProductSell();
-    //    if (!totalSeller.Success)
-    //        return new BaseResponse<OutputSellProduct>() { Success = false, Message = totalSeller.Message };
-    //    var BestSeller = totalSeller.Content.MaxBy(x => x.totalSeller);
-    //    var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
-    //    var output = new BaseResponse<OutputSellProduct> { Success = true, Content = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller) };
+    //    var order = await _orderrepository.getproductorders();
+    //    var response = new baseresponse<decimal>();
+    //    if (order.count() == 0)
+    //    {
+    //        response.success = false;
+    //        response.adderrormessage(" >>> lista de pedidos vazia <<<");
+    //    }
+
+    //    var total = (from i in order
+    //                 select i.total).sum();
+
+    //    response.content = total;
+    //    return response;
+    //}
+
+    //public async task<baseresponse<list<productsell>>> productsell()
+    //{
+    //    var order = await _orderrepository.getproductorders();
+    //    var totalseller = (from i in order
+    //                       from j in i.listproductorder
+    //                       group j by j.productid into g
+    //                       select new
+    //                       {
+    //                           productid = g.key,
+    //                           totalseller = g.sum(p => p.quantity),
+    //                           totalprice = g.sum(p => p.subtotal)
+    //                       }).tolist();
+    //    return new baseresponse<list<productsell>>() { success = true, content = totalseller.select(p => new productsell(p.productid, p.totalseller, p.totalprice)).tolist() };
+    //}
+
+    //public async task<baseresponse<outputsellproduct>> bestsellerproduct()
+    //{
+    //    var totalseller = await productsell();
+    //    if (!totalseller.success)
+    //        return new baseresponse<outputsellproduct>() { success = false, message = totalseller.message };
+    //    var bestseller = totalseller.content.maxby(x => x.totalseller);
+    //    var bestsellerproduct = await _productrepository.get(bestseller.productid);
+    //    var output = new baseresponse<outputsellproduct> { success = true, content = new outputsellproduct(bestsellerproduct.id, bestsellerproduct.name, bestsellerproduct.code, bestsellerproduct.description, bestsellerproduct.price, bestsellerproduct.brandid, bestsellerproduct.stock, bestseller.totalseller) };
     //    return output;
     //}
 
-    //public async Task<BaseResponse<List<OutputSellProduct>>> TopSellers()
+    //public async task<baseresponse<list<outputsellproduct>>> topsellers()
     //{
-    //    var totalSeller = await ProductSell();
-    //    if (!totalSeller.Success)
+    //    var totalseller = await productsell();
+    //    if (!totalseller.success)
     //    {
-    //        return new BaseResponse<List<OutputSellProduct>>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+    //        return new baseresponse<list<outputsellproduct>>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
     //    }
-    //    var top = totalSeller.Content.OrderByDescending(t => t.totalSeller).Take(5);
-    //    var list = new List<OutputSellProduct>();
+    //    var top = totalseller.content.orderbydescending(t => t.totalseller).take(5);
+    //    var list = new list<outputsellproduct>();
     //    foreach (var item in top)
     //    {
-    //        var bestSellerProduct = await _productRepository.Get(item.productId);
-    //        list.Add(new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, item.totalSeller));
+    //        var bestsellerproduct = await _productrepository.get(item.productid);
+    //        list.add(new outputsellproduct(bestsellerproduct.id, bestsellerproduct.name, bestsellerproduct.code, bestsellerproduct.description, bestsellerproduct.price, bestsellerproduct.brandid, bestsellerproduct.stock, item.totalseller));
     //    }
-    //    list.OrderBy(p => p.QuantitySold);
-    //    return new BaseResponse<List<OutputSellProduct>>() { Success = true, Content = list };
+    //    list.orderby(p => p.quantitysold);
+    //    return new baseresponse<list<outputsellproduct>>() { success = true, content = list };
     //}
 
-    //public async Task<BaseResponse<OutputSellProduct>> LeastSoldProduct()
+    //public async task<baseresponse<outputsellproduct>> leastsoldproduct()
     //{
-    //    var totalSeller = await ProductSell();
-    //    if (!totalSeller.Success)
+    //    var totalseller = await productsell();
+    //    if (!totalseller.success)
     //    {
-    //        return new BaseResponse<OutputSellProduct>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+    //        return new baseresponse<outputsellproduct>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
     //    }
-    //    var BestSeller = totalSeller.Content.MinBy(x => x.totalSeller);
-    //    var bestSellerProduct = await _productRepository.Get(BestSeller.productId);
-    //    var output = new OutputSellProduct(bestSellerProduct.Id, bestSellerProduct.Name, bestSellerProduct.Code, bestSellerProduct.Description, bestSellerProduct.Price, bestSellerProduct.BrandId, bestSellerProduct.Stock, BestSeller.totalSeller);
-    //    return new BaseResponse<OutputSellProduct>() { Success = true, Content = output };
+    //    var bestseller = totalseller.content.minby(x => x.totalseller);
+    //    var bestsellerproduct = await _productrepository.get(bestseller.productid);
+    //    var output = new outputsellproduct(bestsellerproduct.id, bestsellerproduct.name, bestsellerproduct.code, bestsellerproduct.description, bestsellerproduct.price, bestsellerproduct.brandid, bestsellerproduct.stock, bestseller.totalseller);
+    //    return new baseresponse<outputsellproduct>() { success = true, content = output };
     //}
 
-    //public async Task<BaseResponse<List<Buy>>> ClientOrder()
+    //public async task<baseresponse<list<buy>>> clientorder()
     //{
-    //    var order = await _orderRepository.GetProductOrdersLINQ();
-    //    if (order.Count() == 0)
-    //        return new BaseResponse<List<Buy>>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+    //    var order = await _orderrepository.getproductorderslinq();
+    //    if (order.count() == 0)
+    //        return new baseresponse<list<buy>>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
     //    var buyer = (from i in order
-    //                 from j in i.ListProductOrder
-    //                 group j by i.CustomerId into g
+    //                 from j in i.listproductorder
+    //                 group j by i.customerid into g
     //                 select new
     //                 {
-    //                     ClientId = g.Key,
-    //                     Orders = g.Select(p => p.OrderId),
-    //                     TotalBuyer = g.Sum(p => p.Quantity),
-    //                     TotalPrice = g.Sum(p => p.SubTotal)
-    //                 }).ToList();
-    //    return new BaseResponse<List<Buy>>() { Success = true, Content = buyer.Select(b => new Buy(b.ClientId, b.Orders, b.TotalBuyer, b.TotalPrice)).ToList() };
+    //                     clientid = g.key,
+    //                     orders = g.select(p => p.orderid),
+    //                     totalbuyer = g.sum(p => p.quantity),
+    //                     totalprice = g.sum(p => p.subtotal)
+    //                 }).tolist();
+    //    return new baseresponse<list<buy>>() { success = true, content = buyer.select(b => new buy(b.clientid, b.orders, b.totalbuyer, b.totalprice)).tolist() };
     //}
 
-    //public async Task<BaseResponse<OutputCustomerOrder>> BiggestBuyer()
+    //public async task<baseresponse<outputcustomerorder>> biggestbuyer()
     //{
-    //    var order = await ClientOrder();
-    //    if (!order.Success)
-    //        return new BaseResponse<OutputCustomerOrder>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
-    //    var buyer = order.Content.MaxBy(b => b.TotalBuyer);
-    //    var client = await _clientRepository.Get(buyer.ClientId);
-    //    return new BaseResponse<OutputCustomerOrder>() { Success = true, Content = new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice) };
+    //    var order = await clientorder();
+    //    if (!order.success)
+    //        return new baseresponse<outputcustomerorder>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
+    //    var buyer = order.content.maxby(b => b.totalbuyer);
+    //    var client = await _clientrepository.get(buyer.clientid);
+    //    return new baseresponse<outputcustomerorder>() { success = true, content = new outputcustomerorder(buyer.clientid, client.name, buyer.orders, buyer.totalbuyer, buyer.totalprice) };
     //}
 
-    //public async Task<BaseResponse<OutputCustomerOrder>> BiggestBuyerPrice()
+    //public async task<baseresponse<outputcustomerorder>> biggestbuyerprice()
     //{
-    //    var order = await ClientOrder();
-    //    if (!order.Success)
-    //        return new BaseResponse<OutputCustomerOrder>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
-    //    var buyer = order.Content.MaxBy(b => b.TotalPrice);
-    //    var client = await _clientRepository.Get(buyer.ClientId);
-    //    return new BaseResponse<OutputCustomerOrder>() { Success = true, Content = new OutputCustomerOrder(buyer.ClientId, client.Name, buyer.Orders, buyer.TotalBuyer, buyer.TotalPrice) };
+    //    var order = await clientorder();
+    //    if (!order.success)
+    //        return new baseresponse<outputcustomerorder>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
+    //    var buyer = order.content.maxby(b => b.totalprice);
+    //    var client = await _clientrepository.get(buyer.clientid);
+    //    return new baseresponse<outputcustomerorder>() { success = true, content = new outputcustomerorder(buyer.clientid, client.name, buyer.orders, buyer.totalbuyer, buyer.totalprice) };
     //}
 
-    //public async Task<BaseResponse<OutputBrandBestSeller>> BrandBestSeller()
+    //public async task<baseresponse<outputbrandbestseller>> brandbestseller()
     //{
-    //    var order = await _orderRepository.GetProductOrdersLINQ();
-    //    if (order.Count() == 0)
-    //        return new BaseResponse<OutputBrandBestSeller>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
-    //    var brandShere = (from i in order
-    //                      from j in i.ListProductOrder
-    //                      group j by j.ProductId into g
+    //    var order = await _orderrepository.getproductorderslinq();
+    //    if (order.count() == 0)
+    //        return new baseresponse<outputbrandbestseller>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
+    //    var brandshere = (from i in order
+    //                      from j in i.listproductorder
+    //                      group j by j.productid into g
     //                      select new
     //                      {
-    //                          productId = g.Key,
-    //                          totalSeller = g.Sum(p => p.Quantity),
-    //                          totalPrice = g.Sum(p => p.SubTotal),
-    //                          brandId = _productRepository.BrandId(g.Key)
-    //                      }).ToList();
-    //    var brandBestSeller = (from i in brandShere
-    //                           group i by i.brandId into g
+    //                          productid = g.key,
+    //                          totalseller = g.sum(p => p.quantity),
+    //                          totalprice = g.sum(p => p.subtotal),
+    //                          brandid = _productrepository.brandid(g.key)
+    //                      }).tolist();
+    //    var brandbestseller = (from i in brandshere
+    //                           group i by i.brandid into g
     //                           select new
     //                           {
-    //                               brandId = g.Key,
-    //                               TotalSell = g.Sum(b => b.totalSeller),
-    //                               TotalPrice = g.Sum(b => b.totalPrice),
-    //                           }).MaxBy(b => b.TotalSell);
-    //    var brand = await _brandRepository.Get(brandBestSeller.brandId);
-    //    return new BaseResponse<OutputBrandBestSeller>() { Success = true, Content = new OutputBrandBestSeller(brand.Id, brand.Name, brand.Code, brand.Description, brandBestSeller.TotalSell, brandBestSeller.TotalPrice) };
+    //                               brandid = g.key,
+    //                               totalsell = g.sum(b => b.totalseller),
+    //                               totalprice = g.sum(b => b.totalprice),
+    //                           }).maxby(b => b.totalsell);
+    //    var brand = await _brandrepository.get(brandbestseller.brandid);
+    //    return new baseresponse<outputbrandbestseller>() { success = true, content = new outputbrandbestseller(brand.id, brand.name, brand.code, brand.description, brandbestseller.totalsell, brandbestseller.totalprice) };
     //}
 
-    //public async Task<BaseResponse<decimal>> Avarege()
+    //public async task<baseresponse<decimal>> avarege()
     //{
-    //    var order = await _orderRepository.GetProductOrders();
-    //    if (order.Count() == 0)
-    //        return new BaseResponse<decimal>() { Success = false, Message = { " >>> Lista De Pedidos Vazia <<<" } };
+    //    var order = await _orderrepository.getproductorders();
+    //    if (order.count() == 0)
+    //        return new baseresponse<decimal>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
     //    var avarage = (from i in order
-    //                   from j in i.ListProductOrder
-    //                   group j by j.OrderId into g
+    //                   from j in i.listproductorder
+    //                   group j by j.orderid into g
     //                   select new
     //                   {
-    //                       OrderId = g.Key,
-    //                       avaragePrice = g.Average(o => o.SubTotal),
-    //                   }).MaxBy(o => o.avaragePrice);
-    //    return new BaseResponse<decimal>() { Success = true, Content = avarage.avaragePrice };
+    //                       orderid = g.key,
+    //                       avarageprice = g.average(o => o.subtotal),
+    //                   }).maxby(o => o.avarageprice);
+    //    return new baseresponse<decimal>() { success = true, content = avarage.avarageprice };
     //}
-    #endregion 
+    //#endregion
 
-    //// Seperar em validate para update, create e delete
-    //public async Task<BaseResponse<bool>> ValidateId(long id)
+    //seperar em validate para update, create e delete
+    //public async task<baseresponse<bool>> validateid(long id)
     //{
-    //    var orderExists = await Get(id);
-    //    if (orderExists is null)
+    //    var orderexists = await get(id);
+    //    if (orderexists is null)
     //    {
-    //        return new BaseResponse<bool> { Success = false, Message = { " >>> Pedido com o Id digitado NÃO encontrado <<<" } };
+    //        return new baseresponse<bool> { success = false, message = { " >>> pedido com o id digitado não encontrado <<<" } };
     //    }
-    //    return new BaseResponse<bool> { Success = true };
+    //    return new baseresponse<bool> { success = true };
     //}
 
-    //public async Task<BaseResponse<OutputOrder>> Create(InputCreateOrder input)
+    //public async task<baseresponse<outputorder>> create(inputcreateorder input)
     //{
-    //    var clientExists = await _clientRepository.Get(input.CustomerId);
-    //    if (clientExists is null)
+    //    var clientexists = await _clientrepository.get(input.customerid);
+    //    if (clientexists is null)
     //    {
-    //        return new BaseResponse<OutputOrder> { Success = false, Message = { " >>> Cliente com o Id digitado NÃO encontrado <<<" } };
+    //        return new baseresponse<outputorder> { success = false, message = { " >>> cliente com o id digitado não encontrado <<<" } };
     //    }
-    //    var createOrder = await _orderRepository.Create(input.ToOrder());
-    //    return new BaseResponse<OutputOrder> { Success = true, Content = createOrder.ToOutputOrder() };
+    //    var createorder = await _orderrepository.create(input.toorder());
+    //    return new baseresponse<outputorder> { success = true, content = createorder.tooutputorder() };
     //}
 
-    //public async Task<BaseResponse<OutputProductOrder>> CreateProductOrder(InputCreateProductOrder input)
+    //public async task<baseresponse<outputproductorder>> createproductorder(inputcreateproductorder input)
     //{
-    //    var response = new BaseResponse<OutputProductOrder>();
+    //    var response = new baseresponse<outputproductorder>();
     //    if (input is null)
     //    {
-    //        return new BaseResponse<OutputProductOrder>() { Success = false, Message = { " >>> Dados Inseridos são Inválidos <<<" } };
+    //        return new baseresponse<outputproductorder>() { success = false, message = { " >>> dados inseridos são inválidos <<<" } };
     //    }
-    //    var order = await _orderRepository.Get(input.OrderId);
+    //    var order = await _orderrepository.get(input.orderid);
     //    if (order is null)
     //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> Id do Pedido Inválido <<<");
+    //        response.success = false;
+    //        response.message.add(" >>> id do pedido inválido <<<");
     //    }
-    //    if (input.Quantity < 1)
+    //    if (input.quantity < 1)
     //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> A Quantidade Minima do Pedido deve ser maior ou igual a UM <<<");
+    //        response.success = false;
+    //        response.message.add(" >>> a quantidade minima do pedido deve ser maior ou igual a um <<<");
     //    }
-    //    var product = await _productRepository.Get(input.ProductId);
+    //    var product = await _productrepository.get(input.productid);
     //    if (product is null)
     //    {
-    //        response.Success = false;
-    //        response.Message.Add(" >>> O Id do produto é Inválido <<<");
+    //        response.success = false;
+    //        response.message.add(" >>> o id do produto é inválido <<<");
     //        return response;
     //    }
-    //    if (product.Stock < input.Quantity)
+    //    if (product.stock < input.quantity)
     //    {
-    //        response.Success = false;
-    //        response.Message.Add($" >>> Não há quantidade suficiente no estoque - Disponivel: {product.Stock} <<<");
+    //        response.success = false;
+    //        response.message.add($" >>> não há quantidade suficiente no estoque - disponivel: {product.stock} <<<");
     //    }
-    //    if (!response.Success)
+    //    if (!response.success)
     //    {
     //        return response;
     //    }
-    //    product.Stock = product.Stock - input.Quantity;
-    //    await _productRepository.Update(product);
+    //    product.stock = product.stock - input.quantity;
+    //    await _productrepository.update(product);
 
-    //    var subTotal = product.Price * input.Quantity;
-    //    var productOrder = new ProductOrder(input.OrderId, input.ProductId, input.Quantity, product.Price, subTotal);
+    //    var subtotal = product.price * input.quantity;
+    //    var productorder = new productorder(input.orderid, input.productid, input.quantity, product.price, subtotal);
 
-    //    order.Total += productOrder.SubTotal;
+    //    order.total += productorder.subtotal;
 
-    //    await _productOrderRepository.Update(productOrder);
-    //    await _orderRepository.Update(order);
+    //    await _productorderrepository.update(productorder);
+    //    await _orderrepository.update(order);
 
-    //    return new BaseResponse<OutputProductOrder> { Success = true, Content = productOrder.ToOuputProductOrder() };
+    //    return new baseresponse<outputproductorder> { success = true, content = productorder.toouputproductorder() };
     //}
 
     // Alterar valor total e estoque

@@ -42,19 +42,19 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         //                       let totalSaleValue = g.Sum(i => i.SubTotal)
         //                       select new OutputMaxSaleValueProduct(g.Key.Id, g.Key.Name, g.Key.Code, g.Key.Description, totalSaleValue, g.Key.BrandId, totalSaleQuantity)).OrderByDescending(i => i.TotalValue).ToList();
 
-        //    var totalSeller2 = (from i in _dbSet
-        //                        from j in i.ListProductOrder
-        //                        join product in _context.Product on j.ProductId equals product.Id
-        //                        join brand in _context.Brand on product.BrandId equals brand.Id
-        //                        group j by brand into g
-        //                        let totalSaleQuantity = g.Sum(i => i.Quantity)
-        //                        let totalSaleValue = g.Sum(i => i.SubTotal)
-        //                        select new
-        //                        {
-        //                            BrandCode = g.Key.Code,
-        //                            BrandDescription = g.Key.Description,
-        //                            TotalValue = totalSaleValue
-        //                        }).OrderByDescending(i => i.TotalValue).FirstOrDefault();
+        //var totalSeller2 = (from i in _dbSet
+        //                    from j in i.ListProductOrder
+        //                    join product in _context.Product on j.ProductId equals product.Id
+        //                    join brand in _context.Brand on product.BrandId equals brand.Id
+        //                    group j by brand into g
+        //                    let totalSaleQuantity = g.Sum(i => i.Quantity)
+        //                    let totalSaleValue = g.Sum(i => i.SubTotal)
+        //                    select new
+        //                    {
+        //                        BrandCode = g.Key.Code,
+        //                        BrandDescription = g.Key.Description,
+        //                        TotalValue = totalSaleValue
+        //                    }).OrderByDescending(i => i.TotalValue).FirstOrDefault();
         //}
 
 
