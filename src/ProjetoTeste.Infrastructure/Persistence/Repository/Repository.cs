@@ -20,15 +20,22 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<List<TEntity>> GetListByListId(List<long> ids)
+        public async Task<List<TEntity>> GetListByListId(List<long> listId)
         {
-            return await _dbSet.Where(i => ids.Contains(i.Id)).ToListAsync();
+            return await _dbSet.Where(i => listId.Contains(i.Id)).ToListAsync();
         }
 
         public async Task<TEntity?> Get(long id)
         {
             return await _dbSet.FindAsync(id);
         }
+
+        //public async Task<TEntity>? Create(TEntity entity)
+        //{
+        //    await _dbSet.AddAsync(entity);
+        //    await _context.SaveChangesAsync();
+        //    return entity;
+        //}
 
         public async Task<List<TEntity>?> Create(List<TEntity>? entityList)
         {
@@ -37,6 +44,13 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             return entityList;
         }
 
+        //public async Task<bool> Update(TEntity entity)
+        //{
+        //    _dbSet.Update(entity);
+        //    await _context.SaveChangesAsync();
+        //    return true;
+        //}
+
         public async Task<bool> Update(List<TEntity>? entityList)
         {
             _dbSet.UpdateRange(entityList);
@@ -44,6 +58,12 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             return true;
         }
 
+        //public async Task<bool> Delete(TEntity entity)
+        //{
+        //     _dbSet.Remove(entity);
+        //    await _context.SaveChangesAsync();
+        //    return true;
+        //}
         public async Task<bool> Delete(List<TEntity> entityList)
         {
             _dbSet.RemoveRange(entityList);

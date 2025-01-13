@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Interface.Service;
@@ -29,27 +30,24 @@ public class BrandController : BaseController
         return Ok(brand);
     }
     [HttpGet("Id/Multiple")]
-    public async Task<ActionResult<OutputBrand?>> GetListByListId(List<long> idList)
+    public async Task<ActionResult<OutputBrand?>> GetListByListId(List<long> listId)
     {
-        var brand = await _brandService.GetListByListId(idList);
+        var brand = await _brandService.Get(listId);
         return Ok(brand);
     }
 
-    //[HttpGet("Products")]
-    //public async Task<ActionResult<List<OutputBrand?>>> GetAllAndProducts()
-    //{
-    //    var brandList = await _brandService.GetAllAndProduct();
-    //    return Ok(brandList);
-    //}
-
-    //[HttpGet("Products{id}")]
-    //public async Task<ActionResult<List<OutputBrand?>>> GetAndProducts(long id)
-    //{
-    //    var brandList = await _brandService.GetAndProduct(id);
-    //    return Ok(brandList);
-    //}
-
     [HttpPost]
+    public async Task<ActionResult<BaseResponse<List<OutputBrand>>>> Create(InputCreateBrand brand)
+    {
+        var createdBrand = await _brandService.Create(brand);
+        if (!createdBrand.Success)
+        {
+            return BadRequest(createdBrand.Message);
+        }
+        return Ok(createdBrand);
+    }
+
+    [HttpPost("Multiple")]
     public async Task<ActionResult<BaseResponse<List<OutputBrand>>>> Create(List<InputCreateBrand> brand)
     {
         var createdBrand = await _brandService.Create(brand);
@@ -61,9 +59,20 @@ public class BrandController : BaseController
     }
 
     [HttpPut]
-    public async Task<ActionResult> Update([FromQuery] List<long> ids, [FromBody] List<InputUpdateBrand> input)
+    public async Task<ActionResult<BaseResponse<bool>>> Update(InputIdentityUpdateBrand input)
     {
-        var updateBrand = await _brandService.Update(ids, input);
+        var updateBrand = await _brandService.Update(input);
+        if (!updateBrand.Success)
+        {
+            return BadRequest(updateBrand.Message);
+        }
+        return Ok(updateBrand);
+    }
+
+    [HttpPut("Multiple")]
+    public async Task<ActionResult<BaseResponse<bool>>> Update(List<InputIdentityUpdateBrand> input)
+    {
+        var updateBrand = await _brandService.Update(input);
         if (!updateBrand.Success)
         {
             return BadRequest(updateBrand.Message);
@@ -72,6 +81,17 @@ public class BrandController : BaseController
     }
 
     [HttpDelete]
+    public async Task<ActionResult> Delete(long ids)
+    {
+        var deleteBrand = await _brandService.Delete(ids);
+        if (!deleteBrand.Success)
+        {
+            return BadRequest(deleteBrand.Message);
+        }
+        return Ok(deleteBrand.Message);
+    }
+
+    [HttpDelete("Multiple")]
     public async Task<ActionResult> Delete(List<long> ids)
     {
         var deleteBrand = await _brandService.Delete(ids);

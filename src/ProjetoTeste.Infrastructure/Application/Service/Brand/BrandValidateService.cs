@@ -16,10 +16,10 @@ public class BrandValidateService
         _productRepository = productRepository;
     }
 
-    public async Task<BaseResponse<List<InputCreateBrand>>> ValidateCreate(List<InputCreateBrand> input)
+    public async Task<BaseResponse<List<InputCreateBrand>>> ValidateCreate(List<InputCreateBrand> listInputCreateBrand)
     {
         var response = new BaseResponse<List<InputCreateBrand>>();
-        if (!input.Any())
+        if (!listInputCreateBrand.Any())
         {
             response.Success = false;
             response.AddErrorMessage(" >>> Dados Inseridos Inválidos <<<");
@@ -28,22 +28,30 @@ public class BrandValidateService
 
         // validar tamanhos por exemplo code, nome description...
 
-        var repeatedCode = (from i in input
-                            where input.Count(j => j.Code == i.Code) > 1
-                            select i).ToList();
+        //var repeatedCode = (from i in input
+        //                    where input.Count(j => j.Code == i.Code) > 1
+        //                    select i).ToList();
+
+        var repeatedCode = (from i in (from j in listInputCreateBrand
+                                       group j by j.Code into g
+                                       where g.Count() > 1
+                                       select g).ToList()
+                            from k in i
+                            select k).ToList();
+
         foreach (var brand in repeatedCode)
         {
             response.AddErrorMessage($" >>> Erro - A marca de nome: {brand.Name} o código: {brand.Code} não pode ser cadastrado, por ser repetido <<<");
-            input.Remove(brand);
+            listInputCreateBrand.Remove(brand);
         }
 
-        if (!input.Any())
+        if (!listInputCreateBrand.Any())
         {
             response.Success = false;
             return response;
         }
 
-        var codeExists = (from i in input
+        var codeExists = (from i in listInputCreateBrand
                           where _brandRepository.CodeExists(i.Code) == true
                           select i).ToList();
         foreach (var item in codeExists)
@@ -51,13 +59,13 @@ public class BrandValidateService
             response.AddErrorMessage($" >>> Erro - A marca de nome: {item.Name} o código: {item.Code} não pode ser cadastrado, por já estar em uso <<<");
         }
 
-        if (codeExists.Count == input.Count)
+        if (codeExists.Count == listInputCreateBrand.Count)
         {
             response.Success = false;
             return response;
         }
 
-        var validateCreate = (input.Except(codeExists)).ToList();
+        var validateCreate = (listInputCreateBrand.Except(codeExists)).ToList();
         response.Content = validateCreate;
         return response;
     }

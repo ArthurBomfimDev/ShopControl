@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Arguments.Arguments.Base;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
@@ -40,7 +41,18 @@ public class ProductService : IProductService
                 select i.ToOutputProduct()).ToList();
     }
 
-    public async Task<BaseResponse<List<OutputProduct>>> Create(List<InputCreateProduct> product)
+    async Task<List<OutputProduct>> GetListByBrandId(long id)
+    {
+        var listByBrandId = await _productRepository.GetListByBrandId(id);
+        return (from i in listByBrandId select i.ToOutputProduct()).ToList();
+    }
+
+    Task<BaseResponse<List<OutputProduct>>> Create(InputCreateProduct inputCreateProduct)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<BaseResponse<List<OutputProduct>>> CreateMultiple(List<InputCreateProduct> product)
     {
         var productValidate = await _productValidateService.ValidateCreate(product);
         var response = new BaseResponse<List<OutputProduct>>() { Message = productValidate.Message };
@@ -58,7 +70,12 @@ public class ProductService : IProductService
         return response;
     }
 
-    public async Task<BaseResponse<bool>> Update(List<long> idList, List<InputUpdateProduct> inputUpdateList)
+    Task<BaseResponse<bool>> Update(InputIdentityUpdateProduct inputIdentityUpdateProduct)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<BaseResponse<bool>> UpdateMultiple(List<long> idList, List<InputUpdateProduct> inputUpdateList)
     {
         var validateUpdate = await _productValidateService.ValidateUpdate(idList, inputUpdateList);
         var response = new BaseResponse<bool>() { Message = validateUpdate.Message, Success = validateUpdate.Success };
@@ -77,7 +94,12 @@ public class ProductService : IProductService
         return response;
     }
 
-    public async Task<BaseResponse<bool>> Delete(List<long> idList)
+    Task<BaseResponse<bool>> Delete(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<BaseResponse<bool>> DeleteMultiple(List<long> idList)
     {
         var deleteValidate = await _productValidateService.ValidateDelete(idList);
         var response = new BaseResponse<bool>() { Message = deleteValidate.Message };
@@ -95,4 +117,6 @@ public class ProductService : IProductService
         }
         return response;
     }
+
+
 }

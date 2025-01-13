@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Arguments.Arguments.Base;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service
@@ -7,11 +8,12 @@ namespace ProjetoTeste.Infrastructure.Interface.Service
     {
         Task<List<OutputBrand>> GetAll();
         Task<OutputBrand> Get(long id);
-        Task<List<OutputBrand>> GetListByListId(List<long> ids);
-        //Task<List<OutputBrand>> GetAllAndProduct();
-        //Task<List<OutputBrand>> GetAndProduct(long id);
-        Task<BaseResponse<List<OutputBrand>>> Create(List<InputCreateBrand> input);
-        Task<BaseResponse<bool>> Update(List<long> ids, List<InputUpdateBrand> brand);
-        Task<BaseResponse<bool>> Delete(List<long> ids);
+        Task<List<OutputBrand>> GetListByListId(List<long> listId);
+        Task<BaseResponse<List<OutputBrand>>> Create(InputCreateBrand inputCreateBrand);
+        Task<BaseResponse<List<OutputBrand>>> CreateMultiple(List<InputCreateBrand> listInputCreateBrand);
+        Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputIdentityUpdateBrand);
+        Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateBrand);
+        Task<BaseResponse<bool>> Delete(long id);
+        Task<BaseResponse<bool>> DeleteMultiple(List<long> listId);
     }
 }

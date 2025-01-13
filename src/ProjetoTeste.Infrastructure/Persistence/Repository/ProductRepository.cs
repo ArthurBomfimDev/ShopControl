@@ -29,5 +29,10 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         {
             return _dbSet.Any(x => x.Id == id);
         }
+
+        public async Task<List<Product>> GetListByBrandId(long id)
+        {
+            return await _dbSet.Where(i => i.BrandId == id).ToListAsync();
+        }
     }
 }

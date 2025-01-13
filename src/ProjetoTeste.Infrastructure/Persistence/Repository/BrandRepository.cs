@@ -16,9 +16,14 @@ public class BrandRepository : Repository<Brand>, IBrandRepository
         return _dbSet.Any(x => x.Id == id);
     }
 
-    public bool CodeExists(string code)
+    public async Task<List<Brand>> GetListByListICode(List<string> listCode)
     {
-        return _dbSet.Any(x => x.Code == code);
+
+    }
+
+    public async  Task<Brand> GetByCode(string code)
+    {
+        return await _dbSet.First(x => x.Code == code);
     }
 
     public async Task<List<Brand>> GetAllAndProduct()
