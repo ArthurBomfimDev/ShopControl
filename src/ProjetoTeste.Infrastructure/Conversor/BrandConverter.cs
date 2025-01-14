@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Arguments.Arguments.Brand;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
@@ -14,5 +15,10 @@ public static class BrandConverter
     public static Brand? ToBrand(this InputCreateBrand brand)
     {
         return brand == null ? null : new Brand(brand.Name, brand.Code, brand.Description, default);
+    }
+
+    public static BrandDTO? ToBrandDTO(this Brand brand)
+    {
+        return brand == null ? null : new BrandDTO(brand.Id, brand.Name, brand.Code, brand.Description, default);
     }
 }

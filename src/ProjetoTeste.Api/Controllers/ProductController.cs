@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Interface.Service;
@@ -30,16 +31,27 @@ public class ProductController : BaseController
     }
 
     [HttpGet("Id/Multiple")]
-    public async Task<ActionResult<OutputProduct>> GetListByListId(List<long> idList)
+    public async Task<ActionResult<OutputProduct>> GetListByListId(List<long> listId)
     {
-        var product = await _productService.GetListByListId(idList);
+        var product = await _productService.GetListByListId(listId);
         return Ok(product);
     }
 
     [HttpPost]
-    public async Task<ActionResult<BaseResponse<List<OutputProduct>>>> Create(List<InputCreateProduct> input)
+    public async Task<ActionResult<BaseResponse<List<OutputProduct>>>> Create(InputCreateProduct inputCreateProduct)
     {
-        var createProduct = await _productService.Create(input);
+        var createProduct = await _productService.Create(inputCreateProduct);
+        if (createProduct.Success == false)
+        {
+            return BadRequest(createProduct);
+        }
+        return Ok(createProduct);
+    }
+
+    [HttpPost("Multiple")]
+    public async Task<ActionResult<BaseResponse<List<OutputProduct>>>> Create(List<InputCreateProduct> listInputCreateProduct)
+    {
+        var createProduct = await _productService.CreateMultiple(listInputCreateProduct);
         if (createProduct.Success == false)
         {
             return BadRequest(createProduct);
@@ -48,20 +60,42 @@ public class ProductController : BaseController
     }
 
     [HttpPut]
-    public async Task<ActionResult> Update([FromQuery] List<long> idList, [FromBody] List<InputUpdateProduct> input)
+    public async Task<ActionResult> Update(InputIdentityUpdateBrand inputIdentityUpdateProduct)
     {
-        var updateProduct = await _productService.Update(idList, input);
+        var updateProduct = await _productService.Update(inputIdentityUpdateProduct);
         if (!updateProduct.Success)
         {
-            return BadRequest(updateProduct.Message);
+            return BadRequest(updateProduct);
         }
-        return Ok(updateProduct.Message);
+        return Ok(updateProduct);
+    }
+
+    [HttpPut("Multiple")]
+    public async Task<ActionResult> Update(List<InputIdentityUpdateBrand> listInputIdentityUpdateProduct)
+    {
+        var updateProduct = await _productService.UpdateMultiple(listInputIdentityUpdateProduct);
+        if (!updateProduct.Success)
+        {
+            return BadRequest(updateProduct);
+        }
+        return Ok(updateProduct);
     }
 
     [HttpDelete]
-    public async Task<ActionResult> Delete([FromQuery] List<long> idList)
+    public async Task<ActionResult> Delete( long id)
     {
-        var deletePrdocut = await _productService.Delete(idList);
+        var deletePrdocut = await _productService.Delete(id);
+        if (!deletePrdocut.Success)
+        {
+            return BadRequest(deletePrdocut.Message);
+        }
+        return Ok(deletePrdocut.Message);
+    }
+
+    [HttpDelete("Multiple")]
+    public async Task<ActionResult> Delete(List<long> listId)
+    {
+        var deletePrdocut = await _productService.DeleteMultiple(listId);
         if (!deletePrdocut.Success)
         {
             return BadRequest(deletePrdocut.Message);

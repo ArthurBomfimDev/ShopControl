@@ -1,12 +1,11 @@
-﻿using ProjetoTeste.Arguments.Arguments;
+﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
-using System.Drawing.Drawing2D;
-using System.Linq;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
@@ -43,16 +42,19 @@ public class BrandService : IBrandService
     #endregion
 
     #region Create
-    async Task<BaseResponse<OutputBrand>> Create(InputCreateBrand inputCreateBrand)
+    public async Task<BaseResponse<OutputBrand>> Create(InputCreateBrand inputCreateBrand)
     {
-        var result = await _brandRepository.CreateMultiple([inputCreateBrand]);
-        return result?.FirtOrDefault;
+        var response = new BaseResponse<OutputBrand>();
+        var result = await CreateMultiple([inputCreateBrand]);
+        response.Message = result.Message;
+        response.Success = result.Success;
+        response.Content = result.Content.FirstOrDefault();
+        return response;
     }
 
     public async Task<BaseResponse<List<OutputBrand>>> CreateMultiple(List<InputCreateBrand> listInputCreateBrand)
     {
         var response = new BaseResponse<List<OutputBrand>>();
-        var listCode = listInputCreateBrand.Select(i => i.Code).ToList();
         var listOriginalBrand = await _brandRepository.GetListByListCode(listInputCreateBrand.Select(i => i.Code).ToList());
         var _listRepeatedInputCreateBrand = (from i in listInputCreateBrand
                                              where listInputCreateBrand.Count(j => j.Code == i.Code) > 1
@@ -62,115 +64,113 @@ public class BrandService : IBrandService
                           {
                               inputCreateBrand = i,
                               RepeatedInputCreateBrand = _listRepeatedInputCreateBrand.FirstOrDefault(j => j.Code == i.Code),
-                              OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Code == i.Code)
+                              OriginalBrand = (listOriginalBrand.FirstOrDefault(j => j.Code == i.Code)).ToBrandDTO()
                           }).ToList();
-
-        var listBrandValidate = await BrandValidate(listCreate);
-
-        foreach (var brand in listCreate)
-        {
-            if(brand.OriginalBrand != null)
-            {
-                response.AddErrorMessage($" O Produto: {brand.inputCreateBrand.Name} com o código: {brand.inputCreateBrand.Code} não pode ser cadastrado por já estar em uso");
-                brand.inputCreateBrand = null;
-            }
-            if (brand.listRepeatedInputCreateBrand)
-            {
-                response.AddErrorMessage($" O Produto: {brand.inputCreateBrand.Name} com o código: {brand.inputCreateBrand.Code} não pode ser cadastrado por ser repetido");
-            }
-            new Brand(brand.inputCreateBrand.Name, brand.inputCreateBrand.Code, brand.inputCreateBrand.Description, default);
-        }
-
-        //var validateCreate = await _brandValidadeService.ValidateCreate(listInputCreateBrand);
-        //var response = new BaseResponse<List<OutputBrand>>() { Message = validateCreate.Message };
-        //if (!validateCreate.Success)
-        //{
-        //    response.Success = false;
-        //    return response;
-        //}
-
-        //var brand = (from i in validateCreate.Content
-        //             select new Brand(i.Name, i.Code, i.Description, default)).ToList();
-
-        //var createBrand = await _brandRepository.Create(brand);
-
-        //if (createBrand.Count() == 0)
-        //{
-        //    response.AddSuccessMessage(" >>> ERRO - Marca não criada - Dados digitados errados ou incompletos <<<");
-        //    return response;
-        //}
-
-        //response.Content = (from i in createBrand select i.ToOutputBrand()).ToList();
-        //return response;
+        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrand, i.OriginalBrand)).ToList();
+        var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
+        await _brandRepository.Create(create.Content);
+        response.Message = create.Message;
+        response.Success = create.Success;
+        response.Content = create.Content.Select(i => i.ToOutputBrand()).ToList();
+        return response;
     }
     #endregion
 
     #region Update
-    Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputIdentityUpdateBrand)
+    public async Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputidentityupdatebrand)
     {
-        var result = await _brandRepository.UpdateMultiple([inputCreateBrand]);
-        return result?.FirtOrDefault
+        var result = await UpdateMultiple([inputidentityupdatebrand]);
+        return result;
     }
 
     public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateBrand)
     {
-        var validateUpdate = await _brandValidadeService.ValidateUpdate(listInputIdentityUpdateBrand);
-        var response = new BaseResponse<bool>() { Message = validateUpdate.Message };
+        var response = new BaseResponse<bool>();
+        List<BrandDTO> listOriginalBrandDTO = (await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList())).Select(i => i.ToBrandDTO()).ToList();
+        List<BrandDTO> listCode = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList())).Select(i => i.ToBrandDTO()).ToList();
+        var _listRepeatedInputUpdateBrand = (from i in listInputIdentityUpdateBrand
+                                             where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
+                                             select i).ToList();
 
-        if (!validateUpdate.Success)
+        var _listRepeatedCode = (from i in listInputIdentityUpdateBrand
+                                             where listInputIdentityUpdateBrand.Count(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code) > 1
+                                             select i).ToList();
+
+        var listUpdate = (from i in listInputIdentityUpdateBrand
+                          select new
+                          {
+                              InputIdentityUpdateBrand = i,
+                              RepeatedInputUpdateBrand = _listRepeatedInputUpdateBrand.FirstOrDefault(j => j.Id == i.Id),
+                              OriginalBrand = listOriginalBrandDTO.FirstOrDefault(j => j.Id == i.Id),
+                              RepeatedCode = _listRepeatedCode.FirstOrDefault(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code),
+                              Code = listCode.FirstOrDefault(j => j.Code == i.InputUpdateBrand.Code && j.Id != i.Id)
+                          }).ToList();
+
+        List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.Code)).ToList();
+
+        var update = await _brandValidadeService.ValidateUpdate(listBrandValidate);
+        response.Message = update.Message;
+        response.Success = update.Success;
+
+        if (!response.Success)
         {
-            response.Success = false;
+            response.Content = false;
             return response;
         }
-        var brandUpdate = await _brandRepository.Update(validateUpdate.Content);
 
-        if (!brandUpdate)
+        var listUpdateBrand = update.Content;
+        var olderBrand = await _brandRepository.GetListByListId(listUpdateBrand.Select(i => i.Id).ToList());
+
+        //Fazer um jeito melhor
+        for(int i = 0;  i < olderBrand.Count; i++)
         {
-            response.Success = false;
-            response.AddErrorMessage(" >>> Não foi possivel atualizar a Marca <<<");
-            return response;
+            olderBrand[i].Name = listUpdateBrand[i].Name;
+            olderBrand[i].Code = listUpdateBrand[i].Code;
+            olderBrand[i].Description = listUpdateBrand[i].Description;
         }
 
-        foreach (var item in validateUpdate.Content)
-        {
-            response.AddSuccessMessage($" >>> A Marca: {item.Name} com Id: {item.Id} foi Atualizada com SUCESSO <<<");
-        }
+        response.Content = await _brandRepository.Update(olderBrand);
+
         return response;
     }
     #endregion
 
     #region Delete
-    Task<BaseResponse<bool>> Delete(long id)
+    public Task<BaseResponse<bool>> Delete(long id)
     {
-        var result = await _brandRepository.DeleteMultiple([inputCreateBrand]);
-        return result?.FirtOrDefault
-        }
+        var vali
+    }
 
-    public async Task<BaseResponse<bool>> DeleteMultiple(List<long> listId)
+    public Task<BaseResponse<bool>> DeleteMultiple(List<long> listId)
     {
-        var validateCreate = await _brandValidadeService.ValidadeDelete(listId);
-        var response = new BaseResponse<bool>() { Message = validateCreate.Message };
+        var validatecreate = await _brandvalidadeservice.validadedelete(listid);
+        var response = new baseresponse<bool>() { message = validatecreate.message };
 
-        if (!validateCreate.Success)
+        if (!validatecreate.success)
         {
-            response.Success = false;
+            response.success = false;
             return response;
         }
 
-        var brandDelete = await _brandRepository.GetListByListId(validateCreate.Content);
-        await _brandRepository.Delete(brandDelete);
+        var branddelete = await _brandrepository.getlistbylistid(validatecreate.content);
+        await _brandrepository.delete(branddelete);
 
-        foreach (var id in validateCreate.Content)
+        foreach (var id in validatecreate.content)
         {
-            response.AddSuccessMessage($" >>> Marca com Id: {id} deletada com sucesso <<<");
+            response.addsuccessmessage($" >>> marca com id: {id} deletada com sucesso <<<");
         }
         return response;
     }
     #endregion
+    
 
-    public static async Task<List<Brand>> GetDuplicates(this List<Brand> listBrand, Brand item)
+    
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<List<Brand>> GetDuplicates(List<Brand> listBrand, Brand item)
     {
         return listBrand.Where(other => !ReferenceEquals(item, other) && other.Code == item.Code).ToList();
     }
-
 }

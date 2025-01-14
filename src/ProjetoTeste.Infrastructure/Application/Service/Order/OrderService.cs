@@ -192,7 +192,7 @@ public class OrderService : IOrderService
     //                   }).maxby(o => o.avarageprice);
     //    return new baseresponse<decimal>() { success = true, content = avarage.avarageprice };
     //}
-    //#endregion
+    #endregion
 
     //seperar em validate para update, create e delete
     //public async task<baseresponse<bool>> validateid(long id)
@@ -342,18 +342,37 @@ public class OrderService : IOrderService
     {
         throw new NotImplementedException();
     }
-
-    Task<OutputBrandBestSeller> IOrderService.BrandBestSeller()
-    {
-        throw new NotImplementedException();
-    }
-
     Task<decimal> IOrderService.Avarege()
     {
         throw new NotImplementedException();
     }
 
     Task<decimal> IOrderService.Total()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<List<OutputOrder>> GetListByListId(List<long> idList)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<BaseResponse<List<OutputOrder>>> IOrderService.Create(InputCreateOrder inputCreateOrder)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<List<OutputOrder>>> CreateMultiple(List<InputCreateOrder> inputCreateOrder)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<List<OutputProductOrder>>> CreateProductOrder(List<InputCreateProductOrder> inputCreateProductOrder)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<OutputMaxSaleValueProduct> OrderBestSeller()
     {
         throw new NotImplementedException();
     }

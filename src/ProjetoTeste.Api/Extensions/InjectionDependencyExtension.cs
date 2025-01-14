@@ -18,11 +18,11 @@ public static class InjectionDependencyExtension
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IBrandService, BrandService>();
         services.AddScoped<BrandValidateService>();
         services.AddScoped<CustomerValidateService>();
         services.AddScoped<ProductValidateService>();
         services.AddScoped<OrderValidateService>();
+        services.AddScoped<IBrandService, BrandService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<ICustomerService, CustomerService>();

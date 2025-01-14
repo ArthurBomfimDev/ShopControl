@@ -70,7 +70,7 @@ public class ProductService : IProductService
         return response;
     }
 
-    Task<BaseResponse<bool>> Update(InputIdentityUpdateProduct inputIdentityUpdateProduct)
+    Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputIdentityUpdateProduct)
     {
         throw new NotImplementedException();
     }
@@ -118,5 +118,28 @@ public class ProductService : IProductService
         return response;
     }
 
+    Task<List<OutputProduct>> IProductService.GetListByBrandId(long id)
+    {
+        throw new NotImplementedException();
+    }
 
+    Task<BaseResponse<List<OutputProduct>>> IProductService.Create(InputCreateProduct inputCreateProduct)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<BaseResponse<bool>> IProductService.Update(InputIdentityUpdateBrand inputIdentityUpdateProduct)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> inputIdentityUpdateProduct)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<BaseResponse<bool>> IProductService.Delete(long id)
+    {
+        throw new NotImplementedException();
+    }
 }

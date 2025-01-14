@@ -9,7 +9,7 @@ namespace ProjetoTeste.Infrastructure.Interface.Service
         Task<List<OutputBrand>> GetAll();
         Task<OutputBrand> Get(long id);
         Task<List<OutputBrand>> GetListByListId(List<long> listId);
-        Task<BaseResponse<List<OutputBrand>>> Create(InputCreateBrand inputCreateBrand);
+        Task<BaseResponse<OutputBrand>> Create(InputCreateBrand inputCreateBrand);
         Task<BaseResponse<List<OutputBrand>>> CreateMultiple(List<InputCreateBrand> listInputCreateBrand);
         Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputIdentityUpdateBrand);
         Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateBrand);

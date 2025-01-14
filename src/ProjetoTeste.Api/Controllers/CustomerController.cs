@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Infrastructure.Interface.Service;
@@ -37,35 +38,68 @@ public class CustomerController : BaseController
     }
 
     [HttpPost]
-    public async Task<ActionResult<BaseResponse<List<OutputCustomer>>>> Create(List<InputCreateCustomer> input)
+    public async Task<ActionResult<BaseResponse<List<OutputCustomer>>>> Create(InputCreateCustomer inputCreateCustomer)
     {
-        var createClient = await _customerService.Create(input);
+        var createClient = await _customerService.Create(inputCreateCustomer);
         if (!createClient.Success)
         {
-            return BadRequest(createClient.Message);
+            return BadRequest(createClient);
         }
-        return Ok(createClient.Content);
+        return Ok(createClient);
+    }
+
+    [HttpPost("Multiple")]
+    public async Task<ActionResult<BaseResponse<List<OutputCustomer>>>> Create(List<InputCreateCustomer> listInputCreateCustomer)
+    {
+        var createClient = await _customerService.CreateMultiple(listInputCreateCustomer);
+        if (!createClient.Success)
+        {
+            return BadRequest(createClient);
+        }
+        return Ok(createClient);
     }
 
     [HttpPut]
-    public async Task<ActionResult> Update([FromQuery] List<long> idList, [FromBody] List<InputUpdateCustomer> inputList)
+    public async Task<ActionResult> Update(InputIdentityUpdateCustomer inputIdentityUpdateCustomer)
     {
-        BaseResponse<bool> update = await _customerService.Update(idList, inputList);
+        BaseResponse<bool> update = await _customerService.Update(inputIdentityUpdateCustomer);
         if (!update.Success)
         {
-            return BadRequest(update.Message);
+            return BadRequest(update);
         }
-        return Ok(update.Message);
+        return Ok(update);
+    }
+
+    [HttpPut("Multiple")]
+    public async Task<ActionResult> Update( List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
+    {
+        BaseResponse<bool> update = await _customerService.UpdateMultiple(listInputIdentityUpdateCustomer);
+        if (!update.Success)
+        {
+            return BadRequest(update);
+        }
+        return Ok(update);
     }
 
     [HttpDelete]
-    public async Task<ActionResult> Delete(List<long> idList)
+    public async Task<ActionResult> Delete(long id)
     {
-        BaseResponse<bool> delete = await _customerService.Delete(idList);
+        BaseResponse<bool> delete = await _customerService.Delete(id);
         if (!delete.Success)
         {
-            return BadRequest(delete.Message);
+            return BadRequest(delete);
         }
-        return Ok(delete.Message);
+        return Ok(delete);
+    }
+
+    [HttpDelete("Multiple")]
+    public async Task<ActionResult> Delete(List<long> listId)
+    {
+        BaseResponse<bool> delete = await _customerService.DeleteMultiple(listId);
+        if (!delete.Success)
+        {
+            return BadRequest(delete);
+        }
+        return Ok(delete);
     }
 }

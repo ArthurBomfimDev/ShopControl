@@ -63,7 +63,7 @@ public class ProductValidateService
         }
 
         var brandExists = (from i in listInputCreateProduct
-                           where _brandRepository.BrandExists(i.BrandId) == false
+                           //where _brandRepository.BrandExists(i.BrandId) == false
                            select i).ToList();
         if (brandExists.Any())
         {
@@ -202,7 +202,7 @@ public class ProductValidateService
         }
 
         var brandExists = (from i in inputUpdateList
-                           where _brandRepository.BrandExists(i.BrandId) == false
+                           //where _brandRepository.BrandExists(i.BrandId) == false
                            select inputUpdateList.IndexOf(i)).ToList();
         if (brandExists.Any())
         {

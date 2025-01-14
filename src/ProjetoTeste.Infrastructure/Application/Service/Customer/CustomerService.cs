@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Arguments.Arguments.Base;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
@@ -93,5 +94,35 @@ public class CustomerService : ICustomerService
             response.AddSuccessMessage($" >>> Cliente: {customer.Name} com Id: {customer.Id} foi deletado com SUCESSO <<<");
         }
         return response;
+    }
+
+    public Task<BaseResponse<List<OutputCustomer>>> Create(InputCreateCustomer inputCreateCustomer)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> inputCreateCustomer)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<bool>> Update(InputIdentityUpdateCustomer inputIdentityUpdateCustomer)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> inputIdentityUpdateCustomer)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<bool>> Delete(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<bool>> DeleteMultiple(List<long> idList)
+    {
+        throw new NotImplementedException();
     }
 }

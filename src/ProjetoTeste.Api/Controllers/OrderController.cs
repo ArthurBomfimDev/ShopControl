@@ -67,7 +67,7 @@ public class OrderController : BaseController
     [HttpGet("BrandBestSeller")]
     public async Task<ActionResult<OutputBrandBestSeller>> Brand()
     {
-        var brand = await _orderService.BrandBestSeller();
+        var brand = await _orderService.OrderBestSeller();
         return Ok(brand);
     }
     [HttpGet("MostAvarege")]
@@ -105,16 +105,5 @@ public class OrderController : BaseController
             return BadRequest(add.Message);
         }
         return Ok(add.Content);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(List<long> id)
-    {
-        var delete = await _orderService.Delete(id);
-        if (!delete.Success)
-        {
-            return BadRequest(delete.Message);
-        }
-        return Ok(delete.Message);
     }
 }
