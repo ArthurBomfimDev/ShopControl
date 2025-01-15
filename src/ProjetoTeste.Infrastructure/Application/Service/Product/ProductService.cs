@@ -87,7 +87,7 @@ public class ProductService : IProductService
         }
 
         var listCreateProduct = (from i in validateCreate.Content
-                                 select i.InputCreateProduct).Select(i => new Product(i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock,default)).ToList();
+                                 select i.InputCreateProduct).Select(i => new Product(i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock, default)).ToList();
         var listCreatedProduct = await _productRepository.Create(listCreateProduct);
         response.Content = listCreatedProduct.Select(i => i.ToOutputProduct()).ToList();
         return response;
@@ -95,7 +95,12 @@ public class ProductService : IProductService
     #endregion
 
     #region Update
-    public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateProduct)
+    public async Task<BaseResponse<bool>> Update(InputIdentityUpdateProduct inputIdentityUpdateProduct)
+    {
+        return await UpdateMultiple([inputIdentityUpdateProduct]);
+    }
+
+    public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateProduct> listInputIdentityUpdateProduct)
     {
         var response = new BaseResponse<bool>();
         var listOriginalIdentity = await _productRepository.GetListByListId(listInputIdentityUpdateProduct.Select(i => i.Id).ToList());
@@ -110,65 +115,68 @@ public class ProductService : IProductService
         var listUpdate = (from i in listInputIdentityUpdateProduct
                           select new
                           {
-                              InputIdentityUpdateBrand = i,
+                              InputIdentityUpdateProduct = i,
                               OriginalIdentity = listOriginalIdentity.FirstOrDefault(j => j.Id == i.Id).ToProductDTO(),
                               RepeteIdentity = listRepeteIdentity.FirstOrDefault(k => k == i.Id),
                               OriginalCode = listOriginalCode.FirstOrDefault(l => l.Code == i.InputUpdateProduct.Code).ToProductDTO(),
                               RepeteCode = listRepeteCode.FirstOrDefault(m => m == i.InputUpdateProduct.Code),
                               BrandExists = listBrand.FirstOrDefault(n => n == i.InputUpdateProduct.BrandId)
                           }).ToList();
-        List<ProductValidate> listProductValidate = listUpdate.Select(i => new ProductValidate().ValidateUpdate(i.InputIdentityUpdateBrand,i.OriginalIdentity,i.OriginalCode, i.RepeteIdentity, i.RepeteCode, i.BrandExists)).ToList();
+        List<ProductValidate> listProductValidate = listUpdate.Select(i => new ProductValidate().ValidateUpdate(i.InputIdentityUpdateProduct, i.OriginalIdentity, i.OriginalCode, i.RepeteIdentity, i.RepeteCode, i.BrandExists)).ToList();
         var validateUpdate = await _productValidateService.ValidateUpdate(listProductValidate);
+
+        response.Success = validateUpdate.Success;
+        response.Message = validateUpdate.Message;
+        if (!response.Success)
+        {
+            response.Content = false;
+            return response;
+        }
+
+        var listOlderProduct = await _productRepository.GetListByListId(validateUpdate.Content.Select(i => i.InputIdentityUpdateProduct.Id).ToList());
+
+        for (var i = 0; i < listOlderProduct.Count; i++)
+        {
+            listOlderProduct[i].Name = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Name;
+            listOlderProduct[i].Code = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Code;
+            listOlderProduct[i].Description = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Name;
+            listOlderProduct[i].BrandId = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.BrandId;
+            listOlderProduct[i].Stock = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Stock;
+            listOlderProduct[i].Price = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Price;
+        }
+
+        response.Content = await _productRepository.Update(listOlderProduct);
+        return response;
     }
-
-    //public async Task<BaseResponse<bool>> UpdateMultiple(List<long> idList, List<InputUpdateProduct> inputUpdateList)
-    //{
-    //    var validateUpdate = await _productValidateService.ValidateUpdate(idList, inputUpdateList);
-    //    var response = new BaseResponse<bool>() { Message = validateUpdate.Message, Success = validateUpdate.Success };
-
-    //    if (!validateUpdate.Success)
-    //    {
-    //        return response;
-    //    }
-
-    //    var updateProduct = await _productRepository.Update(validateUpdate.Content);
-
-    //    foreach (var product in validateUpdate.Content)
-    //    {
-    //        response.AddSuccessMessage($" >>> Produto: {product.Name} com Id: {product.Id} foi atualizado com sucesso <<<");
-    //    }
-    //    return response;
-    //}
     #endregion
 
     #region Delete
-    public Task<BaseResponse<bool>> Delete(long id)
+    public async Task<BaseResponse<bool>> Delete(long id)
     {
-        throw new NotImplementedException();
+        return await DeleteMultiple([id]);
     }
 
     public async Task<BaseResponse<bool>> DeleteMultiple(List<long> idList)
     {
-        var deleteValidate = await _productValidateService.ValidateDelete(idList);
-        var response = new BaseResponse<bool>() { Message = deleteValidate.Message };
-        if (!deleteValidate.Success)
-        {
-            response.Success = false;
+        var response = new BaseResponse<bool>();
+        var listOriginalIdentity = await _productRepository.GetListByListId(idList);
+        var listProductDelete = (from i in idList
+                                 select new
+                                 {
+                                     InputDeleteProduct = i,
+                                     listOriginalIdentity = listOriginalIdentity.FirstOrDefault(j => j.Id == i).ToProductDTO(),
+                                 }).ToList();
+
+        List<ProductValidate> listProductValidate = listProductDelete.Select(i => new ProductValidate().ValidateDelete(i.InputDeleteProduct, i.listOriginalIdentity)).ToList();
+        var validateDelete = await _productValidateService.ValidateDelete(listProductValidate);
+        response.Success = validateDelete.Success;
+        response.Message = validateDelete.Message;
+        if (!response.Success)
             return response;
-        }
 
-        var productList = await _productRepository.GetListByListId(idList);
-        await _productRepository.Delete(productList);
-        foreach (var product in productList)
-        {
-            response.AddSuccessMessage($" >>> Produto: {product.Name} com Id: {product.Id} foi deletado com sucesso <<<");
-        }
+        var listDelete = await _productRepository.GetListByListId(validateDelete.Content.Select(i => i.Original.Id).ToList());
+        response.Content = await _productRepository.Delete(listDelete);
         return response;
-    }
-
-    public Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputIdentityUpdateProduct)
-    {
-        throw new NotImplementedException();
     }
     #endregion
 

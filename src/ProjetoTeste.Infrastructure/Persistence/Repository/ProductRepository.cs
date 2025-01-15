@@ -10,7 +10,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         public ProductRepository(AppDbContext context) : base(context)
         {
         }
-        public  async Task<List<Product>> GetListByCodeList(List<string> listCode)
+        public async Task<List<Product>> GetListByCodeList(List<string> listCode)
         {
             return await _dbSet.Where(i => listCode.Contains(i.Code)).ToListAsync();
         }

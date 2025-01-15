@@ -5,7 +5,8 @@ namespace ProjetoTeste.Arguments.Arguments;
 public class ProductValidate : BaseValidate
 {
     public InputCreateProduct? InputCreateProduct { get; private set; }
-    public InputIdentityUpdateBrand? InputIdentityUpdateBrand { get; private set; }
+    public InputIdentityUpdateProduct? InputIdentityUpdateProduct { get; private set; }
+    public long? InputDeleteProduct { get; private set; }
     public ProductDTO? Original { get; private set; }
     public ProductDTO? OriginalCode { get; private set; }
     public long? RepeteIdentity { get; private set; }
@@ -21,14 +22,20 @@ public class ProductValidate : BaseValidate
         BrandId = brandId;
         return this;
     }
-    public ProductValidate ValidateUpdate(InputIdentityUpdateBrand? inputIdentityUpdateBrand, ProductDTO? original, ProductDTO? originalCode, long? repeteIdentity, string? repeteCode, long? brandId)
+    public ProductValidate ValidateUpdate(InputIdentityUpdateProduct? inputIdentityUpdateProduct, ProductDTO? original, ProductDTO? originalCode, long? repeteIdentity, string? repeteCode, long? brandId)
     {
-        InputIdentityUpdateBrand = inputIdentityUpdateBrand;
+        InputIdentityUpdateProduct = inputIdentityUpdateProduct;
         Original = original;
         OriginalCode = originalCode;
         RepeteIdentity = repeteIdentity;
         RepeteCode = repeteCode;
         BrandId = brandId;
+        return this;
+    }
+    public ProductValidate ValidateDelete(long? inputDeleteProduct, ProductDTO? original)
+    {
+        InputDeleteProduct = inputDeleteProduct;
+        Original = original;
         return this;
     }
 }

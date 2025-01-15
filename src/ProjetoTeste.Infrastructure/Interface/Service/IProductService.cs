@@ -12,8 +12,8 @@ public interface IProductService
     Task<List<OutputProduct>> GetListByBrandId(long id);
     Task<BaseResponse<OutputProduct>> Create(InputCreateProduct inputCreateProduct);
     Task<BaseResponse<List<OutputProduct>>> CreateMultiple(List<InputCreateProduct> listinputCreateProduct);
-    Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputIdentityUpdateProduct);
-    Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> inputIdentityUpdateProduct);
+    Task<BaseResponse<bool>> Update(InputIdentityUpdateProduct inputIdentityUpdateProduct);
+    Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateProduct> listInputIdentityUpdateProduct);
     Task<BaseResponse<bool>> Delete(long id);
     Task<BaseResponse<bool>> DeleteMultiple(List<long> idList);
 }

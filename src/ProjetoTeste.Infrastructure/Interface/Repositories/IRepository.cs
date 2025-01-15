@@ -5,7 +5,7 @@ namespace ProjetoTeste.Infrastructure.Interface.Repositories;
 public interface IRepository<TEntity> where TEntity : BaseEntity, new()
 {
     Task<List<TEntity?>> GetAll();
-    Task<List<TEntity>> GetListByListId(List<long> listId);
+    Task<List<TEntity>> GetListByListId(List<long>? listId);
     Task<TEntity?> Get(long id);
     //Task<TEntity>? Create(TEntity entity);
     Task<List<TEntity>?> Create(List<TEntity> listEntity);

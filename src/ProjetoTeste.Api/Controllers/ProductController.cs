@@ -60,7 +60,7 @@ public class ProductController : BaseController
     }
 
     [HttpPut]
-    public async Task<ActionResult> Update(InputIdentityUpdateBrand inputIdentityUpdateProduct)
+    public async Task<ActionResult> Update(InputIdentityUpdateProduct inputIdentityUpdateProduct)
     {
         var updateProduct = await _productService.Update(inputIdentityUpdateProduct);
         if (!updateProduct.Success)
@@ -71,7 +71,7 @@ public class ProductController : BaseController
     }
 
     [HttpPut("Multiple")]
-    public async Task<ActionResult> Update(List<InputIdentityUpdateBrand> listInputIdentityUpdateProduct)
+    public async Task<ActionResult> Update(List<InputIdentityUpdateProduct> listInputIdentityUpdateProduct)
     {
         var updateProduct = await _productService.UpdateMultiple(listInputIdentityUpdateProduct);
         if (!updateProduct.Success)
