@@ -39,6 +39,24 @@ public class ProductValidateService
              let message = response.AddErrorMessage($"O Produto: {i.InputCreateProduct.Name} não pode ser cadastrado, Com Stock Negativo")
              select i).ToList();
 
+        _ = (from i in listProductValidate
+             where i.InputCreateProduct.Name.Length > 24
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"O produto '{i.InputCreateProduct.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres.")
+             select i).ToList();
+
+        _ = (from i in listProductValidate
+             where i.InputCreateProduct.Code.Length > 16
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"O produto '{i.InputCreateProduct.Name}' possui um código com mais de 16 caracteres e não pode ser cadastrado.")
+             select i).ToList();
+
+        _ = (from i in listProductValidate
+             where i.InputCreateProduct.Description.Length > 100
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"O produto '{i.InputCreateProduct.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado.")
+             select i).ToList();
+
         var create = (from i in listProductValidate
                       where !i.Invalid
                       let message = response.AddSuccessMessage($"O Produto {i.InputCreateProduct.Name} foi cadastrado com sucesso")
@@ -101,6 +119,24 @@ public class ProductValidateService
              let message = response.AddErrorMessage($"O Produto com Id: {i.InputIdentityUpdateProduct.Id} não pode ser atualizado, Com Stock Negativo")
              select i).ToList();
 
+        _ = (from i in listProductValidate
+             where i.InputIdentityUpdateProduct.InputUpdateProduct.Name.Length > 24
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"Produto com Id {i.InputIdentityUpdateProduct.Id} o nome: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres.")
+             select i).ToList();
+
+        _ = (from i in listProductValidate
+             where i.InputIdentityUpdateProduct.InputUpdateProduct.Code.Length > 16
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"Produto com Id {i.InputIdentityUpdateProduct.Id} o código: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui um código com mais de 16 caracteres e não pode ser cadastrado.")
+             select i).ToList();
+
+        _ = (from i in listProductValidate
+             where i.InputIdentityUpdateProduct.InputUpdateProduct.Description.Length > 100
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"Produto com Id {i.InputIdentityUpdateProduct.Id} a descrição: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado.")
+             select i).ToList();
+
         var update = (from i in listProductValidate
                       where !i.Invalid
                       let message = response.AddSuccessMessage($"O Produto com Id: {i.InputIdentityUpdateProduct.Id} foi atualizado com sucesso")
@@ -138,7 +174,7 @@ public class ProductValidateService
                       let message = response.AddSuccessMessage($"O Produto: {i.Original.Name} com Id: {i.InputDeleteProduct} foi deletado com sucesso")
                       select i).ToList();
 
-        if( !delete.Any() )
+        if (!delete.Any())
         {
             response.Success = false;
             return response;

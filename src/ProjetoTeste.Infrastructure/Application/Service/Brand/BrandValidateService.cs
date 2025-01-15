@@ -23,6 +23,24 @@ public class BrandValidateService
              let message = response.AddErrorMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' não pode ser cadastrada porque o código já está em uso. Por favor, escolha um código diferente.")
              select i).ToList();
 
+        _ = (from i in listBrandValidate
+             where i.InputCreate.Name.Length > 24
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"A marca: '{i.InputCreate.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres.")
+             select i).ToList();
+
+        _ = (from i in listBrandValidate
+             where i.InputCreate.Code.Length > 16
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"A marca: '{i.InputCreate.Name}' possui um código com mais de 16 caracteres e não pode ser cadastrado.")
+             select i).ToList();
+
+        _ = (from i in listBrandValidate
+             where i.InputCreate.Description.Length > 100
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"A marca: '{i.InputCreate.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado.")
+             select i).ToList();
+
         var create = (from i in listBrandValidate
                       where !i.Invalid
                       let successMessage = response.AddSuccessMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' foi cadastrada com sucesso!")
@@ -65,6 +83,24 @@ public class BrandValidateService
              where i.Code != null
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' não pode ser atualizada porque o código já está em uso por outra marca. Por favor, escolha um código diferente.")
+             select i).ToList();
+
+        _ = (from i in listBrandValidate
+             where i.InputUpdate.InputUpdateBrand.Name.Length > 24
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres.")
+             select i).ToList();
+
+        _ = (from i in listBrandValidate
+             where i.InputUpdate.InputUpdateBrand.Code.Length > 16
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' possui um código com mais de 16 caracteres e não pode ser cadastrado.")
+             select i).ToList();
+
+        _ = (from i in listBrandValidate
+             where i.InputUpdate.InputUpdateBrand.Description.Length > 100
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado.")
              select i).ToList();
 
         var update = (from i in listBrandValidate
