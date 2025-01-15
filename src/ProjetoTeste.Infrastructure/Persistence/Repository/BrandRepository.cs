@@ -21,7 +21,7 @@ public class BrandRepository : Repository<Brand>, IBrandRepository
         return await _dbSet.Where(i => listCode.Contains(i.Code)).ToListAsync();
     }
 
-    public async  Task<Brand> GetByCode(string code)
+    public async Task<Brand> GetByCode(string code)
     {
         return await _dbSet.FirstOrDefaultAsync(x => x.Code == code);
     }

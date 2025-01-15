@@ -82,7 +82,7 @@ public class ProductController : BaseController
     }
 
     [HttpDelete]
-    public async Task<ActionResult> Delete( long id)
+    public async Task<ActionResult> Delete(long id)
     {
         var deletePrdocut = await _productService.Delete(id);
         if (!deletePrdocut.Success)

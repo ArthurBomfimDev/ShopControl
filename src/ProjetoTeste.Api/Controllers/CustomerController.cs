@@ -71,7 +71,7 @@ public class CustomerController : BaseController
     }
 
     [HttpPut("Multiple")]
-    public async Task<ActionResult> Update( List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
+    public async Task<ActionResult> Update(List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
     {
         BaseResponse<bool> update = await _customerService.UpdateMultiple(listInputIdentityUpdateCustomer);
         if (!update.Success)

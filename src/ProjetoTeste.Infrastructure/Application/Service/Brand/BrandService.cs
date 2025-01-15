@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using ProjetoTeste.Arguments.Arguments;
+﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Conversor;
@@ -13,11 +12,13 @@ public class BrandService : IBrandService
 {
     private readonly IBrandRepository _brandRepository;
     private readonly BrandValidateService _brandValidadeService;
+    private readonly IProductRepository _productRepository;
 
-    public BrandService(IBrandRepository brandRepository, BrandValidateService brandValidadeService)
+    public BrandService(IBrandRepository brandRepository, BrandValidateService brandValidadeService, IProductRepository productRepository)
     {
         _brandRepository = brandRepository;
         _brandValidadeService = brandValidadeService;
+        _productRepository = productRepository;
     }
 
     #region Get
@@ -93,17 +94,17 @@ public class BrandService : IBrandService
                                              select i).ToList();
 
         var _listRepeatedCode = (from i in listInputIdentityUpdateBrand
-                                             where listInputIdentityUpdateBrand.Count(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code) > 1
-                                             select i).ToList();
+                                 where listInputIdentityUpdateBrand.Count(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code) > 1
+                                 select i).ToList();
 
         var listUpdate = (from i in listInputIdentityUpdateBrand
                           select new
                           {
                               InputIdentityUpdateBrand = i,
                               RepeatedInputUpdateBrand = _listRepeatedInputUpdateBrand.FirstOrDefault(j => j.Id == i.Id),
-                              OriginalBrand = listOriginalBrandDTO.FirstOrDefault(j => j.Id == i.Id),
-                              RepeatedCode = _listRepeatedCode.FirstOrDefault(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code),
-                              Code = listCode.FirstOrDefault(j => j.Code == i.InputUpdateBrand.Code && j.Id != i.Id)
+                              OriginalBrand = listOriginalBrandDTO.FirstOrDefault(k => k.Id == i.Id),
+                              RepeatedCode = _listRepeatedCode.FirstOrDefault(l => l.InputUpdateBrand.Code == i.InputUpdateBrand.Code),
+                              Code = listCode.FirstOrDefault(m => m.Code == i.InputUpdateBrand.Code && m.Id != i.Id)
                           }).ToList();
 
         List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.Code)).ToList();
@@ -122,7 +123,7 @@ public class BrandService : IBrandService
         var olderBrand = await _brandRepository.GetListByListId(listUpdateBrand.Select(i => i.Id).ToList());
 
         //Fazer um jeito melhor
-        for(int i = 0;  i < olderBrand.Count; i++)
+        for (int i = 0; i < olderBrand.Count; i++)
         {
             olderBrand[i].Name = listUpdateBrand[i].Name;
             olderBrand[i].Code = listUpdateBrand[i].Code;
@@ -138,36 +139,42 @@ public class BrandService : IBrandService
     #region Delete
     public Task<BaseResponse<bool>> Delete(long id)
     {
-        var vali
+        return DeleteMultiple([id]);
     }
 
-    public Task<BaseResponse<bool>> DeleteMultiple(List<long> listId)
+    public async Task<BaseResponse<bool>> DeleteMultiple(List<long> listId)
     {
-        var validatecreate = await _brandvalidadeservice.validadedelete(listid);
-        var response = new baseresponse<bool>() { message = validatecreate.message };
+        var response = new BaseResponse<bool>();
+        var listOriginalBrand = await _brandRepository.GetListByListId(listId);
+        var listRepeteInputDelete = (from i in listId
+                                     where listId.Count(j => j == i) > 1
+                                     select i).ToList();
 
-        if (!validatecreate.success)
+        var listBrandWithProduct = await _productRepository.BrandId(listId);
+        var listDelete = (from i in listId
+                          select new
+                          {
+                              InputDeleteBrand = i,
+                              OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Id == i).ToBrandDTO(),
+                              RepeteInputDelete = listRepeteInputDelete.FirstOrDefault(k => k == i),
+                              BrandWithProduct = listBrandWithProduct.FirstOrDefault(l => l == i)
+                          }).ToList();
+        List<BrandValidate> listBrandValidate = listDelete.Select(i => new BrandValidate().ValidateDelete(i.InputDeleteBrand, i.OriginalBrand, i.RepeteInputDelete, i.BrandWithProduct)).ToList();
+
+        var deleteValidate = await _brandValidadeService.ValidateDelete(listBrandValidate);
+        response.Message = deleteValidate.Message;
+        response.Success = deleteValidate.Success;
+        if (!response.Success)
         {
-            response.success = false;
+            response.Content = false;
             return response;
         }
 
-        var branddelete = await _brandrepository.getlistbylistid(validatecreate.content);
-        await _brandrepository.delete(branddelete);
-
-        foreach (var id in validatecreate.content)
-        {
-            response.addsuccessmessage($" >>> marca com id: {id} deletada com sucesso <<<");
-        }
+        var listBrandDelete = await _brandRepository.GetListByListId(deleteValidate.Content);
+        response.Content = await _brandRepository.Delete(listBrandDelete);
         return response;
     }
     #endregion
-    
-
-    
-    {
-        throw new NotImplementedException();
-    }
 
     public async Task<List<Brand>> GetDuplicates(List<Brand> listBrand, Brand item)
     {

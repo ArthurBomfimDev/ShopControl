@@ -1,6 +1,4 @@
-﻿using Microsoft.DotNet.Scaffolding.Shared.Messaging;
-
-namespace ProjetoTeste.Arguments.Arguments.Base;
+﻿namespace ProjetoTeste.Arguments.Arguments.Base;
 
 public class BaseResponse<TContent>
 {

@@ -12,10 +12,13 @@ public class BrandValidate : BaseValidate
     public InputIdentityUpdateBrand RepetedInputUpdate { get; private set; }
     public InputIdentityUpdateBrand RepetedCode { get; private set; }
     public BrandDTO? Code { get; private set; }
+    public long InputDeleteBrand { get; private set; }
+    public long? RepeteInputDelete { get; private set; }
+    public long? BrandWithProduct { get; private set; }
 
     public BrandValidate()
     {
-        
+
     }
 
     public BrandValidate ValidateCreate(InputCreateBrand? inputCreate, InputCreateBrand repeatedInputCreate, BrandDTO? originalBrand)
@@ -32,6 +35,14 @@ public class BrandValidate : BaseValidate
         OriginalBrandDTO = originalBrand;
         RepetedCode = repetedCode;
         Code = code;
+        return this;
+    }
+    public BrandValidate ValidateDelete(long inputDeleteBrand, BrandDTO? originalBrand, long repeteInputDelete, long? brandWIthProduct)
+    {
+        InputDeleteBrand = inputDeleteBrand;
+        OriginalBrandDTO = originalBrand;
+        RepeteInputDelete = repeteInputDelete;
+        BrandWithProduct = brandWIthProduct;
         return this;
     }
 }

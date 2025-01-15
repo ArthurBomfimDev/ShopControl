@@ -87,9 +87,9 @@ public class BrandController : BaseController
         var deleteBrand = await _brandService.Delete(id);
         if (!deleteBrand.Success)
         {
-            return BadRequest(deleteBrand.Message);
+            return BadRequest(deleteBrand);
         }
-        return Ok(deleteBrand.Message);
+        return Ok(deleteBrand);
     }
 
     [HttpDelete("Multiple")]
@@ -98,8 +98,8 @@ public class BrandController : BaseController
         var deleteBrand = await _brandService.DeleteMultiple(listId);
         if (!deleteBrand.Success)
         {
-            return BadRequest(deleteBrand.Message);
+            return BadRequest(deleteBrand);
         }
-        return Ok(deleteBrand.Message);
+        return Ok(deleteBrand);
     }
 }
