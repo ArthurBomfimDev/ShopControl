@@ -11,14 +11,15 @@ namespace ProjetoTeste.Infrastructure.Application;
 public class CustomerService : ICustomerService
 {
     private readonly ICustomerRepository _customerRepository;
-    private readonly CustomerValidateService _validateDeleteRepository;
+    private readonly CustomerValidateService _customerValidateService;
 
-    public CustomerService(ICustomerRepository customerRepository, CustomerValidateService validateDeleteRepository)
+    public CustomerService(ICustomerRepository customerRepository, CustomerValidateService customerValidateService)
     {
         _customerRepository = customerRepository;
-        _validateDeleteRepository = validateDeleteRepository;
+        _customerValidateService = customerValidateService;
     }
 
+    #region Get
     public async Task<List<OutputCustomer>> GetAll()
     {
         var customerList = await _customerRepository.GetAll();
@@ -31,55 +32,86 @@ public class CustomerService : ICustomerService
         return customer.ToOutputCustomer();
     }
 
-    public async Task<List<OutputCustomer>> GetListByListId(List<long> idList)
+    public async Task<List<OutputCustomer>> GetListByListId(List<long> listId)
     {
         var customerList = await _customerRepository.GetListByListId(idList);
         return (from i in customerList select i.ToOutputCustomer()).ToList();
     }
+    #endregion
 
-    public async Task<BaseResponse<List<OutputCustomer>>> Create(List<InputCreateCustomer> client)
+    #region Create
+    public async Task<BaseResponse<OutputCustomer>> Create(InputCreateCustomer inputCreateCustomer)
     {
-        var validateCreate = await _validateDeleteRepository.ValidateCreate(client);
-        var response = new BaseResponse<List<OutputCustomer>>() { Message = validateCreate.Message };
-        if (!validateCreate.Success)
-        {
-            response.Success = false;
-            return response;
-        }
-
-        var customerList = (from i in validateCreate.Content
-                            select new Customer(i.Name, i.CPF, i.Email, i.Phone, default)).ToList();
-
-        var createcustomerList = await _customerRepository.Create(customerList);
-
-        response.Content = (from i in createcustomerList
-                            select new OutputCustomer(i.Id, i.Name, i.CPF, i.Email, i.Phone)).ToList();
+        var response = new BaseResponse<OutputCustomer>();
+        var validateCreate = await CreateMultiple([inputCreateCustomer]);
+        response.Success = validateCreate.Success;
+        response.Message = validateCreate.Message;
+        response.Content = validateCreate.Content.FirstOrDefault();
         return response;
     }
 
-    public async Task<BaseResponse<bool>> Update(List<long> idList, List<InputUpdateCustomer> client)
+    public async Task<BaseResponse<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreateCustomer)
     {
-        var validateUpdate = await _validateDeleteRepository.ValidateUpdate(idList, client);
-        var response = new BaseResponse<bool>() { Message = validateUpdate.Message };
+        var response = new BaseResponse<List<OutputCustomer>>();
+        List<CustomerValidate> listCutomerValidate = listInputCreateCustomer.Select(i => new CustomerValidate().ValidateCreate(i)).ToList();
+        var validateCreate = await _customerValidateService.ValidateCreate(listCutomerValidate);
 
-        if (!validateUpdate.Success)
+        response.Success = validateCreate.Success;
+        response.Message = validateCreate.Message;
+        if (!response.Success) return response;
+
+        var listCreate = ((validateCreate.Content).Select(i => i.InputCreateCustomer).ToList()).Select(i => new Customer(i.Name, i.CPF, i.Email, i.Phone)).ToList();
+        var create = await _customerRepository.Create(listCreate);
+        response.Content = create.Select(i => i.ToOutputCustomer()).ToList();
+        return response;
+    }
+    #endregion
+
+    #region Update
+    public async Task<BaseResponse<bool>> Update(InputIdentityUpdateCustomer inputIdentityUpdateCustomer)
+    {
+        return await UpdateMultiple([inputIdentityUpdateCustomer]);
+    }
+
+    public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
+    {
+        var response = new BaseResponse<bool>();
+        var originalCustomer = await _customerRepository.GetListByListId(listInputIdentityUpdateCustomer.Select(i => i.Id).ToList())
+        var listRepeteId = (from i in listInputIdentityUpdateCustomer
+                            where listInputIdentityUpdateCustomer.Count(j => j.Id == i.Id) > 1
+                            select i.Id).ToList();
+
+        var listUpdate = (from i in listInputIdentityUpdateCustomer
+                          select new
+                          {
+                              InputIdentityUpdateCustomer = i,
+                              OriginalCustomer = originalCustomer.FirstOrDefault(j => j.Id == i.Id).ToCustomerDTO(),
+                              RepeteId = listRepeteId.FirstOrDefault(k => k == i.Id),
+                          }).ToList();
+        
+        List<CustomerValidate> customerValidate = listUpdate.Select(i => new CustomerValidate().ValidateUpdate(i.InputIdentityUpdateCustomer, i.OriginalCustomer, i.RepeteId)).ToList();
+        var updateValidate = await _customerValidateService.ValidateUpdate(customerValidate);
+        response.Success = updateValidate.Success;
+        response.Message = updateValidate.Message;
+        if (!response.Success)
         {
-            response.Success = false;
+            response.Content = false;
             return response;
         }
 
-        var customerUpdateList = await _customerRepository.Update(validateUpdate.Content);
-
-        foreach (var customer in validateUpdate.Content)
-        {
-            response.AddSuccessMessage($" >>> Cliente: {customer.Name} com Id: {customer.Id} foi atualizado com SUCESSO <<<");
-        }
         return response;
     }
+    #endregion
 
-    public async Task<BaseResponse<bool>> Delete(List<long> idList)
+    #region Delete
+    public Task<BaseResponse<bool>> Delete(long id)
     {
-        var validateDelete = await _validateDeleteRepository.ValidateDelete(idList);
+        throw new NotImplementedException();
+    }
+
+    public Task<BaseResponse<bool>> DeleteMultiple(List<long> listId)
+    {
+        var validateDelete = await _validateDeleteRepository.ValidateDelete(listId);
         var response = new BaseResponse<bool>() { Message = validateDelete.Message };
 
         if (!validateDelete.Success)
@@ -95,34 +127,6 @@ public class CustomerService : ICustomerService
         }
         return response;
     }
+    #endregion
 
-    public Task<BaseResponse<List<OutputCustomer>>> Create(InputCreateCustomer inputCreateCustomer)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BaseResponse<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> inputCreateCustomer)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BaseResponse<bool>> Update(InputIdentityUpdateCustomer inputIdentityUpdateCustomer)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> inputIdentityUpdateCustomer)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BaseResponse<bool>> Delete(long id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BaseResponse<bool>> DeleteMultiple(List<long> idList)
-    {
-        throw new NotImplementedException();
-    }
 }

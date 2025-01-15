@@ -13,12 +13,11 @@ public class Customer : BaseEntity
     public Customer()
     { }
 
-    public Customer(string name, string cPF, string email, string phone, List<Order>? listOrder)
+    public Customer(string name, string cPF, string email, string phone)
     {
         Name = name;
         CPF = cPF;
         Email = email;
         Phone = phone;
-        ListOrder = listOrder;
     }
 }
