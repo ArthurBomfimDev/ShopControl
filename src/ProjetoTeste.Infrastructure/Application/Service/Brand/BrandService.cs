@@ -87,8 +87,8 @@ public class BrandService : IBrandService
     public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateBrand)
     {
         var response = new BaseResponse<bool>();
-        List<BrandDTO> listOriginalBrandDTO = (await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList())).Select(i => i.ToBrandDTO()).ToList();
-        List<BrandDTO> listCode = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList())).Select(i => i.ToBrandDTO()).ToList();
+        var listOriginalBrandDTO = await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList());
+        var listCode = await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList());
         var _listRepeatedInputUpdateBrand = (from i in listInputIdentityUpdateBrand
                                              where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
                                              select i).ToList();
@@ -102,9 +102,9 @@ public class BrandService : IBrandService
                           {
                               InputIdentityUpdateBrand = i,
                               RepeatedInputUpdateBrand = _listRepeatedInputUpdateBrand.FirstOrDefault(j => j.Id == i.Id),
-                              OriginalBrand = listOriginalBrandDTO.FirstOrDefault(k => k.Id == i.Id),
+                              OriginalBrand = listOriginalBrandDTO.FirstOrDefault(k => k.Id == i.Id).ToBrandDTO(),
                               RepeatedCode = _listRepeatedCode.FirstOrDefault(l => l.InputUpdateBrand.Code == i.InputUpdateBrand.Code),
-                              Code = listCode.FirstOrDefault(m => m.Code == i.InputUpdateBrand.Code && m.Id != i.Id)
+                              Code = listCode.FirstOrDefault(m => m.Code == i.InputUpdateBrand.Code && m.Id != i.Id).ToBrandDTO()
                           }).ToList();
 
         List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.Code)).ToList();

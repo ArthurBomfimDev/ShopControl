@@ -7,14 +7,6 @@ namespace ProjetoTeste.Infrastructure.Application;
 
 public class BrandValidateService
 {
-    private readonly IBrandRepository _brandRepository;
-    private readonly IProductRepository _productRepository;
-
-    public BrandValidateService(IBrandRepository brandRepository, IProductRepository productRepository)
-    {
-        _brandRepository = brandRepository;
-        _productRepository = productRepository;
-    }
 
     #region Create
     public async Task<BaseResponse<List<Brand>>> ValidateCreate(List<BrandValidate> listBrandValidate)

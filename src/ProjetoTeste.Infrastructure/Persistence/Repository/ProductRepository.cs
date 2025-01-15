@@ -10,9 +10,9 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         public ProductRepository(AppDbContext context) : base(context)
         {
         }
-        public bool CodeExists(string code)
+        public  async Task<List<Product>> GetListByCodeList(List<string> listCode)
         {
-            return _dbSet.Any(x => x.Code == code);
+            return await _dbSet.Where(i => listCode.Contains(i.Code)).ToListAsync();
         }
 
         public Task<bool> ExistUpdate(string code, long id)

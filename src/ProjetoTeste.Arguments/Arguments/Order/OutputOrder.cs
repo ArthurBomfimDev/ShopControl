@@ -7,7 +7,7 @@ public class OutputOrder
 {
     public long Id { get; set; }
     public long CustomerId { get; set; }
-    public List<OutputProductOrder> ProductOrders { get; set; }
+    public List<OutputProductOrder> listProductOrders { get; set; }
     public decimal Total { get; set; }
     public DateTime OrderDate { get; set; }
 
@@ -16,7 +16,7 @@ public class OutputOrder
     {
         Id = id;
         CustomerId = customerId;
-        ProductOrders = productOrders;
+        listProductOrders = productOrders;
         Total = total;
         OrderDate = orderDate;
 
