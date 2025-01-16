@@ -51,19 +51,19 @@ public class OrderService : IOrderService
     #endregion
 
     #region "Relatorio"
-    public Task<OutputMaxSaleValueProduct> BestSellerProduct()
+    public async Task<OutputMaxSaleValueProduct> BestSellerProduct()
     {
-        throw new NotImplementedException();
+        return await _orderRepository.BestSellerProduct();
     }
 
-    public Task<OutputMaxSaleValueProduct> LeastSoldProduct()
+    public async Task<OutputMaxSaleValueProduct> LeastSoldProduct()
     {
-        throw new NotImplementedException();
+        return await _orderRepository.LeastSoldProduct();
     }
 
-    public Task<List<OutputMaxSaleValueProduct>> TopSellers()
+    public async Task<List<OutputMaxSaleValueProduct>> GetMostOrderedProduct()
     {
-        throw new NotImplementedException();
+        return await _orderRepository.GetMostOrderedProduct();
     }
 
     public Task<OutputCustomerOrder> BiggestBuyer()
@@ -86,9 +86,10 @@ public class OrderService : IOrderService
         throw new NotImplementedException();
     }
 
-    public Task<decimal> Total()
+    public async Task<string> Total()
     {
-        throw new NotImplementedException();
+        var total = await _orderRepository.Total();
+        return $"O Total vendido: R$: {total}";
     }
     //public async task<baseresponse<decimal>> total()
     //{

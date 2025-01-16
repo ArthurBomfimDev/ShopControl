@@ -9,5 +9,8 @@ namespace ProjetoTeste.Infrastructure.Interface.Repositories
         Task<List<Order>> GetProductOrdersId(long id);
         Task<List<Order>> GetProductOrdersByListId(List<long> listId);
         Task<List<OutputMaxSaleValueProduct>> GetMostOrderedProduct();
+        Task<OutputMaxSaleValueProduct?> BestSellerProduct();
+        Task<OutputMaxSaleValueProduct?> LeastSoldProduct();
+        Task<decimal> Total();
     }
 }

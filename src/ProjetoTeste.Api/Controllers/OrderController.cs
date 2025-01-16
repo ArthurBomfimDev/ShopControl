@@ -50,10 +50,10 @@ public class OrderController : BaseController
         return Ok(order);
     }
 
-    [HttpGet("BestSellingProducts")]
+    [HttpGet("GetMostOrderedProduct")]
     public async Task<ActionResult<OutputMaxSaleValueProduct>> GetBestSellers()
     {
-        var order = await _orderService.TopSellers();
+        var order = await _orderService.GetMostOrderedProduct();
         return Ok(order);
     }
 

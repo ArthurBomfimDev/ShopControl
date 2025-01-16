@@ -30,14 +30,51 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
 
         public async Task<List<OutputMaxSaleValueProduct>> GetMostOrderedProduct()
         {
-            return (from i in _dbSet.AsEnumerable()
+            return (from i in _dbSet
                     from j in i.ListProductOrder
                     group j by j.Product into g
-                    let totalSaleQuantity = g.Sum(i => i.Quantity)
-                    let totalSaleValue = g.Sum(i => i.SubTotal)
-                    select new OutputMaxSaleValueProduct(g.Key.Id, g.Key.Name, g.Key.Code, g.Key.Description, totalSaleValue, g.Key.BrandId, totalSaleQuantity)).OrderByDescending(i => i.TotalValue).ToList();
+                    orderby g.Sum(k => k.Quantity) descending
+                    select new
+                    {
+                        Product = g.Key,
+                        TotalSaleQuantity = g.Sum(i => i.Quantity),
+                        TotalSaleValue = g.Sum(i => i.SubTotal)
+                    }).Select(k => new OutputMaxSaleValueProduct(k.Product.Id, k.Product.Name, k.Product.Code, k.Product.Description, k.TotalSaleValue, k.Product.BrandId, k.TotalSaleQuantity)).ToList();
         }
 
+        public async Task<OutputMaxSaleValueProduct?> BestSellerProduct()
+        {
+            return (from i in _dbSet
+                    from j in i.ListProductOrder
+                    group j by j.Product into g
+                    orderby g.Sum(k => k.Quantity) descending
+                    select new
+                    {
+                        Product = g.Key,
+                        TotalSaleQuantity = g.Sum(i => i.Quantity),
+                        TotalSaleValue = g.Sum(i => i.SubTotal)
+                    }).Select(k => new OutputMaxSaleValueProduct(k.Product.Id, k.Product.Name, k.Product.Code, k.Product.Description, k.TotalSaleValue, k.Product.BrandId, k.TotalSaleQuantity)).FirstOrDefault();
+        }
+
+        public async Task<OutputMaxSaleValueProduct?> LeastSoldProduct()
+        {
+            return (from i in _dbSet
+                    from j in i.ListProductOrder
+                    group j by j.Product into g
+                    orderby g.Sum(k => k.Quantity) ascending
+                    select new
+                    {
+                        Product = g.Key,
+                        TotalSaleQuantity = g.Sum(i => i.Quantity),
+                        TotalSaleValue = g.Sum(i => i.SubTotal)
+                    }).Select(k => new OutputMaxSaleValueProduct(k.Product.Id, k.Product.Name, k.Product.Code, k.Product.Description, k.TotalSaleValue, k.Product.BrandId, k.TotalSaleQuantity)).FirstOrDefault();
+        }
+
+        public async Task<decimal> Total()
+        {
+            return (from i in _dbSet
+                    select i.Total).Count();
+        }
         //public void teste2()
         //{
         //    var totalSeller = (from i in _dbSet
