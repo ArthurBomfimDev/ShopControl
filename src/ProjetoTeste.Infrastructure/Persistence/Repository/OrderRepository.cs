@@ -19,9 +19,13 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         }
         public async Task<List<Order>> GetProductOrdersId(long id)
         {
-            var get = await _context.Set<Order>().Include(o => o.ListProductOrder)
+            var get = await _dbSet.Include(o => o.ListProductOrder)
                 .Where(o => o.Id == id).ToListAsync();
             return get;
+        }
+        public Task<List<Order>> GetProductOrdersByListId(List<long> listId)
+        {
+            return _dbSet.Include(i => i.ListProductOrder).Where(j => listId.Contains(j.Id)).ToListAsync();
         }
 
         public async Task<List<OutputMaxSaleValueProduct>> GetMostOrderedProduct()
@@ -33,6 +37,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
                     let totalSaleValue = g.Sum(i => i.SubTotal)
                     select new OutputMaxSaleValueProduct(g.Key.Id, g.Key.Name, g.Key.Code, g.Key.Description, totalSaleValue, g.Key.BrandId, totalSaleQuantity)).OrderByDescending(i => i.TotalValue).ToList();
         }
+
         //public void teste2()
         //{
         //    var totalSeller = (from i in _dbSet

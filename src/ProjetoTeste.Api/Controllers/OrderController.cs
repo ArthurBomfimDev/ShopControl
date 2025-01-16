@@ -29,6 +29,13 @@ public class OrderController : BaseController
         return Ok(get.Content);
     }
 
+    [HttpGet("Id/Multiple")]
+    public async Task<ActionResult<List<OutputOrder>>> Get(List<long> listId)
+    {
+        var get = await _orderService.GetListByListId(listId);
+        return Ok(get.Content);
+    }
+
     [HttpGet("BestSellerProduct")]
     public async Task<ActionResult<OutputMaxSaleValueProduct>> GetBestSeller()
     {
@@ -96,14 +103,36 @@ public class OrderController : BaseController
         return Ok(create.Content);
     }
 
+    [HttpPost("Multiple")]
+    public async Task<ActionResult<OutputOrder>> Create(List<InputCreateOrder> listInputCreateOrder)
+    {
+        var create = await _orderService.CreateMultiple(listInputCreateOrder);
+        if (!create.Success)
+        {
+            return BadRequest(create);
+        }
+        return Ok(create);
+    }
+
     [HttpPost("CreateProductOrder")]
     public async Task<ActionResult<OutputOrder>> CreateProductOrder(InputCreateProductOrder input)
     {
         var add = await _orderService.CreateProductOrder(input);
         if (!add.Success)
         {
-            return BadRequest(add.Message);
+            return BadRequest(add);
         }
-        return Ok(add.Content);
+        return Ok(add);
+    }
+
+    [HttpPost("CreateProductOrder/Multiple")]
+    public async Task<ActionResult<OutputOrder>> CreateProductOrder(List<InputCreateProductOrder> listInputCreateProductOrder)
+    {
+        var add = await _orderService.CreateProductOrderMultiple(listInputCreateProductOrder);
+        if (!add.Success)
+        {
+            return BadRequest(add);
+        }
+        return Ok(add);
     }
 }
