@@ -1,20 +1,11 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Arguments.Arguments.Customer;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
 public class CustomerValidateService
 {
-    private readonly ICustomerRepository _customerRepository;
-
-    public CustomerValidateService(ICustomerRepository customerRepository)
-    {
-        _customerRepository = customerRepository;
-    }
 
     #region CPFValidate
     public bool CPFValidate(string cpf)
@@ -64,30 +55,30 @@ public class CustomerValidateService
         _ = (from i in listCustomerValidate
              where i.InputCreateCustomer.Name.Length > 64
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O cliente com o nome: '{i.InputCreateCustomer.Name}' não pode ser cadastrado, pois o nome excede o limite de 64 caracteres.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
              where i.InputCreateCustomer.Email.Length > 64
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o E-mail: '{i.InputCreateCustomer.Email}' não pode ser cadastrado, pois o e-mail excede o limite de 64 caracteres.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
              where CPFValidate(i.InputCreateCustomer.CPF) == false
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o CPF: '{i.InputCreateCustomer.CPF}' não pode ser cadastrado, pois o CPF é inválido.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
-             where i.InputCreateCustomer.Phone.Length > 15
+             where i.InputCreateCustomer.Phone.Length > 15 && i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 10
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o telefone: '{i.InputCreateCustomer.Phone}' não pode ser cadastrado, pois o número de telefone é inválido.")
              select i).ToList();
 
         var create = (from i in listCustomerValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage("")
+                      let message = response.AddSuccessMessage($"O cliente: '{i.InputCreateCustomer.Name}' foi cadastrado com sucesso.")
                       select i).ToList();
 
         if (!create.Any())
@@ -157,44 +148,44 @@ public class CustomerValidateService
         var response = new BaseResponse<List<CustomerValidate>>();
 
         _ = (from i in listCustomerValidate
-             where i.RepeteId != null
+             where i.RepeteId != 0
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O ID: '{i.InputIdentityUpdateCustomer.Id}' está duplicado. Não é possível concluir a operação.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
              where i.Original == null
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O cliente com o ID: '{i.InputIdentityUpdateCustomer.Id}' não existe. Atualização não permitida.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
              where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name.Length > 64
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O cliente com Id: {i.InputIdentityUpdateCustomer.Id} o nome: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name}' não pode ser atualizado, pois o nome excede o limite de 64 caracteres.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
              where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email.Length > 64
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail excede o limite de 64 caracteres.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
              where CPFValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF) == false
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o CPF: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF}' não pode ser atualizado, pois o CPF é inválido.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
-             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 15
+             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 15 && i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 10
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage("")
+             let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o telefone: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone}' não pode ser atualizado, pois o número de telefone é inválido.")
              select i).ToList();
 
         var update = (from i in listCustomerValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage("")
+                      let message = response.AddSuccessMessage($"O cliente com o ID: '{i.InputIdentityUpdateCustomer.Id}' foi atualizado com sucesso.")
                       select i).ToList();
 
         if (!update.Any())
@@ -206,6 +197,7 @@ public class CustomerValidateService
         response.Content = update;
         return response;
 
+        #region Unique
         //if (idList.Count != inputUpdateList.Count)
         //{
         //    response.Success = false;
@@ -261,34 +253,32 @@ public class CustomerValidateService
 
         //response.Content = existingCustomer;
         //return response;
+        #endregion
     }
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<List<Customer>>> ValidateDelete(List<long> idList)
+    public async Task<BaseResponse<List<CustomerValidate>>> ValidateDelete(List<CustomerValidate> listCustomerValidate)
     {
-        var response = new BaseResponse<List<Customer>>();
-        var idExists = (from i in idList
-                        where _customerRepository.Exists(i) == false
-                        select i).ToList();
+        var response = new BaseResponse<List<CustomerValidate>>();
+        _ = (from i in listCustomerValidate
+             where i.Original == null
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"Cliente com ID: {i.InputDeleteCustomer} é inválido. Verifique os dados.")
+             select i).ToList();
 
-        if (idExists.Count > 0)
-        {
-            foreach (var id in idExists)
-            {
-                response.AddErrorMessage($" >>> O Cliente com Id: {id} não Existe <<<");
-            }
-            idList = idList.Except(idExists).ToList();
-        }
+        var delete = (from i in listCustomerValidate
+                      where !i.Invalid
+                      let message = response.AddSuccessMessage($"Cliente com ID: {i.InputDeleteCustomer} foi excluído com sucesso.")
+                      select i).ToList();
 
-        if (idList.Count() == 0)
+        if (!delete.Any())
         {
             response.Success = false;
             return response;
         }
 
-        var customerList = await _customerRepository.GetListByListId(idList);
-        response.Content = customerList;
+        response.Content = delete;
         return response;
     }
     #endregion

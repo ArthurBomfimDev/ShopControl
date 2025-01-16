@@ -13,6 +13,6 @@ public static class CustomerConverter
 
     public static CustomerDTO? ToCustomerDTO(this Customer customer)
     {
-        return customer == null ? null : new CustomerDTO(customer.Name, customer.CPF, customer.Email, customer.Phone);
+        return customer == null ? null : new CustomerDTO(customer.Id, customer.Name, customer.CPF, customer.Email, customer.Phone);
     }
 }
