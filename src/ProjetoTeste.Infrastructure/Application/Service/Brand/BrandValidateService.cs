@@ -1,6 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
@@ -8,9 +7,9 @@ public class BrandValidateService
 {
 
     #region Create
-    public async Task<BaseResponse<List<Brand>>> ValidateCreate(List<BrandValidate> listBrandValidate)
+    public async Task<BaseResponse<List<BrandValidate>>> ValidateCreate(List<BrandValidate> listBrandValidate)
     {
-        BaseResponse<List<Brand>> response = new();
+        BaseResponse<List<BrandValidate>> response = new();
         _ = (from i in listBrandValidate
              where i.RepeatedInputCreate != null
              let setInvalid = i.SetInvalid()
@@ -44,7 +43,7 @@ public class BrandValidateService
         var create = (from i in listBrandValidate
                       where !i.Invalid
                       let successMessage = response.AddSuccessMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' foi cadastrada com sucesso!")
-                      select i).Select(i => new Brand(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList();
+                      select i).ToList();
 
         if (!create.Any())
         {

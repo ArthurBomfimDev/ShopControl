@@ -69,10 +69,14 @@ public class BrandService : IBrandService
                           }).ToList();
         List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrand, i.OriginalBrand)).ToList();
         var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
-        await _brandRepository.Create(create.Content);
         response.Message = create.Message;
         response.Success = create.Success;
-        response.Content = create.Content.Select(i => i.ToOutputBrand()).ToList();
+        if (!response.Success)
+            return response;
+
+        var listNewBrand = response.Content.Select(i => new Brand(i.Name, i.Code, i.Description, default)).ToList();
+        await _brandRepository.Create(listNewBrand);
+        response.Content = listNewBrand.Select(i => i.ToOutputBrand()).ToList();
         return response;
     }
     #endregion
