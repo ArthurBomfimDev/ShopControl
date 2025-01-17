@@ -127,7 +127,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
 
                     b.Property<long>("BrandId")
                         .HasColumnType("bigint")
-                        .HasColumnName("marca_id");
+                        .HasColumnName("id_marca");
 
                     b.Property<string>("Code")
                         .IsRequired()

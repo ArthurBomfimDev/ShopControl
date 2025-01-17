@@ -22,7 +22,7 @@ public class ProductValidateService
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.BrandId == default
+             where i.BrandId == 0
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"O Produto: {i.InputCreateProduct.Name} com o código de marca: {i.InputCreateProduct.BrandId} não pode ser cadastrado, por não existir")
              select i).ToList();

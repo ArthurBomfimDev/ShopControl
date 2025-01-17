@@ -12,8 +12,8 @@ using ProjetoTeste.Infrastructure.Persistence.Context;
 namespace ProjetoTeste.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250107160541_initial")]
-    partial class initial
+    [Migration("20250117144334_final")]
+    partial class final
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,7 +130,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
 
                     b.Property<long>("BrandId")
                         .HasColumnType("bigint")
-                        .HasColumnName("marca_id");
+                        .HasColumnName("id_marca");
 
                     b.Property<string>("Code")
                         .IsRequired()

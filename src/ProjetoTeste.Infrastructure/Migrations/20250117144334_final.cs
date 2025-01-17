@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetoTeste.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class final : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -89,7 +90,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
                     descricao = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    marca_id = table.Column<long>(type: "bigint", nullable: false),
+                    id_marca = table.Column<long>(type: "bigint", nullable: false),
                     Stock = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -97,7 +98,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
                     table.PrimaryKey("PK_produto", x => x.Id);
                     table.ForeignKey(
                         name: "fkey_id_marca",
-                        column: x => x.marca_id,
+                        column: x => x.id_marca,
                         principalTable: "marca",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -150,9 +151,9 @@ namespace ProjetoTeste.Infrastructure.Migrations
                 column: "produto_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_produto_marca_id",
+                name: "IX_produto_id_marca",
                 table: "produto",
-                column: "marca_id");
+                column: "id_marca");
         }
 
         /// <inheritdoc />

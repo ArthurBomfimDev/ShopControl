@@ -26,7 +26,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Description).IsRequired();
         builder.Property(p => p.Description).HasMaxLength(100);
 
-        builder.Property(p => p.BrandId).HasColumnName("marca_id");
+        builder.Property(p => p.BrandId).HasColumnName("id_marca");
         builder.Property(p => p.BrandId).IsRequired();
     }
 }
