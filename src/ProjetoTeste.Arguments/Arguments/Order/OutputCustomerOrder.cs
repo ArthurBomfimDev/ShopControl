@@ -2,12 +2,29 @@
 
 namespace ProjetoTeste.Arguments.Arguments.Order;
 
-[method: JsonConstructor]
-public class OutputCustomerOrder(long customerId, string name, IEnumerable<long> totalOrders, decimal quantityPurchased, decimal totalPrice)
+public class OutputCustomerOrder
 {
-    public long CustomerId { get; private set; } = customerId;
-    public string Name { get; private set; } = name;
-    public long TotalOrders { get; private set; } = totalOrders.Count();
-    public decimal QuantityPurchased { get; private set; } = quantityPurchased;
-    public decimal TotalPrice { get; private set; } = totalPrice;
+    public long CustomerId { get; private set; }
+    public string Name { get; private set; }
+    public long TotalOrders { get; private set; }
+    public decimal QuantityPurchased { get; private set; }
+    public decimal TotalPrice { get; private set; }
+
+    public OutputCustomerOrder(long customerId, long totalOrders, decimal quantityPurchased, decimal totalPrice)
+    {
+        CustomerId = customerId;
+        TotalOrders = totalOrders;
+        QuantityPurchased = quantityPurchased;
+        TotalPrice = totalPrice;
+    }
+
+    [JsonConstructor]
+    public OutputCustomerOrder(long customerId, string name, long totalOrders, decimal quantityPurchased, decimal totalPrice)
+    {
+        CustomerId = customerId;
+        Name = name;
+        TotalOrders = totalOrders;
+        QuantityPurchased = quantityPurchased;
+        TotalPrice = totalPrice;
+    }
 }

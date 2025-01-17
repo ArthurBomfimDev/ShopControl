@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Persistence.Context;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
+using System.Runtime.Intrinsics.Arm;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Repository
 {
@@ -72,41 +74,50 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
 
         public async Task<decimal> Total()
         {
-            return (from i in _dbSet
-                    select i.Total).Count();
+            return await (from i in _dbSet
+                          select i.Total).SumAsync(j => j);
         }
-        //public void teste2()
-        //{
-        //    var totalSeller = (from i in _dbSet
-        //                       from j in i.ListProductOrder
-        //                       group j by j.Product.BrandId into g
-        //                       let totalSaleQuantity = g.Sum(i => i.Quantity)
-        //                       let totalSaleValue = g.Sum(i => i.SubTotal)
-        //                       select new OutputMaxSaleValueProduct(g.Key.Id, g.Key.Name, g.Key.Code, g.Key.Description, totalSaleValue, g.Key.BrandId, totalSaleQuantity)).OrderByDescending(i => i.TotalValue).ToList();
 
-        //var totalSeller2 = (from i in _dbSet
-        //                    from j in i.ListProductOrder
-        //                    join product in _context.Product on j.ProductId equals product.Id
-        //                    join brand in _context.Brand on product.BrandId equals brand.Id
-        //                    group j by brand into g
-        //                    let totalSaleQuantity = g.Sum(i => i.Quantity)
-        //                    let totalSaleValue = g.Sum(i => i.SubTotal)
-        //                    select new
-        //                    {
-        //                        BrandCode = g.Key.Code,
-        //                        BrandDescription = g.Key.Description,
-        //                        TotalValue = totalSaleValue
-        //                    }).OrderByDescending(i => i.TotalValue).FirstOrDefault();
-        //}
+        public async Task<HighestAverageSalesValue?> HighestAverageSalesValue()
+        {
+            return (from i in _dbSet
+                    from j in i.ListProductOrder
+                    group j by j.OrderId into g
+                    orderby g.Average(n => n.SubTotal) descending
+                    select new HighestAverageSalesValue
+                    (
+                        g.Key,
+                        g.Average(k => k.SubTotal),
+                        g.Sum(l => l.SubTotal),
+                        g.Sum(m => m.Quantity)
+                    )).FirstOrDefault();
+        }
 
+        public async Task<OutputBrandBestSeller?> BrandBestSeller()
+        {
+            return (from i in _dbSet
+                    from j in i.ListProductOrder
+                    group j by j.Product.Id into g
+                    select new OutputBrandBestSeller(
+                        g.Key,
+                        g.Sum(i => i.Quantity),
+                        g.Sum(i => i.SubTotal)
+                        )).ToList().OrderByDescending(i => i.TotalSell).FirstOrDefault();
+        }
 
-        //public async Task<List<Order>> GetProductOrdersLINQ()
-        //{
-        //    var get = await _context.Set<Order>()
-        //        .Include(o => o.Customer)
-        //        .Include(o => o.ListProductOrder)
-        //        .ThenInclude(po => po.Product).ToListAsync();
-        //    return get;
-        //}
+        public async Task<OutputCustomerOrder?> BiggestBuyer()
+        {
+            return (from i in _dbSet
+                    from j in i.ListProductOrder
+                    group j by i.CustomerId into g
+                    orderby g.Sum(i => i.Quantity) descending
+                    select new OutputCustomerOrder
+                    (
+                        g.Key,
+                        g.Sum(i => i.OrderId),
+                        g.Sum(p => p.Quantity),
+                        g.Sum(p => p.SubTotal)
+                    )).FirstOrDefault();
+        }
     }
 }

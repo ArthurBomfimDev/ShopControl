@@ -66,24 +66,23 @@ public class OrderService : IOrderService
         return await _orderRepository.GetMostOrderedProduct();
     }
 
-    public Task<OutputCustomerOrder> BiggestBuyer()
+    public async Task<OutputCustomerOrder> BiggestBuyer()
     {
-        throw new NotImplementedException();
+        var buyer = await _orderRepository.BiggestBuyer();
+        var customer = await _customerRepository.Get(buyer.CustomerId);
+        return new OutputCustomerOrder(buyer.CustomerId, customer.Name, buyer.TotalOrders, buyer.QuantityPurchased, buyer.TotalPrice);
     }
 
-    public Task<OutputCustomerOrder> BiggestBuyerPrice()
+    public async Task<OutputBrandBestSeller> BrandBestSeller()
     {
-        throw new NotImplementedException();
+        var bestSeller = await _orderRepository.BrandBestSeller();
+        var brand = await _brandRepository.Get(bestSeller.Id);
+        return new OutputBrandBestSeller(brand.Id, brand.Name, brand.Code, brand.Description, bestSeller.TotalSell, bestSeller.TotalPrice);
     }
 
-    public Task<OutputMaxSaleValueProduct> OrderBestSeller()
+    public async Task<HighestAverageSalesValue> HighestAverageSalesValue()
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<decimal> Avarege()
-    {
-        throw new NotImplementedException();
+        return await _orderRepository.HighestAverageSalesValue();
     }
 
     public async Task<string> Total()
@@ -91,160 +90,6 @@ public class OrderService : IOrderService
         var total = await _orderRepository.Total();
         return $"O Total vendido: R$: {total}";
     }
-    //public async task<baseresponse<decimal>> total()
-    //{
-    //    var order = await _orderrepository.getproductorders();
-    //    var response = new baseresponse<decimal>();
-    //    if (order.count() == 0)
-    //    {
-    //        response.success = false;
-    //        response.adderrormessage(" >>> lista de pedidos vazia <<<");
-    //    }
-
-    //    var total = (from i in order
-    //                 select i.total).sum();
-
-    //    response.content = total;
-    //    return response;
-    //}
-
-    //public async task<baseresponse<list<productsell>>> productsell()
-    //{
-    //    var order = await _orderrepository.getproductorders();
-    //    var totalseller = (from i in order
-    //                       from j in i.listproductorder
-    //                       group j by j.productid into g
-    //                       select new
-    //                       {
-    //                           productid = g.key,
-    //                           totalseller = g.sum(p => p.quantity),
-    //                           totalprice = g.sum(p => p.subtotal)
-    //                       }).tolist();
-    //    return new baseresponse<list<productsell>>() { success = true, content = totalseller.select(p => new productsell(p.productid, p.totalseller, p.totalprice)).tolist() };
-    //}
-
-    //public async task<baseresponse<outputsellproduct>> bestsellerproduct()
-    //{
-    //    var totalseller = await productsell();
-    //    if (!totalseller.success)
-    //        return new baseresponse<outputsellproduct>() { success = false, message = totalseller.message };
-    //    var bestseller = totalseller.content.maxby(x => x.totalseller);
-    //    var bestsellerproduct = await _productrepository.get(bestseller.productid);
-    //    var output = new baseresponse<outputsellproduct> { success = true, content = new outputsellproduct(bestsellerproduct.id, bestsellerproduct.name, bestsellerproduct.code, bestsellerproduct.description, bestsellerproduct.price, bestsellerproduct.brandid, bestsellerproduct.stock, bestseller.totalseller) };
-    //    return output;
-    //}
-
-    //public async task<baseresponse<list<outputsellproduct>>> topsellers()
-    //{
-    //    var totalseller = await productsell();
-    //    if (!totalseller.success)
-    //    {
-    //        return new baseresponse<list<outputsellproduct>>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
-    //    }
-    //    var top = totalseller.content.orderbydescending(t => t.totalseller).take(5);
-    //    var list = new list<outputsellproduct>();
-    //    foreach (var item in top)
-    //    {
-    //        var bestsellerproduct = await _productrepository.get(item.productid);
-    //        list.add(new outputsellproduct(bestsellerproduct.id, bestsellerproduct.name, bestsellerproduct.code, bestsellerproduct.description, bestsellerproduct.price, bestsellerproduct.brandid, bestsellerproduct.stock, item.totalseller));
-    //    }
-    //    list.orderby(p => p.quantitysold);
-    //    return new baseresponse<list<outputsellproduct>>() { success = true, content = list };
-    //}
-
-    //public async task<baseresponse<outputsellproduct>> leastsoldproduct()
-    //{
-    //    var totalseller = await productsell();
-    //    if (!totalseller.success)
-    //    {
-    //        return new baseresponse<outputsellproduct>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
-    //    }
-    //    var bestseller = totalseller.content.minby(x => x.totalseller);
-    //    var bestsellerproduct = await _productrepository.get(bestseller.productid);
-    //    var output = new outputsellproduct(bestsellerproduct.id, bestsellerproduct.name, bestsellerproduct.code, bestsellerproduct.description, bestsellerproduct.price, bestsellerproduct.brandid, bestsellerproduct.stock, bestseller.totalseller);
-    //    return new baseresponse<outputsellproduct>() { success = true, content = output };
-    //}
-
-    //public async task<baseresponse<list<buy>>> clientorder()
-    //{
-    //    var order = await _orderrepository.getproductorderslinq();
-    //    if (order.count() == 0)
-    //        return new baseresponse<list<buy>>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
-    //    var buyer = (from i in order
-    //                 from j in i.listproductorder
-    //                 group j by i.customerid into g
-    //                 select new
-    //                 {
-    //                     clientid = g.key,
-    //                     orders = g.select(p => p.orderid),
-    //                     totalbuyer = g.sum(p => p.quantity),
-    //                     totalprice = g.sum(p => p.subtotal)
-    //                 }).tolist();
-    //    return new baseresponse<list<buy>>() { success = true, content = buyer.select(b => new buy(b.clientid, b.orders, b.totalbuyer, b.totalprice)).tolist() };
-    //}
-
-    //public async task<baseresponse<outputcustomerorder>> biggestbuyer()
-    //{
-    //    var order = await clientorder();
-    //    if (!order.success)
-    //        return new baseresponse<outputcustomerorder>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
-    //    var buyer = order.content.maxby(b => b.totalbuyer);
-    //    var client = await _clientrepository.get(buyer.clientid);
-    //    return new baseresponse<outputcustomerorder>() { success = true, content = new outputcustomerorder(buyer.clientid, client.name, buyer.orders, buyer.totalbuyer, buyer.totalprice) };
-    //}
-
-    //public async task<baseresponse<outputcustomerorder>> biggestbuyerprice()
-    //{
-    //    var order = await clientorder();
-    //    if (!order.success)
-    //        return new baseresponse<outputcustomerorder>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
-    //    var buyer = order.content.maxby(b => b.totalprice);
-    //    var client = await _clientrepository.get(buyer.clientid);
-    //    return new baseresponse<outputcustomerorder>() { success = true, content = new outputcustomerorder(buyer.clientid, client.name, buyer.orders, buyer.totalbuyer, buyer.totalprice) };
-    //}
-
-    //public async task<baseresponse<outputbrandbestseller>> brandbestseller()
-    //{
-    //    var order = await _orderrepository.getproductorderslinq();
-    //    if (order.count() == 0)
-    //        return new baseresponse<outputbrandbestseller>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
-    //    var brandshere = (from i in order
-    //                      from j in i.listproductorder
-    //                      group j by j.productid into g
-    //                      select new
-    //                      {
-    //                          productid = g.key,
-    //                          totalseller = g.sum(p => p.quantity),
-    //                          totalprice = g.sum(p => p.subtotal),
-    //                          brandid = _productrepository.brandid(g.key)
-    //                      }).tolist();
-    //    var brandbestseller = (from i in brandshere
-    //                           group i by i.brandid into g
-    //                           select new
-    //                           {
-    //                               brandid = g.key,
-    //                               totalsell = g.sum(b => b.totalseller),
-    //                               totalprice = g.sum(b => b.totalprice),
-    //                           }).maxby(b => b.totalsell);
-    //    var brand = await _brandrepository.get(brandbestseller.brandid);
-    //    return new baseresponse<outputbrandbestseller>() { success = true, content = new outputbrandbestseller(brand.id, brand.name, brand.code, brand.description, brandbestseller.totalsell, brandbestseller.totalprice) };
-    //}
-
-    //public async task<baseresponse<decimal>> avarege()
-    //{
-    //    var order = await _orderrepository.getproductorders();
-    //    if (order.count() == 0)
-    //        return new baseresponse<decimal>() { success = false, message = { " >>> lista de pedidos vazia <<<" } };
-    //    var avarage = (from i in order
-    //                   from j in i.listproductorder
-    //                   group j by j.orderid into g
-    //                   select new
-    //                   {
-    //                       orderid = g.key,
-    //                       avarageprice = g.average(o => o.subtotal),
-    //                   }).maxby(o => o.avarageprice);
-    //    return new baseresponse<decimal>() { success = true, content = avarage.avarageprice };
-    //}
     #endregion
 
     #region Create Order

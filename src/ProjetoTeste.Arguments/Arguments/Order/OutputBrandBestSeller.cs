@@ -2,13 +2,30 @@
 
 namespace ProjetoTeste.Arguments.Arguments.Order;
 
-[method: JsonConstructor]
-public class OutputBrandBestSeller(long id, string name, string code, string description, int totalSell, decimal totalPrice)
+public class OutputBrandBestSeller
 {
-    public long Id { get; private set; } = id;
-    public string Name { get; private set; } = name;
-    public string Code { get; private set; } = code;
-    public string Description { get; private set; } = description;
-    public int TotalSell { get; private set; } = totalSell;
-    public decimal TotalPrice { get; private set; } = totalPrice;
+    public long Id { get; private set; }
+    public string? Name { get; private set; }
+    public string? Code { get; private set; }
+    public string? Description { get; private set; }
+    public int TotalSell { get; private set; }
+    public decimal TotalPrice { get; private set; }
+
+    public OutputBrandBestSeller(long id, int totalSell, decimal totalPrice)
+    {
+        Id = id;
+        TotalSell = totalSell;
+        TotalPrice = totalPrice;
+    }
+
+    [JsonConstructor]
+    public OutputBrandBestSeller(long id, string name, string code, string description, int totalSell, decimal totalPrice)
+    {
+        Id = id;
+        Name = name;
+        Code = code;
+        Description = description;
+        TotalSell = totalSell;
+        TotalPrice = totalPrice;
+    }
 }

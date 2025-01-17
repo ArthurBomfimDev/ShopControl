@@ -57,32 +57,25 @@ public class OrderController : BaseController
         return Ok(order);
     }
 
-    [HttpGet("BiggestBuyer/Quantity")]
+    [HttpGet("BiggestBuyer")]
     public async Task<ActionResult<OutputCustomerOrder>> BiggestBuyer()
     {
         var client = await _orderService.BiggestBuyer();
         return Ok(client);
     }
 
-    [HttpGet("BiggestBuyer/Price")]
-    public async Task<ActionResult<OutputCustomerOrder>> BiggestBuyerPrice()
-    {
-        var client = await _orderService.BiggestBuyerPrice();
-        return Ok(client);
-    }
-
     [HttpGet("BrandBestSeller")]
     public async Task<ActionResult<OutputBrandBestSeller>> Brand()
     {
-        var brand = await _orderService.OrderBestSeller();
+        var brand = await _orderService.BrandBestSeller();
         return Ok(brand);
     }
-    [HttpGet("MostAvarege")]
-    public async Task<ActionResult> MostAvarege()
+
+    [HttpGet("HighestAverageSalesValue")]
+    public async Task<ActionResult> HighestAverageSalesValue()
     {
-        var avarage = await _orderService.Avarege();
-        var response = "Maior Média de vendas: " + avarage;
-        return Ok(response);
+        var avarage = await _orderService.HighestAverageSalesValue();
+        return Ok(avarage);
     }
 
     [HttpGet("Total")]
