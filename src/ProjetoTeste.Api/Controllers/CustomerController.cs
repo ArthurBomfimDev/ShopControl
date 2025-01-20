@@ -24,16 +24,16 @@ public class CustomerController : BaseController
     }
 
     [HttpGet("Id")]
-    public async Task<ActionResult> Get(long id)
+    public async Task<ActionResult> Get(InputIdentifyViewCustomer inputIdentifyViewCustomer)
     {
-        var get = await _customerService.Get(id);
+        var get = await _customerService.Get(inputIdentifyViewCustomer);
         return Ok(get);
     }
 
-    [HttpGet("Id/Multiple")]
-    public async Task<ActionResult> GetListByListId(List<long> idList)
+    [HttpPost("Id/Multiple")]
+    public async Task<ActionResult> GetListByListId(List<InputIdentifyViewCustomer> listInputIdentifyViewCustomer)
     {
-        var get = await _customerService.GetListByListId(idList);
+        var get = await _customerService.GetListByListId(listInputIdentifyViewCustomer);
         return Ok(get);
     }
 
@@ -82,9 +82,9 @@ public class CustomerController : BaseController
     }
 
     [HttpDelete]
-    public async Task<ActionResult> Delete(long id)
+    public async Task<ActionResult> Delete(InputIdentifyDeleteCustomer inputIdentifyDeleteCustomer)
     {
-        BaseResponse<bool> delete = await _customerService.Delete(id);
+        BaseResponse<bool> delete = await _customerService.Delete(inputIdentifyDeleteCustomer);
         if (!delete.Success)
         {
             return BadRequest(delete);
@@ -93,9 +93,9 @@ public class CustomerController : BaseController
     }
 
     [HttpDelete("Multiple")]
-    public async Task<ActionResult> Delete(List<long> listId)
+    public async Task<ActionResult> Delete(List<InputIdentifyDeleteCustomer> listInputIdentifyDeleteCustomer)
     {
-        BaseResponse<bool> delete = await _customerService.DeleteMultiple(listId);
+        BaseResponse<bool> delete = await _customerService.DeleteMultiple(listInputIdentifyDeleteCustomer);
         if (!delete.Success)
         {
             return BadRequest(delete);

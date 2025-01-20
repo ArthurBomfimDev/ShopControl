@@ -10,6 +10,7 @@ namespace ProjetoTeste.Infrastructure.Application;
 
 public class ProductService : IProductService
 {
+    #region Dependency Injection
     private readonly IProductRepository _productRepository;
     private readonly IBrandRepository _brandRepository;
     private readonly ProductValidateService _productValidateService;
@@ -20,6 +21,7 @@ public class ProductService : IProductService
         _brandRepository = brandRepository;
         _productValidateService = productValidateService;
     }
+    #endregion
 
     #region Get
     public async Task<List<OutputProduct>> GetAll()
@@ -29,22 +31,22 @@ public class ProductService : IProductService
                 select i.ToOutputProduct()).ToList();
     }
 
-    public async Task<OutputProduct> Get(long id)
+    public async Task<OutputProduct> Get(InputIdentifyViewProduct inputIdentifyViewProduct)
     {
-        var product = await _productRepository.Get(id);
+        var product = await _productRepository.Get(inputIdentifyViewProduct.Id);
         return product.ToOutputProduct();
     }
 
-    public async Task<List<OutputProduct>> GetListByListId(List<long> idList)
+    public async Task<List<OutputProduct>> GetListByListId(List<InputIdentifyViewProduct> listInputIdentifyViewProduct)
     {
-        var product = await _productRepository.GetListByListId(idList);
+        var product = await _productRepository.GetListByListId(listInputIdentifyViewProduct.Select(i => i.Id).ToList());
         return (from i in product
                 select i.ToOutputProduct()).ToList();
     }
 
-    public async Task<List<OutputProduct>> GetListByBrandId(long id)
+    public async Task<List<OutputProduct>> GetListByBrandId(InputIdentifyViewBrand inputIdentifyViewBrand)
     {
-        var listByBrandId = await _productRepository.GetListByBrandId(id);
+        var listByBrandId = await _productRepository.GetListByBrandId(inputIdentifyViewBrand.Id);
         return (from i in listByBrandId select i.ToOutputProduct()).ToList();
     }
     #endregion
@@ -151,20 +153,20 @@ public class ProductService : IProductService
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<bool>> Delete(long id)
+    public async Task<BaseResponse<bool>> Delete(InputIdentifyDeleteProduct inputIdentifyDeleteProduct)
     {
-        return await DeleteMultiple([id]);
+        return await DeleteMultiple([inputIdentifyDeleteProduct]);
     }
 
-    public async Task<BaseResponse<bool>> DeleteMultiple(List<long> idList)
+    public async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteProduct> listInputIdentifyDeleteProduct)
     {
         var response = new BaseResponse<bool>();
-        var listOriginalIdentity = await _productRepository.GetListByListId(idList);
-        var listProductDelete = (from i in idList
+        var listOriginalIdentity = await _productRepository.GetListByListId(listInputIdentifyDeleteProduct.Select(i => i.Id).ToList());
+        var listProductDelete = (from i in listInputIdentifyDeleteProduct
                                  select new
                                  {
                                      InputDeleteProduct = i,
-                                     listOriginalIdentity = listOriginalIdentity.FirstOrDefault(j => j.Id == i).ToProductDTO(),
+                                     listOriginalIdentity = listOriginalIdentity.FirstOrDefault(j => j.Id == i.Id).ToProductDTO(),
                                  }).ToList();
 
         List<ProductValidate> listProductValidate = listProductDelete.Select(i => new ProductValidate().ValidateDelete(i.InputDeleteProduct, i.listOriginalIdentity)).ToList();

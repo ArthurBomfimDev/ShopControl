@@ -8,8 +8,8 @@ namespace ProjetoTeste.Infrastructure.Interface.Service;
 public interface IOrderService
 {
     Task<BaseResponse<List<OutputOrder>>> GetAll();
-    Task<BaseResponse<List<OutputOrder>>> Get(long id);
-    Task<BaseResponse<List<OutputOrder>>> GetListByListId(List<long> idList);
+    Task<BaseResponse<List<OutputOrder>>> Get(InputIdentifyViewOrder inputIdentifyViewOrder);
+    Task<BaseResponse<List<OutputOrder>>> GetListByListId(List<InputIdentifyViewOrder> listInputIdentifyViewOrder);
     Task<OutputMaxSaleValueProduct> BestSellerProduct();
     Task<OutputMaxSaleValueProduct> LeastSoldProduct();
     Task<List<OutputMaxSaleValueProduct>> GetMostOrderedProduct();

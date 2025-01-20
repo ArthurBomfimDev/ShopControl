@@ -7,13 +7,13 @@ namespace ProjetoTeste.Infrastructure.Interface.Service;
 public interface IProductService
 {
     Task<List<OutputProduct>> GetAll();
-    Task<OutputProduct> Get(long id);
-    Task<List<OutputProduct>> GetListByListId(List<long> idList);
-    Task<List<OutputProduct>> GetListByBrandId(long id);
+    Task<OutputProduct> Get(InputIdentifyViewProduct inputIdentifyViewProduct);
+    Task<List<OutputProduct>> GetListByListId(List<InputIdentifyViewProduct> listInputIdentifyViewProduct);
+    Task<List<OutputProduct>> GetListByBrandId(InputIdentifyViewBrand inputIdentifyViewBrand);
     Task<BaseResponse<OutputProduct>> Create(InputCreateProduct inputCreateProduct);
     Task<BaseResponse<List<OutputProduct>>> CreateMultiple(List<InputCreateProduct> listinputCreateProduct);
     Task<BaseResponse<bool>> Update(InputIdentityUpdateProduct inputIdentityUpdateProduct);
     Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateProduct> listInputIdentityUpdateProduct);
-    Task<BaseResponse<bool>> Delete(long id);
-    Task<BaseResponse<bool>> DeleteMultiple(List<long> idList);
+    Task<BaseResponse<bool>> Delete(InputIdentifyDeleteProduct inputIdentifyDeleteProduct);
+    Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteProduct> listInputIdentifyDeleteProduct);
 }

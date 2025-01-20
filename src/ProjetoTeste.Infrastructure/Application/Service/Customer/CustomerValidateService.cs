@@ -265,12 +265,12 @@ public class CustomerValidateService
         _ = (from i in listCustomerValidate
              where i.Original == null
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"Cliente com ID: {i.InputDeleteCustomer} é inválido. Verifique os dados.")
+             let message = response.AddErrorMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer} é inválido. Verifique os dados.")
              select i).ToList();
 
         var delete = (from i in listCustomerValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"Cliente com ID: {i.InputDeleteCustomer} foi excluído com sucesso.")
+                      let message = response.AddSuccessMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer} foi excluído com sucesso.")
                       select i).ToList();
 
         if (!delete.Any())

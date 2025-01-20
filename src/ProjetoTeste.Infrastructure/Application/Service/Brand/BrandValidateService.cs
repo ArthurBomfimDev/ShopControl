@@ -128,32 +128,32 @@ public class BrandValidateService
         _ = (from i in listBrandValidate
              where i.RepeatedInputCreate != null
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O Id: {i.InputDeleteBrand} foi digitado repetidas vezes, não é possível deletar a marca com esse Id")
+             let message = response.AddErrorMessage($"O Id: {i.InputIdentifyDeleteBrand} foi digitado repetidas vezes, não é possível deletar a marca com esse Id")
              select i).ToList();
 
         _ = (from i in listBrandValidate
              where i.OriginalBrandDTO == null
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca com o Id: {i.InputDeleteBrand} não foi encontrada. Por favor, verifique o ID e tente novamente.")
+             let message = response.AddErrorMessage($"A marca com o Id: {i.InputIdentifyDeleteBrand} não foi encontrada. Por favor, verifique o ID e tente novamente.")
              select i).ToList();
 
         _ = (from i in listBrandValidate
              where i.BrandWithProduct != 0
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca com o Id: {i.InputDeleteBrand} não pode ser deletada, pois possui produtos cadastrados.")
+             let message = response.AddErrorMessage($"A marca com o Id: {i.InputIdentifyDeleteBrand} não pode ser deletada, pois possui produtos cadastrados.")
              select i).ToList();
 
         var delete = (from i in listBrandValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"A marca com o Id: {i.InputDeleteBrand} foi deletada com sucesso.")
-                      select i.InputDeleteBrand).ToList();
+                      let message = response.AddSuccessMessage($"A marca com o Id: {i.InputIdentifyDeleteBrand} foi deletada com sucesso.")
+                      select i.InputIdentifyDeleteBrand).ToList();
         if (!delete.Any())
         {
             response.Success = false;
             return response;
         }
 
-        response.Content = delete;
+        response.Content = delete.Select(i => i.Id).ToList();
         return response;
     }
     #endregion

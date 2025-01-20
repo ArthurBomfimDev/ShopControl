@@ -160,18 +160,18 @@ public class ProductValidateService
         _ = (from i in listProductValidate
              where i.Original == null
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"Produto com Id: {i.InputDeleteProduct} não foi encontrado")
+             let message = response.AddErrorMessage($"Produto com Id: {i.InputIdentifyDeleteProduct} não foi encontrado")
              select i).ToList();
 
         _ = (from i in listProductValidate
              where !i.Invalid && i.Original.Stock > 0
              let setInvald = i.SetInvalid()
-             let message = response.AddErrorMessage($"O Produto: {i.Original.Name} com Id: {i.InputDeleteProduct} não pode ser deletado pois possui estoque: {i.Original.Stock}")
+             let message = response.AddErrorMessage($"O Produto: {i.Original.Name} com Id: {i.InputIdentifyDeleteProduct} não pode ser deletado pois possui estoque: {i.Original.Stock}")
              select i).ToList();
 
         var delete = (from i in listProductValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"O Produto: {i.Original.Name} com Id: {i.InputDeleteProduct} foi deletado com sucesso")
+                      let message = response.AddSuccessMessage($"O Produto: {i.Original.Name} com Id: {i.InputIdentifyDeleteProduct} foi deletado com sucesso")
                       select i).ToList();
 
         if (!delete.Any())

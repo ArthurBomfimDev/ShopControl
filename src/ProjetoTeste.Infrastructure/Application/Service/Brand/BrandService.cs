@@ -10,6 +10,7 @@ namespace ProjetoTeste.Infrastructure.Application;
 
 public class BrandService : IBrandService
 {
+    #region Dependency Injection
     private readonly IBrandRepository _brandRepository;
     private readonly BrandValidateService _brandValidadeService;
     private readonly IProductRepository _productRepository;
@@ -20,6 +21,7 @@ public class BrandService : IBrandService
         _brandValidadeService = brandValidadeService;
         _productRepository = productRepository;
     }
+    #endregion
 
     #region Get
     public async Task<List<OutputBrand>> GetAll()
@@ -28,15 +30,15 @@ public class BrandService : IBrandService
         return (from i in brandList select i.ToOutputBrand()).ToList();
     }
 
-    public async Task<OutputBrand> Get(long id)
+    public async Task<OutputBrand> Get(InputIdentifyViewBrand inputIdentifyViewBrand)
     {
-        var brand = await _brandRepository.Get(id);
+        var brand = await _brandRepository.Get(inputIdentifyViewBrand.Id);
         return brand.ToOutputBrand();
     }
 
-    public async Task<List<OutputBrand>> GetListByListId(List<long> listId)
+    public async Task<List<OutputBrand>> GetListByListId(List<InputIdentifyViewBrand> listInputIdentifyViewBrand)
     {
-        var brand = await _brandRepository.GetListByListId(listId);
+        var brand = await _brandRepository.GetListByListId(listInputIdentifyViewBrand.Select(i => i.Id).ToList());
         return (from i in brand
                 select i.ToOutputBrand()).ToList();
     }
@@ -137,27 +139,27 @@ public class BrandService : IBrandService
     #endregion
 
     #region Delete
-    public Task<BaseResponse<bool>> Delete(long id)
+    public Task<BaseResponse<bool>> Delete(InputIdentifyDeleteBrand inputIdentifyDeleteBrand)
     {
-        return DeleteMultiple([id]);
+        return DeleteMultiple([inputIdentifyDeleteBrand]);
     }
 
-    public async Task<BaseResponse<bool>> DeleteMultiple(List<long> listId)
+    public async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteBrand> listInputIdentifyDeleteBrand)
     {
         var response = new BaseResponse<bool>();
-        var listOriginalBrand = await _brandRepository.GetListByListId(listId);
-        var listRepeteInputDelete = (from i in listId
-                                     where listId.Count(j => j == i) > 1
+        var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentifyDeleteBrand.Select(i => i.Id).ToList());
+        var listRepeteInputDelete = (from i in listInputIdentifyDeleteBrand
+                                     where listInputIdentifyDeleteBrand.Count(j => j == i) > 1
                                      select i).ToList();
 
-        var listBrandWithProduct = await _productRepository.BrandId(listId);
-        var listDelete = (from i in listId
+        var listBrandWithProduct = await _productRepository.BrandId(listInputIdentifyDeleteBrand.Select(i => i.Id).ToList());
+        var listDelete = (from i in listInputIdentifyDeleteBrand
                           select new
                           {
                               InputDeleteBrand = i,
-                              OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Id == i).ToBrandDTO(),
+                              OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Id == i.Id).ToBrandDTO(),
                               RepeteInputDelete = listRepeteInputDelete.FirstOrDefault(k => k == i),
-                              BrandWithProduct = listBrandWithProduct.FirstOrDefault(l => l == i)
+                              BrandWithProduct = listBrandWithProduct.FirstOrDefault(l => l == i.Id)
                           }).ToList();
         List<BrandValidate> listBrandValidate = listDelete.Select(i => new BrandValidate().ValidateDelete(i.InputDeleteBrand, i.OriginalBrand, i.RepeteInputDelete, i.BrandWithProduct)).ToList();
 
@@ -175,9 +177,4 @@ public class BrandService : IBrandService
         return response;
     }
     #endregion
-
-    public async Task<List<Brand>> GetDuplicates(List<Brand> listBrand, Brand item)
-    {
-        return listBrand.Where(other => !ReferenceEquals(item, other) && other.Code == item.Code).ToList();
-    }
 }

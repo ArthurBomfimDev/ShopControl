@@ -10,6 +10,7 @@ namespace ProjetoTeste.Infrastructure.Application;
 
 public class CustomerService : ICustomerService
 {
+    #region Dependency Injection
     private readonly ICustomerRepository _customerRepository;
     private readonly CustomerValidateService _customerValidateService;
 
@@ -18,6 +19,7 @@ public class CustomerService : ICustomerService
         _customerRepository = customerRepository;
         _customerValidateService = customerValidateService;
     }
+    #endregion
 
     #region Get
     public async Task<List<OutputCustomer>> GetAll()
@@ -26,15 +28,15 @@ public class CustomerService : ICustomerService
         return (from i in customerList select i.ToOutputCustomer()).ToList();
     }
 
-    public async Task<OutputCustomer> Get(long id)
+    public async Task<OutputCustomer> Get(InputIdentifyViewCustomer inputIdentifyViewCustomer)
     {
-        var customer = await _customerRepository.Get(id);
+        var customer = await _customerRepository.Get(inputIdentifyViewCustomer.Id);
         return customer.ToOutputCustomer();
     }
 
-    public async Task<List<OutputCustomer>> GetListByListId(List<long> listId)
+    public async Task<List<OutputCustomer>> GetListByListId(List<InputIdentifyViewCustomer> listInputIdentifyViewCustomer)
     {
-        var customerList = await _customerRepository.GetListByListId(listId);
+        var customerList = await _customerRepository.GetListByListId(listInputIdentifyViewCustomer.Select(i => i.Id).ToList());
         return (from i in customerList select i.ToOutputCustomer()).ToList();
     }
     #endregion
@@ -114,20 +116,20 @@ public class CustomerService : ICustomerService
     #endregion
 
     #region Delete
-    public Task<BaseResponse<bool>> Delete(long id)
+    public async Task<BaseResponse<bool>> Delete(InputIdentifyDeleteCustomer inputIdentifyDeleteCustomer)
     {
-        throw new NotImplementedException();
+        return await DeleteMultiple([inputIdentifyDeleteCustomer]);
     }
 
-    public async Task<BaseResponse<bool>> DeleteMultiple(List<long> listId)
+    public async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteCustomer> listInputIdentifyDeleteCustomer)
     {
         var response = new BaseResponse<bool>();
-        var listOriginal = await _customerRepository.GetListByListId(listId);
-        var listDelete = (from i in listId
+        var listOriginal = await _customerRepository.GetListByListId(listInputIdentifyDeleteCustomer.Select(i => i.Id).ToList());
+        var listDelete = (from i in listInputIdentifyDeleteCustomer
                           select new
                           {
                               InputDeleteCustomer = i,
-                              Original = listOriginal.FirstOrDefault(j => j.Id == i).ToCustomerDTO()
+                              Original = listOriginal.FirstOrDefault(j => j.Id == i.Id).ToCustomerDTO()
                           });
 
         List<CustomerValidate> customerValidate = listDelete.Select(i => new CustomerValidate().ValidateDelete(i.InputDeleteCustomer, i.Original)).ToList();

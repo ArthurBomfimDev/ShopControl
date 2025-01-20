@@ -6,7 +6,7 @@ public class CustomerValidate : BaseValidate
 {
     public InputCreateCustomer? InputCreateCustomer { get; private set; }
     public InputIdentityUpdateCustomer? InputIdentityUpdateCustomer { get; private set; }
-    public long? InputDeleteCustomer { get; private set; }
+    public InputIdentifyDeleteCustomer? InputIdentifyDeleteCustomer { get; private set; }
     public CustomerDTO? Original { get; private set; }
     public long? RepeteId { get; private set; }
 
@@ -24,9 +24,9 @@ public class CustomerValidate : BaseValidate
         RepeteId = repeteId;
         return this;
     }
-    public CustomerValidate ValidateDelete(long? inputDeleteCustomer, CustomerDTO? original)
+    public CustomerValidate ValidateDelete(InputIdentifyDeleteCustomer? inputIdentifyDeleteCustomer, CustomerDTO? original)
     {
-        InputDeleteCustomer = inputDeleteCustomer;
+        InputIdentifyDeleteCustomer = inputIdentifyDeleteCustomer;
         Original = original;
         return this;
     }

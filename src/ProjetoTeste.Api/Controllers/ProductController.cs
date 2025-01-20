@@ -24,16 +24,23 @@ public class ProductController : BaseController
     }
 
     [HttpGet("Id")]
-    public async Task<ActionResult<OutputProduct>> Get(long id)
+    public async Task<ActionResult<OutputProduct>> Get(InputIdentifyViewProduct inputIdentifyViewProduc)
     {
-        var product = await _productService.Get(id);
+        var product = await _productService.Get(inputIdentifyViewProduc);
         return Ok(product);
     }
 
-    [HttpGet("Id/Multiple")]
-    public async Task<ActionResult<OutputProduct>> GetListByListId(List<long> listId)
+    [HttpPost("Id/Multiple")]
+    public async Task<ActionResult<OutputProduct>> GetListByListId([FromBody] List<InputIdentifyViewProduct> listInputIdentifyViewProduct)
     {
-        var product = await _productService.GetListByListId(listId);
+        var product = await _productService.GetListByListId(listInputIdentifyViewProduct);
+        return Ok(product);
+    }
+
+    [HttpGet("GetListByBrandId")]
+    public async Task<ActionResult<OutputProduct>> GetListByBrandId([FromQuery] InputIdentifyViewBrand inputIdentifyViewBrand)
+    {
+        var product = await _productService.GetListByBrandId(inputIdentifyViewBrand);
         return Ok(product);
     }
 
@@ -82,9 +89,9 @@ public class ProductController : BaseController
     }
 
     [HttpDelete]
-    public async Task<ActionResult> Delete(long id)
+    public async Task<ActionResult> Delete(InputIdentifyDeleteProduct inputIdentifyDeleteProduct)
     {
-        var deletePrdocut = await _productService.Delete(id);
+        var deletePrdocut = await _productService.Delete(inputIdentifyDeleteProduct);
         if (!deletePrdocut.Success)
         {
             return BadRequest(deletePrdocut.Message);
@@ -93,9 +100,9 @@ public class ProductController : BaseController
     }
 
     [HttpDelete("Multiple")]
-    public async Task<ActionResult> Delete(List<long> listId)
+    public async Task<ActionResult> Delete(List<InputIdentifyDeleteProduct> listInputIdentifyDeleteProduct)
     {
-        var deletePrdocut = await _productService.DeleteMultiple(listId);
+        var deletePrdocut = await _productService.DeleteMultiple(listInputIdentifyDeleteProduct);
         if (!deletePrdocut.Success)
         {
             return BadRequest(deletePrdocut.Message);

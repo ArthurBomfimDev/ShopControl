@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Infrastructure.Interface.Service;
@@ -23,16 +24,16 @@ public class OrderController : BaseController
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<List<OutputOrder>>> Get(long id)
+    public async Task<ActionResult<List<OutputOrder>>> Get(InputIdentifyViewOrder inputIdentifyViewOrder)
     {
-        var get = await _orderService.Get(id);
+        var get = await _orderService.Get(inputIdentifyViewOrder);
         return Ok(get.Content);
     }
 
-    [HttpGet("Id/Multiple")]
-    public async Task<ActionResult<List<OutputOrder>>> Get(List<long> listId)
+    [HttpPost("Id/Multiple")]
+    public async Task<ActionResult<List<OutputOrder>>> Get(List<InputIdentifyViewOrder> listInputIdentifyViewOrder)
     {
-        var get = await _orderService.GetListByListId(listId);
+        var get = await _orderService.GetListByListId(listInputIdentifyViewOrder);
         return Ok(get.Content);
     }
 

@@ -24,16 +24,16 @@ public class BrandController : BaseController
     }
 
     [HttpGet("Id")]
-    public async Task<ActionResult<OutputBrand?>> Get(long id)
+    public async Task<ActionResult<OutputBrand?>> Get(InputIdentifyViewBrand inputIdentifyViewBrand)
     {
-        var brand = await _brandService.Get(id);
+        var brand = await _brandService.Get(inputIdentifyViewBrand);
         return Ok(brand);
     }
 
-    [HttpGet("Id/Multiple")]
-    public async Task<ActionResult<List<OutputBrand>?>> GetListByListId([FromQuery] List<long> listId)
+    [HttpPost("Id/Multiple")]
+    public async Task<ActionResult<List<OutputBrand>?>> GetListByListId(List<InputIdentifyViewBrand> listInputIdentifyViewBrand)
     {
-        var brand = await _brandService.GetListByListId(listId);
+        var brand = await _brandService.GetListByListId(listInputIdentifyViewBrand);
         return Ok(brand);
     }
 
@@ -82,9 +82,9 @@ public class BrandController : BaseController
     }
 
     [HttpDelete]
-    public async Task<ActionResult> Delete(long id)
+    public async Task<ActionResult> Delete(InputIdentifyDeleteBrand inputIdentifyDeleteBrand)
     {
-        var deleteBrand = await _brandService.Delete(id);
+        var deleteBrand = await _brandService.Delete(inputIdentifyDeleteBrand);
         if (!deleteBrand.Success)
         {
             return BadRequest(deleteBrand);
@@ -93,9 +93,9 @@ public class BrandController : BaseController
     }
 
     [HttpDelete("Multiple")]
-    public async Task<ActionResult> Delete(List<long> listId)
+    public async Task<ActionResult> Delete(List<InputIdentifyDeleteBrand> listInputIdentifyDeleteBrand)
     {
-        var deleteBrand = await _brandService.DeleteMultiple(listId);
+        var deleteBrand = await _brandService.DeleteMultiple(listInputIdentifyDeleteBrand);
         if (!deleteBrand.Success)
         {
             return BadRequest(deleteBrand);

@@ -12,6 +12,7 @@ namespace ProjetoTeste.Infrastructure.Application;
 
 public class OrderService : IOrderService
 {
+    #region Dependency Injection
     private readonly IOrderRepository _orderRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly IProductRepository _productRepository;
@@ -28,6 +29,7 @@ public class OrderService : IOrderService
         _brandRepository = brandRepository;
         _orderValidateService = orderValidateService;
     }
+    #endregion
 
     #region Get
     public async Task<BaseResponse<List<OutputOrder>>> GetAll()
@@ -37,15 +39,15 @@ public class OrderService : IOrderService
         return new BaseResponse<List<OutputOrder>> { Success = true, Content = outputOrder };
     }
 
-    public async Task<BaseResponse<List<OutputOrder>>> Get(long id)
+    public async Task<BaseResponse<List<OutputOrder>>> Get(InputIdentifyViewOrder inputIdentifyViewOrder)
     {
-        var order = await _orderRepository.GetProductOrdersId(id);
+        var order = await _orderRepository.GetProductOrdersId(inputIdentifyViewOrder.Id);
         return new BaseResponse<List<OutputOrder>> { Success = true, Content = order.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
     }
 
-    public async Task<BaseResponse<List<OutputOrder>>> GetListByListId(List<long> listId)
+    public async Task<BaseResponse<List<OutputOrder>>> GetListByListId(List<InputIdentifyViewOrder> listInputIdentifyViewOrder)
     {
-        var listOrder = await _orderRepository.GetProductOrdersByListId(listId);
+        var listOrder = await _orderRepository.GetProductOrdersByListId(listInputIdentifyViewOrder.Select(i => i.Id).ToList());
         return new BaseResponse<List<OutputOrder>> { Success = true, Content = listOrder.Select(i => i.ToOutputOrder()).ToList() };
     }
     #endregion

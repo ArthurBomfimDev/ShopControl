@@ -6,7 +6,7 @@ public class ProductValidate : BaseValidate
 {
     public InputCreateProduct? InputCreateProduct { get; private set; }
     public InputIdentityUpdateProduct? InputIdentityUpdateProduct { get; private set; }
-    public long? InputDeleteProduct { get; private set; }
+    public InputIdentifyDeleteProduct? InputIdentifyDeleteProduct { get; private set; }
     public ProductDTO? Original { get; private set; }
     public ProductDTO? OriginalCode { get; private set; }
     public long? RepeteIdentity { get; private set; }
@@ -32,9 +32,9 @@ public class ProductValidate : BaseValidate
         BrandId = brandId;
         return this;
     }
-    public ProductValidate ValidateDelete(long? inputDeleteProduct, ProductDTO? original)
+    public ProductValidate ValidateDelete(InputIdentifyDeleteProduct? inputIdentifyDeleteProduct, ProductDTO? original)
     {
-        InputDeleteProduct = inputDeleteProduct;
+        InputIdentifyDeleteProduct = inputIdentifyDeleteProduct;
         Original = original;
         return this;
     }
