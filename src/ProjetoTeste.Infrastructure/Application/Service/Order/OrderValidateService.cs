@@ -10,7 +10,7 @@ public class OrderValidateService
     {
         var response = new BaseResponse<List<OrderValidate>>();
         _ = (from i in listOrderValidate
-             where i.CustomerId == default
+             where i.CustomerId == 0
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"O Pedido do Cliente com id: {i.InputCreateOrder.CustomerId} não foi cadastrado, pois ele não existe")
              select i).ToList();

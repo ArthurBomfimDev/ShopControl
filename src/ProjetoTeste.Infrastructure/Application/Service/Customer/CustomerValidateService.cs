@@ -70,11 +70,11 @@ public class CustomerValidateService
              let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o CPF: '{i.InputCreateCustomer.CPF}' não pode ser cadastrado, pois o CPF é inválido.")
              select i).ToList();
 
-        _ = (from i in listCustomerValidate
-             where i.InputCreateCustomer.Phone.Length == 11
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o telefone: '{i.InputCreateCustomer.Phone}' não pode ser cadastrado, pois o número de telefone é inválido.")
-             select i).ToList();
+        //_ = (from i in listCustomerValidate
+        //     where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 15 || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length < 11
+        //     let setInvalid = i.SetInvalid()
+        //     let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o telefone: '{i.InputCreateCustomer.Phone}' não pode ser cadastrado, pois o número de telefone é inválido.")
+        //     select i).ToList();
 
         var create = (from i in listCustomerValidate
                       where !i.Invalid
@@ -177,11 +177,11 @@ public class CustomerValidateService
              let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o CPF: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF}' não pode ser atualizado, pois o CPF é inválido.")
              select i).ToList();
 
-        _ = (from i in listCustomerValidate
-             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length == 11
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o telefone: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone}' não pode ser atualizado, pois o número de telefone é inválido.")
-             select i).ToList();
+        //_ = (from i in listCustomerValidate
+        //     where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 15 || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length < 11
+        //     let setInvalid = i.SetInvalid()
+        //     let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o telefone: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone}' não pode ser atualizado, pois o número de telefone é inválido.")
+        //     select i).ToList();
 
         var update = (from i in listCustomerValidate
                       where !i.Invalid

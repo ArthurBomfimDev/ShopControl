@@ -120,7 +120,7 @@ public class OrderService : IOrderService
         if (!response.Success)
             return response;
 
-        var listCreateOrder = (from i in listOrderValidate
+        var listCreateOrder = (from i in create.Content
                                select new Order(i.InputCreateOrder.CustomerId, DateTime.Now, default)).ToList();
 
         var listNewOrder = await _orderRepository.Create(listCreateOrder);

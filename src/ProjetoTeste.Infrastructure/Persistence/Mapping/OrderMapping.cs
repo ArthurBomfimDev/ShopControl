@@ -6,7 +6,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
-        builder.HasOne(o => o.Customer).WithMany(p => p.ListOrder).HasForeignKey(o => o.CustomerId);
+        builder.HasOne(o => o.Customer).WithMany(p => p.ListOrder).HasForeignKey(o => o.CustomerId).HasConstraintName("fkey_cliente_id");
 
         builder.ToTable("pedido");
 
