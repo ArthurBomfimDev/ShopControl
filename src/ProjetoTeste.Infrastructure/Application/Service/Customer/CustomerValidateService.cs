@@ -12,11 +12,11 @@ public class CustomerValidateService
     {
         if (string.IsNullOrWhiteSpace(cpf)) return false;
 
-        cpf = Regex.Replace(cpf, "[^0-9]", string.Empty);
+        cpf = Regex.Replace(cpf, "[^0-9]", string.Empty); //Substitui todo q não é digito por uma string vazia Ex = 123.456.789-09
 
         if (cpf.Length != 11) return false;
 
-        if (new string(cpf[0], cpf.Length) == cpf) return false;
+        if (new string(cpf[0], cpf.Length) == cpf) return false; // Verifica se o cpf é composto pelo primeiro digito repetido
 
         int[] multiplicadores1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
         int[] multiplicadores2 = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -24,13 +24,13 @@ public class CustomerValidateService
         int soma = 0;
         for (int i = 0; i < 9; i++)
         {
-            soma += (cpf[i] - '0') * multiplicadores1[i];
+            soma += (cpf[i] - '0') * multiplicadores1[i]; // (cpf[i] - '0') -> jeito de converter um caracter em um digito numerico (substitui o valor unico) ex '0' = valor unicode 48 -> '0': = 48 - 48 = 0
         }
 
         int resto = soma % 11;
-        int primeiroDigitoVerificador = resto < 2 ? 0 : 11 - resto;
+        int primeiroDigitoVerificador = resto < 2 ? 0 : 11 - resto; // (operador ternário)  Verifica o primeiro digito verificador se é menor que dois, ser for é igual a 0, se for maior que dois a conta é (11 - resto)
 
-        if (cpf[9] - '0' != primeiroDigitoVerificador) return false;
+        if (cpf[9] - '0' != primeiroDigitoVerificador) return false; //verificar se o o primeiro digito veriicador é igual o primeiro
 
         soma = 0;
         for (int i = 0; i < 10; i++)
@@ -70,11 +70,12 @@ public class CustomerValidateService
              let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o CPF: '{i.InputCreateCustomer.CPF}' não pode ser cadastrado, pois o CPF é inválido.")
              select i).ToList();
 
-        //_ = (from i in listCustomerValidate
-        //     where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 15 || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length < 11
-        //     let setInvalid = i.SetInvalid()
-        //     let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o telefone: '{i.InputCreateCustomer.Phone}' não pode ser cadastrado, pois o número de telefone é inválido.")
-        //     select i).ToList();
+        _ = (from i in listCustomerValidate
+             where !i.Invalid
+             where (i.InputCreateCustomer.Phone.Length > 15) || (i.InputCreateCustomer.Phone.Length < 11)
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o telefone: '{i.InputCreateCustomer.Phone}' não pode ser cadastrado, pois o número de telefone é inválido.")
+             select i).ToList();
 
         var create = (from i in listCustomerValidate
                       where !i.Invalid
@@ -177,11 +178,11 @@ public class CustomerValidateService
              let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o CPF: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF}' não pode ser atualizado, pois o CPF é inválido.")
              select i).ToList();
 
-        //_ = (from i in listCustomerValidate
-        //     where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 15 || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length < 11
-        //     let setInvalid = i.SetInvalid()
-        //     let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o telefone: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone}' não pode ser atualizado, pois o número de telefone é inválido.")
-        //     select i).ToList();
+        _ = (from i in listCustomerValidate
+             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 15 || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length < 11
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o telefone: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone}' não pode ser atualizado, pois o número de telefone é inválido.")
+             select i).ToList();
 
         var update = (from i in listCustomerValidate
                       where !i.Invalid
