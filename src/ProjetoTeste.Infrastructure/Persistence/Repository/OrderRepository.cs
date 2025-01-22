@@ -96,7 +96,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         {
             return (from i in _dbSet
                     from j in i.ListProductOrder
-                    group j by j.Product.Id into g
+                    group j by j.Product.BrandId into g
                     select new OutputBrandBestSeller(
                         g.Key,
                         g.Sum(i => i.Quantity),

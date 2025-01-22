@@ -51,6 +51,7 @@ public class CustomerValidateService
     #region EmailValidate
     public bool EmailValidate(string email)
     {
+        if ( string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email) ) return false; 
         try
         {
             var validate = new MailAddress(email);
@@ -186,9 +187,9 @@ public class CustomerValidateService
              select i).ToList();
 
         _ = (from i in listCustomerValidate
-             where EmailValidate(i.InputCreateCustomer.Email) == false || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email.Length > 64
+             where EmailValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email) == false || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email.Length > 64
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(EmailValidate(i.InputCreateCustomer.Email) == false ? $"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail é inválido."
+             let message = response.AddErrorMessage(EmailValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email) == false ? $"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail é inválido."
              : $"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail excede o limite de 64 caracteres.")
              select i).ToList();
 

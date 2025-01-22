@@ -99,7 +99,7 @@ public class ProductValidateService
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.OriginalCode != null
+             where i.OriginalCode != null && i.Original.Code != i.InputIdentityUpdateProduct.InputUpdateProduct.Code
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"O Produto com Id: {i.InputIdentityUpdateProduct.Id} com o código: {i.InputIdentityUpdateProduct.InputUpdateProduct.Code} não pode ser atualizado, por já estar em uso")
              select i).ToList();

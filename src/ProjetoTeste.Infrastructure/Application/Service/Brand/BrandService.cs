@@ -4,6 +4,8 @@ using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Persistence.Entity;
+using System.Linq;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
@@ -72,10 +74,13 @@ public class BrandService : IBrandService
                           }).ToList();
         List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrand, i.OriginalBrand)).ToList();
         var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
-        await _brandRepository.Create(create.Content);
         response.Message = create.Message;
         response.Success = create.Success;
-        response.Content = create.Content.Select(i => i.ToOutputBrand()).ToList();
+        if (!response.Success)
+            return response;
+
+        var listNewBrand = await _brandRepository.Create(create.Content.Select(i => new Brand(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList());
+        response.Content = listNewBrand.Select(i => i.ToOutputBrand()).ToList();
         return response;
     }
     #endregion

@@ -8,9 +8,9 @@ public class BrandValidateService
 {
 
     #region Create
-    public async Task<BaseResponse<List<Brand>>> ValidateCreate(List<BrandValidate> listBrandValidate)
+    public async Task<BaseResponse<List<BrandValidate>>> ValidateCreate(List<BrandValidate> listBrandValidate)
     {
-        BaseResponse<List<Brand>> response = new();
+        BaseResponse<List<BrandValidate>> response = new();
         _ = (from i in listBrandValidate
              where i.InputCreate == null
              let SetInvalid = i.SetInvalid()
@@ -32,27 +32,27 @@ public class BrandValidateService
              where i.InputCreate.Name.Length > 24 || string.IsNullOrEmpty(i.InputCreate.Name) || string.IsNullOrWhiteSpace(i.InputCreate.Name)
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage(i.InputCreate.Name.Length > 24 ? $"A marca: '{i.InputCreate.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres."
-             : $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' não pode ser cadastrado porque o nome está vazio.")
+             : $"A marca: '{i.InputCreate.Name}' não pode ser cadastrado porque o nome está vazio.")
              select i).ToList();
 
         _ = (from i in listBrandValidate
              where i.InputCreate.Code.Length > 6 || string.IsNullOrEmpty(i.InputCreate.Code) || string.IsNullOrWhiteSpace(i.InputCreate.Code)
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage(i.InputCreate.Code.Length > 6 ? $"A marca: '{i.InputCreate.Name}' possui um código com mais de 6 caracteres e não pode ser cadastrado."
-             : $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' possui um código vazio e não pode ser cadastrado.")
+             : $"A marca: '{i.InputCreate.Name}' possui um código vazio e não pode ser cadastrado.")
              select i).ToList();
 
         _ = (from i in listBrandValidate
              where i.InputCreate.Description.Length > 100 || string.IsNullOrEmpty(i.InputCreate.Code) || string.IsNullOrWhiteSpace(i.InputCreate.Code)
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage(i.InputCreate.Description.Length > 100 ? $"A marca: '{i.InputCreate.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado."
-             : $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' possui uma descrição vazia e não pode ser cadastrado.")
+             : $"A marca: '{i.InputCreate.Name}' possui uma descrição vazia e não pode ser cadastrado.")
              select i).ToList();
 
         var create = (from i in listBrandValidate
                       where !i.Invalid
                       let successMessage = response.AddSuccessMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' foi cadastrada com sucesso!")
-                      select i).Select(i => new Brand(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList();
+                      select i).ToList();
 
         if (!create.Any())
         {
@@ -69,6 +69,7 @@ public class BrandValidateService
     public async Task<BaseResponse<List<BrandDTO?>>> ValidateUpdate(List<BrandValidate> listBrandValidate)
     {
         BaseResponse<List<BrandDTO?>> response = new();
+
         _ = (from i in listBrandValidate
              where i.OriginalBrandDTO == null
              let setInvalid = i.SetInvalid()
