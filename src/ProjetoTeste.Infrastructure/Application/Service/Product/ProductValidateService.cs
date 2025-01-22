@@ -40,21 +40,24 @@ public class ProductValidateService
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.InputCreateProduct.Name.Length > 24
+             where i.InputCreateProduct.Name.Length > 24 || string.IsNullOrEmpty(i.InputCreateProduct.Name) || string.IsNullOrWhiteSpace(i.InputCreateProduct.Name)
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O produto '{i.InputCreateProduct.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres.")
+             let message = response.AddErrorMessage(i.InputCreateProduct.Name.Length > 24 ? $"O produto '{i.InputCreateProduct.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres."
+             : $"O produto '{i.InputCreateProduct.Name}' não pode ser cadastrado porque o nome não pode ser vazio.")
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.InputCreateProduct.Code.Length > 16
+             where i.InputCreateProduct.Code.Length > 6 || string.IsNullOrEmpty(i.InputCreateProduct.Code) || string.IsNullOrWhiteSpace(i.InputCreateProduct.Code)
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O produto '{i.InputCreateProduct.Name}' possui um código com mais de 16 caracteres e não pode ser cadastrado.")
+             let message = response.AddErrorMessage(i.InputCreateProduct.Code.Length > 6 ? $"O produto '{i.InputCreateProduct.Name}' possui um código com mais de 6 caracteres e não pode ser cadastrado."
+             : $"O produto '{i.InputCreateProduct.Name}' possui um código vazio e não pode ser cadastrado.")
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.InputCreateProduct.Description.Length > 100
+             where i.InputCreateProduct.Description.Length > 100 || string.IsNullOrEmpty(i.InputCreateProduct.Description) || string.IsNullOrWhiteSpace(i.InputCreateProduct.Description)
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O produto '{i.InputCreateProduct.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado.")
+             let message = response.AddErrorMessage(i.InputCreateProduct.Description.Length > 100 ? $"O produto '{i.InputCreateProduct.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado."
+             : $"O produto '{i.InputCreateProduct.Name}' possui uma descrição vazia e não pode ser cadastrado.")
              select i).ToList();
 
         var create = (from i in listProductValidate
@@ -120,21 +123,24 @@ public class ProductValidateService
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.InputIdentityUpdateProduct.InputUpdateProduct.Name.Length > 24
+             where i.InputIdentityUpdateProduct.InputUpdateProduct.Name.Length > 24 || string.IsNullOrEmpty(i.InputIdentityUpdateProduct.InputUpdateProduct.Name) || string.IsNullOrEmpty(i.InputIdentityUpdateProduct.InputUpdateProduct.Name)
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"Produto com Id {i.InputIdentityUpdateProduct.Id} o nome: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres.")
+             let message = response.AddErrorMessage(i.InputIdentityUpdateProduct.InputUpdateProduct.Name.Length > 24 ? $"Produto com Id {i.InputIdentityUpdateProduct.Id} o nome: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres."
+             : $"Produto com Id {i.InputIdentityUpdateProduct.Id} o nome: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' não pode ser cadastrado porque o nome está vazio")
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.InputIdentityUpdateProduct.InputUpdateProduct.Code.Length > 16
+             where i.InputIdentityUpdateProduct.InputUpdateProduct.Code.Length > 6 || string.IsNullOrEmpty(i.InputIdentityUpdateProduct.InputUpdateProduct.Code) || string.IsNullOrWhiteSpace(i.InputIdentityUpdateProduct.InputUpdateProduct.Code)
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"Produto com Id {i.InputIdentityUpdateProduct.Id} o código: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui um código com mais de 16 caracteres e não pode ser cadastrado.")
+             let message = response.AddErrorMessage(i.InputIdentityUpdateProduct.InputUpdateProduct.Code.Length > 6 ? $"Produto com Id {i.InputIdentityUpdateProduct.Id} o código: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui um código com mais de 6 caracteres e não pode ser cadastrado."
+             : $"Produto com Id {i.InputIdentityUpdateProduct.Id} o código: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui um código vazio e não pode ser cadastrado.")
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.InputIdentityUpdateProduct.InputUpdateProduct.Description.Length > 100
+             where i.InputIdentityUpdateProduct.InputUpdateProduct.Description.Length > 100 || string.IsNullOrEmpty(i.InputIdentityUpdateProduct.InputUpdateProduct.Description) || string.IsNullOrWhiteSpace(i.InputIdentityUpdateProduct.InputUpdateProduct.Description)
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"Produto com Id {i.InputIdentityUpdateProduct.Id} a descrição: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado.")
+             let message = response.AddErrorMessage(i.InputIdentityUpdateProduct.InputUpdateProduct.Description.Length > 100 ? $"Produto com Id {i.InputIdentityUpdateProduct.Id} a descrição: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado."
+             : $"Produto com Id {i.InputIdentityUpdateProduct.Id} a descrição: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui uma descrição vazia e não pode ser cadastrado.")
              select i).ToList();
 
         var update = (from i in listProductValidate
@@ -160,7 +166,7 @@ public class ProductValidateService
         _ = (from i in listProductValidate
              where i.Original == null
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"Produto com Id: {i.InputIdentifyDeleteProduct} não foi encontrado")
+             let message = response.AddErrorMessage($"Produto com Id: {i.InputIdentifyDeleteProduct.Id} não foi encontrado")
              select i).ToList();
 
         _ = (from i in listProductValidate
@@ -171,7 +177,7 @@ public class ProductValidateService
 
         var delete = (from i in listProductValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"O Produto: {i.Original.Name} com Id: {i.InputIdentifyDeleteProduct} foi deletado com sucesso")
+                      let message = response.AddSuccessMessage($"O Produto: {i.Original.Name} com Id: {i.InputIdentifyDeleteProduct.Id} foi deletado com sucesso")
                       select i).ToList();
 
         if (!delete.Any())

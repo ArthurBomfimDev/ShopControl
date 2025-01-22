@@ -48,6 +48,8 @@ public class CustomerService : ICustomerService
         var validateCreate = await CreateMultiple([inputCreateCustomer]);
         response.Success = validateCreate.Success;
         response.Message = validateCreate.Message;
+        if (!response.Success)
+            return response;
         response.Content = validateCreate.Content.FirstOrDefault();
         return response;
     }
@@ -101,16 +103,16 @@ public class CustomerService : ICustomerService
             return response;
         }
 
-        var listOlderCustomer = await _customerRepository.GetListByListId(updateValidate.Content.Select(i => i.InputIdentityUpdateCustomer.Id).ToList());
-        for (int i = 0; i < listOlderCustomer.Count; i++)
+        var listOldCustomer = await _customerRepository.GetListByListId(updateValidate.Content.Select(i => i.InputIdentityUpdateCustomer.Id).ToList());
+        for (int i = 0; i < listOldCustomer.Count; i++)
         {
-            listOlderCustomer[i].Name = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Name;
-            listOlderCustomer[i].CPF = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.CPF;
-            listOlderCustomer[i].Email = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Email;
-            listOlderCustomer[i].Phone = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Phone;
+            listOldCustomer[i].Name = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Name;
+            listOldCustomer[i].CPF = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.CPF;
+            listOldCustomer[i].Email = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Email;
+            listOldCustomer[i].Phone = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Phone;
         }
 
-        response.Content = await _customerRepository.Update(listOlderCustomer);
+        response.Content = await _customerRepository.Update(listOldCustomer);
         return response;
     }
     #endregion

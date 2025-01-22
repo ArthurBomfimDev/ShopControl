@@ -101,6 +101,8 @@ public class OrderService : IOrderService
         var createValidate = await CreateMultiple([inputCreateOrder]);
         response.Success = createValidate.Success;
         response.Message = createValidate.Message;
+        if (!response.Success)
+            return response;
         response.Content = createValidate.Content.FirstOrDefault();
         return response;
     }
@@ -138,6 +140,8 @@ public class OrderService : IOrderService
         var createValidate = await CreateProductOrderMultiple([inputCreateProductOrder]);
         response.Success = createValidate.Success;
         response.Message = createValidate.Message;
+        if (!response.Success)
+            return response;
         response.Content = createValidate.Content.FirstOrDefault();
         return response;
     }

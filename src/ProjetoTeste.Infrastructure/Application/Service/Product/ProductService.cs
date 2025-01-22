@@ -58,6 +58,8 @@ public class ProductService : IProductService
         var createValidate = await CreateMultiple([inputCreateProduct]);
         response.Success = createValidate.Success;
         response.Message = createValidate.Message;
+        if (!response.Success)
+            return response;
         response.Content = createValidate.Content.FirstOrDefault();
         return response;
     }
@@ -135,19 +137,19 @@ public class ProductService : IProductService
             return response;
         }
 
-        var listOlderProduct = await _productRepository.GetListByListId(validateUpdate.Content.Select(i => i.InputIdentityUpdateProduct.Id).ToList());
+        var listOldProduct = await _productRepository.GetListByListId(validateUpdate.Content.Select(i => i.InputIdentityUpdateProduct.Id).ToList());
 
-        for (var i = 0; i < listOlderProduct.Count; i++)
+        for (var i = 0; i < listOldProduct.Count; i++)
         {
-            listOlderProduct[i].Name = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Name;
-            listOlderProduct[i].Code = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Code;
-            listOlderProduct[i].Description = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Name;
-            listOlderProduct[i].BrandId = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.BrandId;
-            listOlderProduct[i].Stock = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Stock;
-            listOlderProduct[i].Price = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Price;
+            listOldProduct[i].Name = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Name;
+            listOldProduct[i].Code = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Code;
+            listOldProduct[i].Description = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Name;
+            listOldProduct[i].BrandId = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.BrandId;
+            listOldProduct[i].Stock = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Stock;
+            listOldProduct[i].Price = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Price;
         }
 
-        response.Content = await _productRepository.Update(listOlderProduct);
+        response.Content = await _productRepository.Update(listOldProduct);
         return response;
     }
     #endregion

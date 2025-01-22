@@ -4,7 +4,6 @@ using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
@@ -51,6 +50,8 @@ public class BrandService : IBrandService
         var result = await CreateMultiple([inputCreateBrand]);
         response.Message = result.Message;
         response.Success = result.Success;
+        if (!response.Success)
+            return response;
         response.Content = result.Content.FirstOrDefault();
         return response;
     }
@@ -122,17 +123,17 @@ public class BrandService : IBrandService
         }
 
         var listUpdateBrand = update.Content;
-        var olderBrand = await _brandRepository.GetListByListId(listUpdateBrand.Select(i => i.Id).ToList());
+        var listOldBrand = await _brandRepository.GetListByListId(listUpdateBrand.Select(i => i.Id).ToList());
 
         //Fazer um jeito melhor
-        for (int i = 0; i < olderBrand.Count; i++)
+        for (int i = 0; i < listOldBrand.Count; i++)
         {
-            olderBrand[i].Name = listUpdateBrand[i].Name;
-            olderBrand[i].Code = listUpdateBrand[i].Code;
-            olderBrand[i].Description = listUpdateBrand[i].Description;
+            listOldBrand[i].Name = listUpdateBrand[i].Name;
+            listOldBrand[i].Code = listUpdateBrand[i].Code;
+            listOldBrand[i].Description = listUpdateBrand[i].Description;
         }
 
-        response.Content = await _brandRepository.Update(olderBrand);
+        response.Content = await _brandRepository.Update(listOldBrand);
 
         return response;
     }

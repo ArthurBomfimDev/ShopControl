@@ -1,5 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application;
@@ -47,21 +48,38 @@ public class CustomerValidateService
     }
     #endregion
 
+    #region EmailValidate
+    public bool EmailValidate(string email)
+    {
+        try
+        {
+            var validate = new MailAddress(email);
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+    }
+    #endregion
+
     #region Create
     public async Task<BaseResponse<List<CustomerValidate>>> ValidateCreate(List<CustomerValidate> listCustomerValidate)
     {
         var response = new BaseResponse<List<CustomerValidate>>();
 
         _ = (from i in listCustomerValidate
-             where i.InputCreateCustomer.Name.Length > 64
+             where i.InputCreateCustomer.Name.Length > 64 || string.IsNullOrEmpty(i.InputCreateCustomer.Name) || string.IsNullOrWhiteSpace(i.InputCreateCustomer.Name)
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O cliente com o nome: '{i.InputCreateCustomer.Name}' não pode ser cadastrado, pois o nome excede o limite de 64 caracteres.")
+             let message = response.AddErrorMessage(i.InputCreateCustomer.Name.Length > 64 ? $"O cliente com o nome: '{i.InputCreateCustomer.Name}' não pode ser cadastrado, pois o nome excede o limite de 64 caracteres."
+             : $"O cliente com o nome: '{i.InputCreateCustomer.Name}' não pode ser cadastrado, pois o nome está vazio")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
-             where i.InputCreateCustomer.Email.Length > 64
+             where EmailValidate(i.InputCreateCustomer.Email) == false || i.InputCreateCustomer.Email.Length > 64
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o E-mail: '{i.InputCreateCustomer.Email}' não pode ser cadastrado, pois o e-mail excede o limite de 64 caracteres.")
+             let message = response.AddErrorMessage(i.InputCreateCustomer.Email.Length > 64 ? $"O cliente: '{i.InputCreateCustomer.Name}' com o E-mail: '{i.InputCreateCustomer.Email}' não pode ser cadastrado, pois o e-mail excede o limite de 64 caracteres."
+             : $"O cliente: '{i.InputCreateCustomer.Name}' com o E-mail: '{i.InputCreateCustomer.Email}' não pode ser cadastrado, pois o e-mail não é válido.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
@@ -161,15 +179,17 @@ public class CustomerValidateService
              select i).ToList();
 
         _ = (from i in listCustomerValidate
-             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name.Length > 64
+             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name.Length > 64 || string.IsNullOrEmpty(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name) || string.IsNullOrWhiteSpace(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name)
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O cliente com Id: {i.InputIdentityUpdateCustomer.Id} o nome: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name}' não pode ser atualizado, pois o nome excede o limite de 64 caracteres.")
+             let message = response.AddErrorMessage(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name.Length > 64 ? $"O cliente com Id: {i.InputIdentityUpdateCustomer.Id} o nome: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name}' não pode ser atualizado, pois o nome excede o limite de 64 caracteres."
+             : $"O cliente com Id: {i.InputIdentityUpdateCustomer.Id} não pode ser atualizado, pois o nome está vazio")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
-             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email.Length > 64
+             where EmailValidate(i.InputCreateCustomer.Email) == false || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email.Length > 64
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail excede o limite de 64 caracteres.")
+             let message = response.AddErrorMessage(EmailValidate(i.InputCreateCustomer.Email) == false ? $"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail é inválido."
+             : $"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail excede o limite de 64 caracteres.")
              select i).ToList();
 
         _ = (from i in listCustomerValidate
@@ -265,12 +285,12 @@ public class CustomerValidateService
         _ = (from i in listCustomerValidate
              where i.Original == null
              let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer} é inválido. Verifique os dados.")
+             let message = response.AddErrorMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer.Id} é inválido. Verifique os dados.")
              select i).ToList();
 
         var delete = (from i in listCustomerValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer} foi excluído com sucesso.")
+                      let message = response.AddSuccessMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer.Id} foi excluído com sucesso.")
                       select i).ToList();
 
         if (!delete.Any())
