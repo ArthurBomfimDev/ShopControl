@@ -5,7 +5,6 @@ using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
-using System.Linq;
 
 namespace ProjetoTeste.Infrastructure.Application;
 

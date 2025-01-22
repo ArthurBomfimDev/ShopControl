@@ -51,7 +51,7 @@ public class CustomerValidateService
     #region EmailValidate
     public bool EmailValidate(string email)
     {
-        if ( string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email) ) return false; 
+        if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email)) return false;
         try
         {
             var validate = new MailAddress(email);
