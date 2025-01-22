@@ -94,9 +94,9 @@ public class ProductController : BaseController
         var deletePrdocut = await _productService.Delete(inputIdentifyDeleteProduct);
         if (!deletePrdocut.Success)
         {
-            return BadRequest(deletePrdocut.Message);
+            return BadRequest(deletePrdocut);
         }
-        return Ok(deletePrdocut.Message);
+        return Ok(deletePrdocut);
     }
 
     [HttpDelete("Multiple")]
@@ -105,8 +105,8 @@ public class ProductController : BaseController
         var deletePrdocut = await _productService.DeleteMultiple(listInputIdentifyDeleteProduct);
         if (!deletePrdocut.Success)
         {
-            return BadRequest(deletePrdocut.Message);
+            return BadRequest(deletePrdocut);
         }
-        return Ok(deletePrdocut.Message);
+        return Ok(deletePrdocut);
     }
 }
