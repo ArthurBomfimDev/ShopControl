@@ -152,12 +152,15 @@ public class BrandService : IBrandService
     public async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteBrand> listInputIdentifyDeleteBrand)
     {
         var response = new BaseResponse<bool>();
+
         var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentifyDeleteBrand.Select(i => i.Id).ToList());
+
         var listRepeteInputDelete = (from i in listInputIdentifyDeleteBrand
-                                     where listInputIdentifyDeleteBrand.Count(j => j == i) > 1
+                                     where listInputIdentifyDeleteBrand.Count(j => j.Id == i.Id) > 1
                                      select i).ToList();
 
         var listBrandWithProduct = await _productRepository.BrandId(listInputIdentifyDeleteBrand.Select(i => i.Id).ToList());
+
         var listDelete = (from i in listInputIdentifyDeleteBrand
                           select new
                           {

@@ -131,7 +131,7 @@ public class BrandValidateService
         var response = new BaseResponse<List<long>>();
 
         _ = (from i in listBrandValidate
-             where i.RepeatedInputCreate != null
+             where i.RepeteInputDelete != null
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"O Id: {i.InputIdentifyDeleteBrand.Id} foi digitado repetidas vezes, não é possível deletar a marca com esse Id")
              select i).ToList();

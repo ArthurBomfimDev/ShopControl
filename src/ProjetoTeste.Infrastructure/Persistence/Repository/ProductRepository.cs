@@ -22,7 +22,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
 
         public async Task<List<long>> BrandId(List<long> ids)
         {
-            return await _context.Product.Where(i => ids.Contains(i.BrandId)).Select(i => i.BrandId).ToListAsync();
+            return await _dbSet.Where(i => ids.Contains(i.BrandId)).Select(i => i.BrandId).ToListAsync();
         }
 
         public bool ProductExists(long id)
