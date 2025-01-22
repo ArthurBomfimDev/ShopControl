@@ -163,6 +163,13 @@ public class ProductValidateService
     public async Task<BaseResponse<List<ProductValidate>>> ValidateDelete(List<ProductValidate> listProductValidate)
     {
         var response = new BaseResponse<List<ProductValidate>>();
+
+        _ = (from i in listProductValidate
+             where i.RepetedIdentity != 0
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"O Id: {i.RepetedIdentity} foi digitado repetidas vezes, não é possível deletar a marca com esse Id")
+             select i).ToList();
+
         _ = (from i in listProductValidate
              where i.Original == null
              let setInvalid = i.SetInvalid()

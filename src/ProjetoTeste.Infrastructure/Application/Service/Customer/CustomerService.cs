@@ -127,14 +127,18 @@ public class CustomerService : ICustomerService
     {
         var response = new BaseResponse<bool>();
         var listOriginal = await _customerRepository.GetListByListId(listInputIdentifyDeleteCustomer.Select(i => i.Id).ToList());
+        var listRepeatedDelete = (from i in listInputIdentifyDeleteCustomer
+                                  where listInputIdentifyDeleteCustomer.Count(j => j.Id == i.Id) > 1
+                                  select i).ToList();
         var listDelete = (from i in listInputIdentifyDeleteCustomer
                           select new
                           {
                               InputDeleteCustomer = i,
-                              Original = listOriginal.FirstOrDefault(j => j.Id == i.Id).ToCustomerDTO()
+                              Original = listOriginal.FirstOrDefault(j => j.Id == i.Id).ToCustomerDTO(),
+                              RepeatedDelete = listRepeatedDelete.FirstOrDefault(k => k.Id == i.Id)
                           });
 
-        List<CustomerValidate> customerValidate = listDelete.Select(i => new CustomerValidate().ValidateDelete(i.InputDeleteCustomer, i.Original)).ToList();
+        List<CustomerValidate> customerValidate = listDelete.Select(i => new CustomerValidate().ValidateDelete(i.InputDeleteCustomer, i.Original, i.RepeatedDelete)).ToList();
         var deleteValidate = await _customerValidateService.ValidateDelete(customerValidate);
         response.Success = deleteValidate.Success;
         response.Message = deleteValidate.Message;

@@ -163,15 +163,19 @@ public class ProductService : IProductService
     public async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteProduct> listInputIdentifyDeleteProduct)
     {
         var response = new BaseResponse<bool>();
+        var listRepetedIdentity = (from i in listInputIdentifyDeleteProduct
+                                   where listInputIdentifyDeleteProduct.Count(j => j.Id == i.Id) > 1
+                                   select i.Id).ToList();
         var listOriginalIdentity = await _productRepository.GetListByListId(listInputIdentifyDeleteProduct.Select(i => i.Id).ToList());
         var listProductDelete = (from i in listInputIdentifyDeleteProduct
                                  select new
                                  {
                                      InputDeleteProduct = i,
                                      listOriginalIdentity = listOriginalIdentity.FirstOrDefault(j => j.Id == i.Id).ToProductDTO(),
+                                     RepetedIdentity = listRepetedIdentity.FirstOrDefault(k => k == i.Id)
                                  }).ToList();
 
-        List<ProductValidate> listProductValidate = listProductDelete.Select(i => new ProductValidate().ValidateDelete(i.InputDeleteProduct, i.listOriginalIdentity)).ToList();
+        List<ProductValidate> listProductValidate = listProductDelete.Select(i => new ProductValidate().ValidateDelete(i.InputDeleteProduct, i.listOriginalIdentity, i.RepetedIdentity)).ToList();
         var validateDelete = await _productValidateService.ValidateDelete(listProductValidate);
         response.Success = validateDelete.Success;
         response.Message = validateDelete.Message;

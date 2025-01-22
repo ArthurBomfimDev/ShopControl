@@ -283,6 +283,13 @@ public class CustomerValidateService
     public async Task<BaseResponse<List<CustomerValidate>>> ValidateDelete(List<CustomerValidate> listCustomerValidate)
     {
         var response = new BaseResponse<List<CustomerValidate>>();
+
+        _ = (from i in listCustomerValidate
+             where i.RepeatedDelete != null
+             let setInvalid = i.SetInvalid()
+             let message = response.AddErrorMessage($"O Id: {i.InputIdentifyDeleteCustomer.Id} foi digitado repetidas vezes, não é possível deletar o cliente com esse Id")
+             select i).ToList();
+
         _ = (from i in listCustomerValidate
              where i.Original == null
              let setInvalid = i.SetInvalid()
