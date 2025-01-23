@@ -17,7 +17,7 @@ public class BrandController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<OutputBrand?>>> GetAll()
+    public async Task<ActionResult<List<OutputBrand?>>> GetAll() // ActionResult -> é um modelo genérico e flexível, serve para padronizar o retorno de respostas HTTP
     {
         var brandList = await _brandService.GetAll();
         return Ok(brandList);
