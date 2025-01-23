@@ -87,8 +87,7 @@ public class BrandService : IBrandService
     #region Update
     public async Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputidentityupdatebrand)
     {
-        var result = await UpdateMultiple([inputidentityupdatebrand]);
-        return result;
+        return await UpdateMultiple([inputidentityupdatebrand]);
     }
 
     public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateBrand)

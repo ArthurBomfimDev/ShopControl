@@ -145,7 +145,6 @@ public class ProductValidateService
 
         var update = (from i in listProductValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"O Produto com Id: {i.InputIdentityUpdateProduct.Id} foi atualizado com sucesso")
                       select i).ToList();
 
         if (!update.Any())
@@ -179,7 +178,7 @@ public class ProductValidateService
         _ = (from i in listProductValidate
              where !i.Invalid && i.Original.Stock > 0
              let setInvald = i.SetInvalid()
-             let message = response.AddErrorMessage($"O Produto: {i.Original.Name} com Id: {i.InputIdentifyDeleteProduct} não pode ser deletado pois possui estoque: {i.Original.Stock}")
+             let message = response.AddErrorMessage($"O Produto: {i.Original.Name} com Id: {i.InputIdentifyDeleteProduct.Id} não pode ser deletado pois possui estoque: {i.Original.Stock}")
              select i).ToList();
 
         var delete = (from i in listProductValidate
