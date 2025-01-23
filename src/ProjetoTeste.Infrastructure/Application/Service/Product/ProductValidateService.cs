@@ -16,7 +16,7 @@ public class ProductValidateService
              select i).ToList();
 
         _ = (from i in listProductValidate
-             where i.Original != null
+             where i.OriginalCode != null
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"O Produto: {i.InputCreateProduct.Name} com o código: {i.InputCreateProduct.Code} não pode ser cadastrado, por já estar em uso")
              select i).ToList();

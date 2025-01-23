@@ -65,9 +65,9 @@ public class BrandValidateService
     #endregion
 
     #region Update
-    public async Task<BaseResponse<List<BrandDTO?>>> ValidateUpdate(List<BrandValidate> listBrandValidate)
+    public async Task<BaseResponse<List<BrandValidate?>>> ValidateUpdate(List<BrandValidate> listBrandValidate)
     {
-        BaseResponse<List<BrandDTO?>> response = new();
+        BaseResponse<List<BrandValidate?>> response = new();
 
         _ = (from i in listBrandValidate
              where i.OriginalBrandDTO == null
@@ -82,7 +82,7 @@ public class BrandValidateService
              select i).ToList();
 
         _ = (from i in listBrandValidate
-             where i.Code != null
+             where !i.Invalid && i.Code != null && i.Code != i.OriginalBrandDTO.Code
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' não pode ser atualizada porque o código já está em uso por outra marca. Por favor, escolha um código diferente.")
              select i).ToList();
@@ -110,16 +110,14 @@ public class BrandValidateService
 
         var update = (from i in listBrandValidate
                       where !i.Invalid
-                      let successMessage = response.AddSuccessMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' foi atualizada com sucesso!")
-                      let updateName = i.OriginalBrandDTO.Name = i.InputUpdate.InputUpdateBrand.Name
-                      let updateCode = i.OriginalBrandDTO.Code = i.InputUpdate.InputUpdateBrand.Code
-                      let updateDescription = i.OriginalBrandDTO.Description = i.InputUpdate.InputUpdateBrand.Description
-                      select i.OriginalBrandDTO).ToList();
+                      select i).ToList();
+
         if (!update.Any())
         {
             response.Success = false;
             return response;
         }
+
         response.Content = update;
         return response;
     }

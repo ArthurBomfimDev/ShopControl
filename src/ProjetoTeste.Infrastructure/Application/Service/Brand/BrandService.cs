@@ -94,8 +94,8 @@ public class BrandService : IBrandService
     public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateBrand)
     {
         var response = new BaseResponse<bool>();
-        var listOriginalBrandDTO = await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList());
-        var listCode = await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList());
+        var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList());
+        var listCode = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList())).Select(i => i.Code);
         var _listRepeatedInputUpdateBrand = (from i in listInputIdentityUpdateBrand
                                              where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
                                              select i).ToList();
@@ -109,9 +109,9 @@ public class BrandService : IBrandService
                           {
                               InputIdentityUpdateBrand = i,
                               RepeatedInputUpdateBrand = _listRepeatedInputUpdateBrand.FirstOrDefault(j => j.Id == i.Id),
-                              OriginalBrand = listOriginalBrandDTO.FirstOrDefault(k => k.Id == i.Id).ToBrandDTO(),
+                              OriginalBrand = listOriginalBrand.FirstOrDefault(k => k.Id == i.Id).ToBrandDTO(),
                               RepeatedCode = _listRepeatedCode.FirstOrDefault(l => l.InputUpdateBrand.Code == i.InputUpdateBrand.Code),
-                              Code = listCode.FirstOrDefault(m => m.Code == i.InputUpdateBrand.Code && m.Id != i.Id).ToBrandDTO()
+                              Code = listCode.FirstOrDefault(m => m == i.InputUpdateBrand.Code)
                           }).ToList();
 
         List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.Code)).ToList();
@@ -126,18 +126,16 @@ public class BrandService : IBrandService
             return response;
         }
 
-        var listUpdateBrand = update.Content;
-        var listOldBrand = await _brandRepository.GetListByListId(listUpdateBrand.Select(i => i.Id).ToList());
+        var listBrandUpdate = (from i in update.Content
+                               from j in listOriginalBrand
+                               where j.Id == i.OriginalBrandDTO.Id
+                               let name = j.Name = i.InputUpdate.InputUpdateBrand.Name
+                               let code = j.Code = i.InputUpdate.InputUpdateBrand.Code
+                               let description = j.Name = i.InputUpdate.InputUpdateBrand.Description
+                               let successMessage = response.AddSuccessMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' foi atualizada com sucesso!")
+                               select j).ToList();
 
-        //Fazer um jeito melhor
-        for (int i = 0; i < listOldBrand.Count; i++)
-        {
-            listOldBrand[i].Name = listUpdateBrand[i].Name;
-            listOldBrand[i].Code = listUpdateBrand[i].Code;
-            listOldBrand[i].Description = listUpdateBrand[i].Description;
-        }
-
-        response.Content = await _brandRepository.Update(listOldBrand);
+        response.Content = await _brandRepository.Update(listBrandUpdate);
 
         return response;
     }

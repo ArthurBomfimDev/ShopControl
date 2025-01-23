@@ -207,10 +207,9 @@ public class CustomerValidateService
 
         var update = (from i in listCustomerValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"O cliente com o ID: '{i.InputIdentityUpdateCustomer.Id}' foi atualizado com sucesso.")
                       select i).ToList();
 
-        if (!update.Any())
+        if (!listCustomerValidate.Any())
         {
             response.Success = false;
             return response;

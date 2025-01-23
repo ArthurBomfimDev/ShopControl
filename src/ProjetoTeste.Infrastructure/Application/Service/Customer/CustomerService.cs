@@ -103,16 +103,17 @@ public class CustomerService : ICustomerService
             return response;
         }
 
-        var listOldCustomer = await _customerRepository.GetListByListId(updateValidate.Content.Select(i => i.InputIdentityUpdateCustomer.Id).ToList());
-        for (int i = 0; i < listOldCustomer.Count; i++)
-        {
-            listOldCustomer[i].Name = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Name;
-            listOldCustomer[i].CPF = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.CPF;
-            listOldCustomer[i].Email = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Email;
-            listOldCustomer[i].Phone = updateValidate.Content[i].InputIdentityUpdateCustomer.InputUpdateCustomer.Phone;
-        }
+        var listUpdateCustomer = (from i in updateValidate.Content
+                                  from j in originalCustomer
+                                  where i.InputIdentityUpdateCustomer.Id == j.Id
+                                  let name = j.Name = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name
+                                  let cpf = j.CPF = i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF
+                                  let email = j.Email = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email
+                                  let phone = j.Phone = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone
+                                  let message = response.AddSuccessMessage($"O cliente com o ID: '{i.InputIdentityUpdateCustomer.Id}' foi atualizado com sucesso.")
+                                  select j).ToList();
 
-        response.Content = await _customerRepository.Update(listOldCustomer);
+        response.Content = await _customerRepository.Update(listUpdateCustomer);
         return response;
     }
     #endregion

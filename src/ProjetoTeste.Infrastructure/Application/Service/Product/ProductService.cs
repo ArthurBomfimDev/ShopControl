@@ -111,7 +111,7 @@ public class ProductService : IProductService
         var listRepeteIdentity = (from i in listInputIdentityUpdateProduct
                                   where listInputIdentityUpdateProduct.Count(j => j.Id == i.Id) > 1
                                   select i.Id).ToList();
-        var listOriginalCode = await _productRepository.GetListByCodeList(listInputIdentityUpdateProduct.Select(i => i.InputUpdateProduct.Code).ToList());
+        var listOriginalCode = (await _productRepository.GetListByCodeList(listInputIdentityUpdateProduct.Select(i => i.InputUpdateProduct.Code).ToList())).Select(i => i.Code);
         var listRepeteCode = (from i in listInputIdentityUpdateProduct
                               where listInputIdentityUpdateProduct.Count(j => j.InputUpdateProduct.Code == i.InputUpdateProduct.Code) > 1
                               select i.InputUpdateProduct.Code).ToList();
@@ -122,7 +122,7 @@ public class ProductService : IProductService
                               InputIdentityUpdateProduct = i,
                               OriginalIdentity = listOriginalIdentity.FirstOrDefault(j => j.Id == i.Id).ToProductDTO(),
                               RepeteIdentity = listRepeteIdentity.FirstOrDefault(k => k == i.Id),
-                              OriginalCode = listOriginalCode.FirstOrDefault(l => l.Code == i.InputUpdateProduct.Code).ToProductDTO(),
+                              OriginalCode = listOriginalCode.FirstOrDefault(l => l == i.InputUpdateProduct.Code),
                               RepeteCode = listRepeteCode.FirstOrDefault(m => m == i.InputUpdateProduct.Code),
                               BrandExists = listBrand.FirstOrDefault(n => n == i.InputUpdateProduct.BrandId)
                           }).ToList();
@@ -137,19 +137,19 @@ public class ProductService : IProductService
             return response;
         }
 
-        var listOldProduct = await _productRepository.GetListByListId(validateUpdate.Content.Select(i => i.InputIdentityUpdateProduct.Id).ToList());
+        var listUpdateProduct = (from i in validateUpdate.Content
+                                 from j in listOriginalIdentity
+                                 where i.InputIdentityUpdateProduct.Id == j.Id
+                                 let name = j.Name = i.InputIdentityUpdateProduct.InputUpdateProduct.Name
+                                 let code = j.Code = i.InputIdentityUpdateProduct.InputUpdateProduct.Code
+                                 let description = j.Description = i.InputIdentityUpdateProduct.InputUpdateProduct.Description
+                                 let brandId = j.BrandId = i.InputIdentityUpdateProduct.InputUpdateProduct.BrandId
+                                 let stock = j.Stock = i.InputIdentityUpdateProduct.InputUpdateProduct.Stock
+                                 let Price = j.Price = i.InputIdentityUpdateProduct.InputUpdateProduct.Price
+                                 let message = response.AddSuccessMessage($"O Produto com Id: {i.InputIdentityUpdateProduct.Id} foi atualizado com sucesso")
+                                 select j).ToList();
 
-        for (var i = 0; i < listOldProduct.Count; i++)
-        {
-            listOldProduct[i].Name = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Name;
-            listOldProduct[i].Code = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Code;
-            listOldProduct[i].Description = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Name;
-            listOldProduct[i].BrandId = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.BrandId;
-            listOldProduct[i].Stock = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Stock;
-            listOldProduct[i].Price = validateUpdate.Content[i].InputIdentityUpdateProduct.InputUpdateProduct.Price;
-        }
-
-        response.Content = await _productRepository.Update(listOldProduct);
+        response.Content = await _productRepository.Update(listUpdateProduct);
         return response;
     }
     #endregion
