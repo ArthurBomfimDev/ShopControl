@@ -131,7 +131,7 @@ public class BrandService : IBrandService
                                where j.Id == i.OriginalBrandDTO.Id
                                let name = j.Name = i.InputUpdate.InputUpdateBrand.Name
                                let code = j.Code = i.InputUpdate.InputUpdateBrand.Code
-                               let description = j.Name = i.InputUpdate.InputUpdateBrand.Description
+                               let description = j.Description = i.InputUpdate.InputUpdateBrand.Description
                                let successMessage = response.AddSuccessMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' foi atualizada com sucesso!")
                                select j).ToList();
 
