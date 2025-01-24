@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc; // utilizando as classes, interfaces e métodos contidos no namespace Microsoft.AspNetCore.Mvc.--> Importa as funções do fremework dotnet mvc(utilizado para aplicações web) tem os métodos como controllers endpoints etc
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
@@ -7,11 +7,16 @@ using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
 namespace ProjetoTeste.Api.Controllers;
 
+// Um framework é um conjunto de ferramentas, bibliotecas e diretrizes projetadas para ajudar desenvolvedores a construir aplicações de forma mais eficiente e estruturada. Ele fornece uma base pronta que resolve problemas comuns, permitindo que os programadores se concentrem nas partes específicas do sistema que estão desenvolvendo.
+// Base pronto
+// Padrões
+// Funções e métodos
+// Reutilização
 public class BrandController : BaseController
 {
     private readonly IBrandService _brandService;
 
-    public BrandController(IUnitOfWork unitOfWork, IBrandService brandService) : base(unitOfWork)
+    public BrandController(IUnitOfWork unitOfWork, IBrandService brandService) : base(unitOfWork) // Injeção de dependencias (unitOfWork) garamte a trasação com o banco de dados
     {
         _brandService = brandService;
     }
