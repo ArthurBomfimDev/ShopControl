@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjetoTeste.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class final : Migration
+    public partial class Final : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,7 +69,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_pedido", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_pedido_cliente_cliente_id",
+                        name: "fkey_cliente_id",
                         column: x => x.cliente_id,
                         principalTable: "cliente",
                         principalColumn: "Id",
