@@ -14,15 +14,19 @@ namespace ProjetoTeste.Api.Controllers;
 // Reutilização
 public class BrandController : BaseController
 {
+    //Injeção de dependencia
     private readonly IBrandService _brandService;
+
+    //Preenchidas e fornecidas pelo mvc
 
     public BrandController(IUnitOfWork unitOfWork, IBrandService brandService) : base(unitOfWork) // Injeção de dependencias (unitOfWork) garamte a trasação com o banco de dados
     {
-        _brandService = brandService;
+        _brandService = brandService; // Contém a logica e a manipulação de dados
     }
+    //Para desacoplar lógica, centralizar transações e facilitar manutenção e testes.
 
     [HttpGet]
-    public async Task<ActionResult<List<OutputBrand?>>> GetAll() // ActionResult -> é um modelo genérico e flexível, serve para padronizar o retorno de respostas HTTP
+    public async Task<ActionResult<List<OutputBrand?>>> GetAll() // ActionResult -> é um modelo genérico e flexível, serve para padronizar o retorno de respostas HTTP (polimorfismo) -> actionsResult classe base e genmerica herdada por object result q por sua vez é herdada por Ok, badrequest etc...
     {
         var brandList = await _brandService.GetAll();
         return Ok(brandList);

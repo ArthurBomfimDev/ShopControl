@@ -1,11 +1,12 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class CustomerValidateService
+public class CustomerValidateService : ICustomerValidateService
 {
 
     #region CPFValidate

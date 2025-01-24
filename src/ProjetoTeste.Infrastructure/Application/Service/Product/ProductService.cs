@@ -4,6 +4,7 @@ using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
@@ -13,9 +14,9 @@ public class ProductService : IProductService
     #region Dependency Injection
     private readonly IProductRepository _productRepository;
     private readonly IBrandRepository _brandRepository;
-    private readonly ProductValidateService _productValidateService;
+    private readonly IProductValidateService _productValidateService;
 
-    public ProductService(IProductRepository productRepository, IBrandRepository brandRepository, ProductValidateService productValidateService)
+    public ProductService(IProductRepository productRepository, IBrandRepository brandRepository, IProductValidateService productValidateService)
     {
         _productRepository = productRepository;
         _brandRepository = brandRepository;

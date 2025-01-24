@@ -4,6 +4,7 @@ using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
@@ -12,9 +13,9 @@ public class CustomerService : ICustomerService
 {
     #region Dependency Injection
     private readonly ICustomerRepository _customerRepository;
-    private readonly CustomerValidateService _customerValidateService;
+    private readonly ICustomerValidateService _customerValidateService;
 
-    public CustomerService(ICustomerRepository customerRepository, CustomerValidateService customerValidateService)
+    public CustomerService(ICustomerRepository customerRepository, ICustomerValidateService customerValidateService)
     {
         _customerRepository = customerRepository;
         _customerValidateService = customerValidateService;

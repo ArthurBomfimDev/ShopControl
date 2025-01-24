@@ -3,6 +3,7 @@ using ProjetoTeste.Infrastructure.Application.Service.Order;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 using ProjetoTeste.Infrastructure.Persistence;
 using ProjetoTeste.Infrastructure.Persistence.Repository;
 
@@ -18,10 +19,10 @@ public static class InjectionDependencyExtension
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<BrandValidateService>();
-        services.AddScoped<CustomerValidateService>();
-        services.AddScoped<ProductValidateService>();
-        services.AddScoped<OrderValidateService>();
+        services.AddScoped<IBrandValidateService, BrandValidateService>();
+        services.AddScoped<ICustomerValidateService, CustomerValidateService>();
+        services.AddScoped<IProductValidateService, ProductValidateService>();
+        services.AddScoped<IOrderValidateService, OrderValidateService>();
         services.AddScoped<IBrandService, BrandService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IOrderService, OrderService>();

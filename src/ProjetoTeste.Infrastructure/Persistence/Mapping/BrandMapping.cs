@@ -6,7 +6,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Mapping;
 
 public class BrandConfiguration : IEntityTypeConfiguration<Brand>
 {
-    public void Configure(EntityTypeBuilder<Brand> builder)
+    public void Configure(EntityTypeBuilder<Brand> builder) // Builde é uma instancia da classe EntityTypeBUilder que atua como uma ferramenta de configuração
     {
         builder.ToTable("marca");
 

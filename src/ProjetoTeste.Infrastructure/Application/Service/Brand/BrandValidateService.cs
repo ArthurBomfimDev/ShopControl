@@ -1,9 +1,10 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class BrandValidateService
+public class BrandValidateService : IBrandValidateService
 {
 
     #region Create
@@ -42,7 +43,7 @@ public class BrandValidateService
              select i).ToList();
 
         _ = (from i in listBrandValidate
-             where i.InputCreate.Description.Length > 100 || string.IsNullOrEmpty(i.InputCreate.Code) || string.IsNullOrWhiteSpace(i.InputCreate.Code)
+             where i.InputCreate.Description.Length > 100 || string.IsNullOrEmpty(i.InputCreate.Description) || string.IsNullOrWhiteSpace(i.InputCreate.Description)
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage(i.InputCreate.Description.Length > 100 ? $"A marca: '{i.InputCreate.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado."
              : $"A marca: '{i.InputCreate.Name}' possui uma descrição vazia e não pode ser cadastrado.")

@@ -1,9 +1,10 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Infrastructure.Application.Service.Order;
 
-public class OrderValidateService
+public class OrderValidateService : IOrderValidateService
 {
     #region Create Order
     public async Task<BaseResponse<List<OrderValidate>>> CreateValidateOrder(List<OrderValidate> listOrderValidate)

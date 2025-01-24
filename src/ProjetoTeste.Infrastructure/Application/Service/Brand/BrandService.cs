@@ -4,6 +4,7 @@ using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
@@ -12,10 +13,10 @@ public class BrandService : IBrandService
 {
     #region Dependency Injection
     private readonly IBrandRepository _brandRepository;
-    private readonly BrandValidateService _brandValidadeService;
+    private readonly IBrandValidateService _brandValidadeService;
     private readonly IProductRepository _productRepository;
 
-    public BrandService(IBrandRepository brandRepository, BrandValidateService brandValidadeService, IProductRepository productRepository)
+    public BrandService(IBrandRepository brandRepository, IBrandValidateService brandValidadeService, IProductRepository productRepository)
     {
         _brandRepository = brandRepository;
         _brandValidadeService = brandValidadeService;

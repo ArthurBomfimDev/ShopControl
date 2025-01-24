@@ -2,10 +2,10 @@
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
-using ProjetoTeste.Infrastructure.Application.Service.Order;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
@@ -18,9 +18,9 @@ public class OrderService : IOrderService
     private readonly IProductRepository _productRepository;
     private readonly IProductOrderRepository _productOrderRepository;
     private readonly IBrandRepository _brandRepository;
-    private readonly OrderValidateService _orderValidateService;
+    private readonly IOrderValidateService _orderValidateService;
 
-    public OrderService(IOrderRepository orderRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository, IBrandRepository brandRepository, OrderValidateService orderValidateService)
+    public OrderService(IOrderRepository orderRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository, IBrandRepository brandRepository, IOrderValidateService orderValidateService)
     {
         _orderRepository = orderRepository;
         _customerRepository = customerRepository;
