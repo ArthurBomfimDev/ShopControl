@@ -8,5 +8,4 @@ public interface IBrandRepository : IRepository<Brand>
     Task<Brand> GetByCode(string code);
     Task<List<Brand>> GetAllAndProduct();
     Task<List<Brand>> GetAndProduct(long id);
-    //bool BrandExists(long id);
 }

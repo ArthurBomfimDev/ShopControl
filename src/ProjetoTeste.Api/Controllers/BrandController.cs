@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc; // utilizando as classes, interfaces e métodos contidos no namespace Microsoft.AspNetCore.Mvc.--> Importa as funções do fremework dotnet mvc(utilizado para aplicações web) tem os métodos como controllers endpoints etc
+﻿using Microsoft.AspNetCore.Mvc;
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
@@ -7,26 +7,17 @@ using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
 namespace ProjetoTeste.Api.Controllers;
 
-// Um framework é um conjunto de ferramentas, bibliotecas e diretrizes projetadas para ajudar desenvolvedores a construir aplicações de forma mais eficiente e estruturada. Ele fornece uma base pronta que resolve problemas comuns, permitindo que os programadores se concentrem nas partes específicas do sistema que estão desenvolvendo.
-// Base pronto
-// Padrões
-// Funções e métodos
-// Reutilização
 public class BrandController : BaseController
 {
-    //Injeção de dependencia
     private readonly IBrandService _brandService;
 
-    //Preenchidas e fornecidas pelo mvc
-
-    public BrandController(IUnitOfWork unitOfWork, IBrandService brandService) : base(unitOfWork) // Injeção de dependencias (unitOfWork) garamte a trasação com o banco de dados
+    public BrandController(IUnitOfWork unitOfWork, IBrandService brandService) : base(unitOfWork)
     {
-        _brandService = brandService; // Contém a logica e a manipulação de dados
+        _brandService = brandService;
     }
-    //Para desacoplar lógica, centralizar transações e facilitar manutenção e testes.
 
     [HttpGet]
-    public async Task<ActionResult<List<OutputBrand?>>> GetAll() // ActionResult -> é um modelo genérico e flexível, serve para padronizar o retorno de respostas HTTP (polimorfismo) -> actionsResult classe base e genmerica herdada por object result q por sua vez é herdada por Ok, badrequest etc...
+    public async Task<ActionResult<List<OutputBrand?>>> GetAll()
     {
         var brandList = await _brandService.GetAll();
         return Ok(brandList);
