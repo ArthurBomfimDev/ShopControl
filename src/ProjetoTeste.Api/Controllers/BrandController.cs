@@ -6,7 +6,7 @@ using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 
 namespace ProjetoTeste.Api.Controllers;
-
+//Maestro
 public class BrandController : BaseController
 {
     private readonly IBrandService _brandService;
@@ -21,9 +21,10 @@ public class BrandController : BaseController
     {
         var brandList = await _brandService.GetAll();
         return Ok(brandList);
+
     }
 
-    [HttpGet("Id")]
+    [HttpPost("Id")]
     public async Task<ActionResult<OutputBrand?>> Get(InputIdentifyViewBrand inputIdentifyViewBrand)
     {
         var brand = await _brandService.Get(inputIdentifyViewBrand);

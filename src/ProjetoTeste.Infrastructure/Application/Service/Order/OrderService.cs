@@ -149,8 +149,10 @@ public class OrderService : IOrderService
     public async Task<BaseResponse<List<OutputProductOrder>>> CreateProductOrderMultiple(List<InputCreateProductOrder> listinputCreateProductOrder)
     {
         var response = new BaseResponse<List<OutputProductOrder>>();
+
         var listOrder = await _orderRepository.GetListByListId(listinputCreateProductOrder.Select(i => i.OrderId).ToList());
         var listProduct = await _productRepository.GetListByListId(listinputCreateProductOrder.Select(i => i.ProductId).ToList());
+
         var listCreate = (from i in listinputCreateProductOrder
                           select new
                           {
@@ -158,18 +160,24 @@ public class OrderService : IOrderService
                               OrderId = listOrder.Select(j => j.Id).FirstOrDefault(j => j == i.OrderId),
                               Product = listProduct.FirstOrDefault(k => k.Id == i.ProductId).ToProductDTO(),
                           });
+
         List<ProductOrderValidate> listProductOrderValidate = listCreate.Select(i => new ProductOrderValidate().CreateValidate(i.InputCreateProductOrder, i.OrderId, i.Product)).ToList();
+
         var create = await _orderValidateService.CreateValidateProductOrder(listProductOrderValidate);
+
         response.Success = create.Success;
         response.Message = create.Message;
         if (!response.Success)
             return response;
 
         var createValidate = (from i in create.Content
+                              let message = response.AddSuccessMessage($"O pedido com Id: '{i.OrderId}' do produto com o Id: '{i.InputCreateProductOrder.ProductId}' e quantidade: '{i.InputCreateProductOrder.Quantity}' foi efetuado com sucesso.")
                               select new ProductOrder(i.OrderId, i.Product.Id, i.InputCreateProductOrder.Quantity, i.Product.Price, (i.Product.Price * i.InputCreateProductOrder.Quantity))).ToList();
+
         var listNewProductOrder = await _productOrderRepository.Create(createValidate);
 
         var listUpdateProduct = await _productRepository.GetListByListId(create.Content.Select(i => i.Product.Id).ToList());
+
         var listUpdateOrder = await _orderRepository.GetListByListId(create.Content.Select(i => i.OrderId).ToList());
         for (var i = 0; i < listUpdateProduct.Count; i++)
         {

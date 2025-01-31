@@ -17,7 +17,7 @@ public class BrandValidateService : IBrandValidateService
              select i).ToList();
 
         _ = (from i in listBrandValidate
-             where i.RepeatedInputCreate != null
+             where i.RepeatedInputCreateCode != null
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' não pode ser cadastrada porque o código está repetido. Por favor, escolha um código diferente.")
              select i).ToList();
@@ -51,7 +51,6 @@ public class BrandValidateService : IBrandValidateService
 
         var create = (from i in listBrandValidate
                       where !i.Invalid
-                      let successMessage = response.AddSuccessMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' foi cadastrada com sucesso!")
                       select i).ToList();
 
         if (!create.Any())
@@ -83,7 +82,7 @@ public class BrandValidateService : IBrandValidateService
              select i).ToList();
 
         _ = (from i in listBrandValidate
-             where !i.Invalid && i.Code != null && i.Code != i.OriginalBrandDTO.Code
+             where !i.Invalid && i.CodeExists != null && i.CodeExists != i.OriginalBrandDTO?.Code
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' não pode ser atualizada porque o código já está em uso por outra marca. Por favor, escolha um código diferente.")
              select i).ToList();

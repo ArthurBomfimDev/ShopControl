@@ -49,11 +49,15 @@ public class BrandService : IBrandService
     public async Task<BaseResponse<OutputBrand>> Create(InputCreateBrand inputCreateBrand)
     {
         var response = new BaseResponse<OutputBrand>();
+
         var result = await CreateMultiple([inputCreateBrand]);
+
         response.Message = result.Message;
         response.Success = result.Success;
+
         if (!response.Success)
             return response;
+
         response.Content = result.Content.FirstOrDefault();
         return response;
     }
@@ -61,30 +65,40 @@ public class BrandService : IBrandService
     public async Task<BaseResponse<List<OutputBrand>>> CreateMultiple(List<InputCreateBrand> listInputCreateBrand)
     {
         var response = new BaseResponse<List<OutputBrand>>();
+
         var listOriginalBrand = await _brandRepository.GetListByListCode(listInputCreateBrand.Select(i => i.Code).ToList());
-        var _listRepeatedInputCreateBrand = (from i in listInputCreateBrand
+        var listRepeatedInputCreateBrandCode = (from i in listInputCreateBrand
                                              where listInputCreateBrand.Count(j => j.Code == i.Code) > 1
-                                             select i).ToList();
+                                             select i.Code).ToList();
+
         var listCreate = (from i in listInputCreateBrand
                           select new
                           {
                               inputCreateBrand = i,
-                              RepeatedInputCreateBrand = _listRepeatedInputCreateBrand.FirstOrDefault(j => j.Code == i.Code),
+                              RepeatedInputCreateBrandCode = listRepeatedInputCreateBrandCode.FirstOrDefault(j => j == i.Code),
                               OriginalBrand = (listOriginalBrand.FirstOrDefault(j => j.Code == i.Code)).ToBrandDTO()
                           }).ToList();
-        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrand, i.OriginalBrand)).ToList();
+
+        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
+
         var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
+
         response.Message = create.Message;
         response.Success = create.Success;
         if (!response.Success)
             return response;
 
-        var listNewBrand = await _brandRepository.Create(create.Content.Select(i => new Brand(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList());
+        var listCreateBrand = (from i in create.Content
+                              let successMessage = response.AddSuccessMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' foi cadastrada com sucesso!")
+                              select new Brand(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList();
+
+        var listNewBrand = await _brandRepository.Create(listCreateBrand);
+
         response.Content = listNewBrand.Select(i => i.ToOutputBrand()).ToList();
         return response;
     }
     #endregion
-
+    
     #region Update
     public async Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputidentityupdatebrand)
     {
@@ -94,27 +108,28 @@ public class BrandService : IBrandService
     public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateBrand)
     {
         var response = new BaseResponse<bool>();
-        var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList());
-        var listCode = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList())).Select(i => i.Code);
-        var _listRepeatedInputUpdateBrand = (from i in listInputIdentityUpdateBrand
-                                             where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
-                                             select i).ToList();
 
-        var _listRepeatedCode = (from i in listInputIdentityUpdateBrand
+        var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList());
+        var listCodeExists = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList())).Select(i => i.Code);
+        var listRepeatedInputUpdateBrandIdentify = (from i in listInputIdentityUpdateBrand
+                                             where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
+                                             select i.Id).ToList();
+
+        var listRepeatedCode = (from i in listInputIdentityUpdateBrand
                                  where listInputIdentityUpdateBrand.Count(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code) > 1
-                                 select i).ToList();
+                                 select i.InputUpdateBrand.Code).ToList();
 
         var listUpdate = (from i in listInputIdentityUpdateBrand
                           select new
                           {
                               InputIdentityUpdateBrand = i,
-                              RepeatedInputUpdateBrand = _listRepeatedInputUpdateBrand.FirstOrDefault(j => j.Id == i.Id),
-                              OriginalBrand = listOriginalBrand.FirstOrDefault(k => k.Id == i.Id).ToBrandDTO(),
-                              RepeatedCode = _listRepeatedCode.FirstOrDefault(l => l.InputUpdateBrand.Code == i.InputUpdateBrand.Code),
-                              Code = listCode.FirstOrDefault(m => m == i.InputUpdateBrand.Code)
+                              RepeatedInputUpdateBrand = listRepeatedInputUpdateBrandIdentify.FirstOrDefault(j => j == i.Id),
+                              OriginalBrand = listOriginalBrand.FirstOrDefault(k => k.Id == i.Id)?.ToBrandDTO(),
+                              RepeatedCode = listRepeatedCode.FirstOrDefault(l => l == i.InputUpdateBrand.Code),
+                              CodeExists = listCodeExists.FirstOrDefault(m => m == i.InputUpdateBrand.Code)
                           }).ToList();
 
-        List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.Code)).ToList();
+        List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.CodeExists)).ToList();
 
         var update = await _brandValidadeService.ValidateUpdate(listBrandValidate);
         response.Message = update.Message;
@@ -128,7 +143,7 @@ public class BrandService : IBrandService
 
         var listBrandUpdate = (from i in update.Content
                                from j in listOriginalBrand
-                               where j.Id == i.OriginalBrandDTO.Id
+                               where j.Id == i.OriginalBrandDTO?.Id
                                let name = j.Name = i.InputUpdate.InputUpdateBrand.Name
                                let code = j.Code = i.InputUpdate.InputUpdateBrand.Code
                                let description = j.Description = i.InputUpdate.InputUpdateBrand.Description

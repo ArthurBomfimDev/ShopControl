@@ -53,16 +53,21 @@ public class OrderValidateService : IOrderValidateService
              let message = response.AddErrorMessage($"O pedido com o Id: '{i.OrderId}' e Id do produto '{i.InputCreateProductOrder.ProductId}' não pode ser processado, pois a quantidade: solicitada ({i.InputCreateProductOrder.Quantity}) é inválida. A quantidade: mínima permitida é 1.")
              select i).ToList();
 
-        _ = (from i in listProductOrderValidate
-             where !i.Invalid && i.Product.Stock < i.InputCreateProductOrder.Quantity
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O pedido com o Id: '{i.OrderId}' e Id do produto '{i.InputCreateProductOrder.ProductId}' não pode ser processado, pois a quantidade: solicitada ({i.InputCreateProductOrder.Quantity}) excede o estoque disponível ({i.Product.Stock}).")
-             select i).ToList();
+        var listProduct = listProductOrderValidate.Select(i => i.Product).ToList();
+
+        foreach (var i in listProductOrderValidate)
+        {
+            if (!i.Invalid && i.InputCreateProductOrder.Quantity < listProduct.FirstOrDefault(j => j.Id == i.InputCreateProductOrder.ProductId).Stock)
+                listProduct.FirstOrDefault(j => j.Id == i.InputCreateProductOrder.ProductId).Stock -= i.InputCreateProductOrder.Quantity;
+            else
+            {
+                i.SetInvalid();
+                response.AddErrorMessage($"O pedido com o Id: '{i.OrderId}' e Id do produto '{i.InputCreateProductOrder.ProductId}' não pode ser processado, pois a quantidade: solicitada ({i.InputCreateProductOrder.Quantity}) excede o estoque disponível ({listProduct.FirstOrDefault(j => j.Id == i.InputCreateProductOrder.ProductId).Stock}).");
+            }
+        }
 
         var create = (from i in listProductOrderValidate
                       where !i.Invalid
-                      let stockUpdate = i.Product.Stock -= i.InputCreateProductOrder.Quantity
-                      let message = response.AddSuccessMessage($"O pedido com Id: '{i.OrderId}' do produto com o Id: '{i.InputCreateProductOrder.ProductId}' e quantidade: '{i.InputCreateProductOrder.Quantity}' foi efetuado com sucesso.")
                       select i).ToList();
 
         if (!create.Any())

@@ -20,14 +20,4 @@ public class Brand : BaseEntity
         Description = description;
         ListProduct = listProduct;
     }
-
-    public Brand(long id, string name, string code, string description, List<Product>? listProduct)
-    {
-        Id = id;
-        Name = name;
-        Code = code;
-        Description = description;
-        ListProduct = listProduct;
-    }
-
 }

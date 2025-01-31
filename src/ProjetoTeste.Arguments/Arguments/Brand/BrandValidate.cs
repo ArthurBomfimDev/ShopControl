@@ -5,13 +5,13 @@ namespace ProjetoTeste.Arguments.Arguments;
 public class BrandValidate : BaseValidate
 {
     public InputCreateBrand InputCreate { get; private set; }
-    public InputCreateBrand RepeatedInputCreate { get; private set; }
+    public string? RepeatedInputCreateCode { get; private set; }
     public List<InputIdentityUpdateBrand>? ListRepeatedInputIdetityUpdate { get; private set; }
     public BrandDTO? OriginalBrandDTO { get; private set; }
     public InputIdentityUpdateBrand InputUpdate { get; private set; }
-    public InputIdentityUpdateBrand RepetedInputUpdate { get; private set; }
-    public InputIdentityUpdateBrand RepetedCode { get; private set; }
-    public string? Code { get; private set; }
+    public long RepetedInputUpdateIdentify { get; private set; }
+    public string RepetedCode { get; private set; }
+    public string? CodeExists { get; private set; }
     public InputIdentifyDeleteBrand InputIdentifyDeleteBrand { get; private set; }
     public InputIdentifyDeleteBrand? RepeteInputDelete { get; private set; }
     public long? BrandWithProduct { get; private set; }
@@ -21,20 +21,20 @@ public class BrandValidate : BaseValidate
 
     }
 
-    public BrandValidate ValidateCreate(InputCreateBrand? inputCreate, InputCreateBrand repeatedInputCreate, BrandDTO? originalBrand)
+    public BrandValidate ValidateCreate(InputCreateBrand? inputCreate, string? repeatedInputCreate, BrandDTO? originalBrand)
     {
         InputCreate = inputCreate;
-        RepeatedInputCreate = repeatedInputCreate;
+        RepeatedInputCreateCode = repeatedInputCreate;
         OriginalBrandDTO = originalBrand;
         return this;
     }
-    public BrandValidate ValidateUpdate(InputIdentityUpdateBrand? inputUpdate, InputIdentityUpdateBrand repetedInputUpdate, BrandDTO? originalBrand, InputIdentityUpdateBrand repetedCode, string? code)
+    public BrandValidate ValidateUpdate(InputIdentityUpdateBrand? inputUpdate, long repetedInputUpdate, BrandDTO? originalBrand, string repetedCode, string? codeExists)
     {
         InputUpdate = inputUpdate;
-        RepetedInputUpdate = repetedInputUpdate;
+        RepetedInputUpdateIdentify = repetedInputUpdate;
         OriginalBrandDTO = originalBrand;
         RepetedCode = repetedCode;
-        Code = code;
+        CodeExists = codeExists;
         return this;
     }
     public BrandValidate ValidateDelete(InputIdentifyDeleteBrand inputIdentifyDeleteBrand, BrandDTO? originalBrand, InputIdentifyDeleteBrand repeteInputDelete, long? brandWIthProduct)

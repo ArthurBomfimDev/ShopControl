@@ -23,7 +23,7 @@ public class OrderController : BaseController
         return Ok(get.Content);
     }
 
-    [HttpGet("{id}")]
+    [HttpPost("id")]
     public async Task<ActionResult<List<OutputOrder>>> Get(InputIdentifyViewOrder inputIdentifyViewOrder)
     {
         var get = await _orderService.Get(inputIdentifyViewOrder);

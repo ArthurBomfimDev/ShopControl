@@ -8,7 +8,7 @@ namespace ProjetoTeste.Api.Controllers;
 [ApiController]
 public class BaseController(IUnitOfWork unitOfWork) : Controller
 {
-    public override void OnActionExecuting(ActionExecutingContext context)
+    public override void OnActionExecuting(ActionExecutingContext context) //overide substitui o comportamento padrão do controller
     {
         unitOfWork.BeginTransaction();
         base.OnActionExecuting(context);

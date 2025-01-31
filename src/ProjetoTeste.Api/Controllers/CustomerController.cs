@@ -23,7 +23,7 @@ public class CustomerController : BaseController
         return Ok(get);
     }
 
-    [HttpGet("Id")]
+    [HttpPost("Id")]
     public async Task<ActionResult> Get(InputIdentifyViewCustomer inputIdentifyViewCustomer)
     {
         var get = await _customerService.Get(inputIdentifyViewCustomer);
