@@ -22,7 +22,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
 
         public async Task<List<TEntity>> GetListByListId(List<long> listId)
         {
-            return await _dbSet.Where(i => listId.Contains(i.Id)).ToListAsync();
+            return await _dbSet.Where(i => listId.Contains(i.Id)).AsNoTracking().ToListAsync();
         }
 
         public async Task<TEntity?> Get(long id)

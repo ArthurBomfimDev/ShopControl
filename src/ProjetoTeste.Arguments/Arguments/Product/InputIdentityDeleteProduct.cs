@@ -1,6 +1,6 @@
 ﻿namespace ProjetoTeste.Arguments.Arguments;
 
-public class InputIdentifyViewProduct
+public class InputIdentityDeleteProduct
 {
     public long Id { get; set; }
 }

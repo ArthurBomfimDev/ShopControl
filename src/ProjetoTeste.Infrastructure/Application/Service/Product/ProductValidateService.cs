@@ -63,7 +63,6 @@ public class ProductValidateService : IProductValidateService
 
         var create = (from i in listProductValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"O Produto {i.InputCreateProduct.Name} foi cadastrado com sucesso")
                       select i).ToList();
 
         if (!create.Any())
@@ -184,7 +183,6 @@ public class ProductValidateService : IProductValidateService
 
         var delete = (from i in listProductValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"O Produto: {i.Original.Name} com Id: {i.InputIdentifyDeleteProduct.Id} foi deletado com sucesso")
                       select i).ToList();
 
         if (!delete.Any())

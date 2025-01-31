@@ -4,6 +4,7 @@ using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
+using ProjetoTeste.Infrastructure.Mapper;
 using ProjetoTeste.Infrastructure.Persistence;
 using ProjetoTeste.Infrastructure.Persistence.Repository;
 
@@ -28,6 +29,7 @@ public static class InjectionDependencyExtension
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IOrderService, OrderService>();
+        services.AddAutoMapper(typeof(MappingProfile));
 
         return services;
     }

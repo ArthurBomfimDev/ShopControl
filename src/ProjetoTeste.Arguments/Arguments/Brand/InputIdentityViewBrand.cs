@@ -2,7 +2,7 @@
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class InputIdentifyViewOrder : IBaseIdentity
+public class InputIdentityViewBrand : IBaseIdentity
 {
     public long Id { get; set; }
 }

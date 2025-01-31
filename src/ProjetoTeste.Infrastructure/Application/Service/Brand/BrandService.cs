@@ -1,6 +1,8 @@
-﻿using ProjetoTeste.Arguments.Arguments;
+﻿using AutoMapper;
+using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
+using ProjetoTeste.Infrastructure.Application.Service.Base;
 using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
@@ -9,39 +11,20 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class BrandService : IBrandService
+public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand>, IBrandService
 {
     #region Dependency Injection
     private readonly IBrandRepository _brandRepository;
     private readonly IBrandValidateService _brandValidadeService;
     private readonly IProductRepository _productRepository;
+    private readonly IMapper _mapper;
 
-    public BrandService(IBrandRepository brandRepository, IBrandValidateService brandValidadeService, IProductRepository productRepository)
+    public BrandService(IBrandRepository brandRepository, IBrandValidateService brandValidadeService, IProductRepository productRepository, IMapper mapper) : base(brandRepository, mapper)
     {
         _brandRepository = brandRepository;
         _brandValidadeService = brandValidadeService;
         _productRepository = productRepository;
-    }
-    #endregion
-
-    #region Get
-    public async Task<List<OutputBrand>> GetAll()
-    {
-        var brandList = await _brandRepository.GetAll();
-        return (from i in brandList select i.ToOutputBrand()).ToList();
-    }
-
-    public async Task<OutputBrand> Get(InputIdentifyViewBrand inputIdentifyViewBrand)
-    {
-        var brand = await _brandRepository.Get(inputIdentifyViewBrand.Id);
-        return brand.ToOutputBrand();
-    }
-
-    public async Task<List<OutputBrand>> GetListByListId(List<InputIdentifyViewBrand> listInputIdentifyViewBrand)
-    {
-        var brand = await _brandRepository.GetListByListId(listInputIdentifyViewBrand.Select(i => i.Id).ToList());
-        return (from i in brand
-                select i.ToOutputBrand()).ToList();
+        _mapper = mapper;
     }
     #endregion
 
@@ -68,8 +51,8 @@ public class BrandService : IBrandService
 
         var listOriginalBrand = await _brandRepository.GetListByListCode(listInputCreateBrand.Select(i => i.Code).ToList());
         var listRepeatedInputCreateBrandCode = (from i in listInputCreateBrand
-                                             where listInputCreateBrand.Count(j => j.Code == i.Code) > 1
-                                             select i.Code).ToList();
+                                                where listInputCreateBrand.Count(j => j.Code == i.Code) > 1
+                                                select i.Code).ToList();
 
         var listCreate = (from i in listInputCreateBrand
                           select new
@@ -89,8 +72,8 @@ public class BrandService : IBrandService
             return response;
 
         var listCreateBrand = (from i in create.Content
-                              let successMessage = response.AddSuccessMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' foi cadastrada com sucesso!")
-                              select new Brand(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList();
+                               let successMessage = response.AddSuccessMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' foi cadastrada com sucesso!")
+                               select new Brand(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList();
 
         var listNewBrand = await _brandRepository.Create(listCreateBrand);
 
@@ -98,7 +81,7 @@ public class BrandService : IBrandService
         return response;
     }
     #endregion
-    
+
     #region Update
     public async Task<BaseResponse<bool>> Update(InputIdentityUpdateBrand inputidentityupdatebrand)
     {
@@ -112,12 +95,12 @@ public class BrandService : IBrandService
         var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList());
         var listCodeExists = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList())).Select(i => i.Code);
         var listRepeatedInputUpdateBrandIdentify = (from i in listInputIdentityUpdateBrand
-                                             where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
-                                             select i.Id).ToList();
+                                                    where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
+                                                    select i.Id).ToList();
 
         var listRepeatedCode = (from i in listInputIdentityUpdateBrand
-                                 where listInputIdentityUpdateBrand.Count(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code) > 1
-                                 select i.InputUpdateBrand.Code).ToList();
+                                where listInputIdentityUpdateBrand.Count(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code) > 1
+                                select i.InputUpdateBrand.Code).ToList();
 
         var listUpdate = (from i in listInputIdentityUpdateBrand
                           select new

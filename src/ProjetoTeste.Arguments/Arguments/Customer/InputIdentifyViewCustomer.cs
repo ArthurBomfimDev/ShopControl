@@ -1,6 +1,8 @@
-﻿namespace ProjetoTeste.Arguments.Arguments;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
 
-public class InputIdentifyViewCustomer
+namespace ProjetoTeste.Arguments.Arguments;
+
+public class InputIdentifyViewCustomer : IBaseIdentity
 {
     public long Id { get; set; }
 }
