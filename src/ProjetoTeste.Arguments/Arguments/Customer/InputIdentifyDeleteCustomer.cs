@@ -1,6 +1,10 @@
-﻿namespace ProjetoTeste.Arguments.Arguments;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using System.Text.Json.Serialization;
 
-public class InputIdentifyDeleteCustomer
+namespace ProjetoTeste.Arguments.Arguments;
+
+[method: JsonConstructor]
+public class InputIdentifyDeleteCustomer(long id) : BaseInputIdentityDelete<InputIdentifyDeleteCustomer>
 {
-    public long Id { get; set; }
+    public long Id { get; private set; } = id;
 }

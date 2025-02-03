@@ -99,7 +99,6 @@ public class CustomerValidateService : ICustomerValidateService
 
         var create = (from i in listCustomerValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"O cliente: '{i.InputCreateCustomer.Name}' foi cadastrado com sucesso.")
                       select i).ToList();
 
         if (!create.Any())
@@ -175,7 +174,7 @@ public class CustomerValidateService : ICustomerValidateService
              select i).ToList();
 
         _ = (from i in listCustomerValidate
-             where i.Original == null
+             where i.OriginalDTO == null
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"O cliente com o ID: '{i.InputIdentityUpdateCustomer.Id}' não existe. Atualização não permitida.")
              select i).ToList();
@@ -291,14 +290,13 @@ public class CustomerValidateService : ICustomerValidateService
              select i).ToList();
 
         _ = (from i in listCustomerValidate
-             where i.Original == null
+             where i.OriginalDTO == null
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer.Id} é inválido. Verifique os dados.")
              select i).ToList();
 
         var delete = (from i in listCustomerValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer.Id} foi excluído com sucesso.")
                       select i).ToList();
 
         if (!delete.Any())

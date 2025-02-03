@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProjetoTeste.Api.Controllers.Base;
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Infrastructure.Interface.Service;

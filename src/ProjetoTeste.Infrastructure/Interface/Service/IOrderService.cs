@@ -2,10 +2,12 @@
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
+using ProjetoTeste.Infrastructure.Interface.Service.Base;
+using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service;
 
-public interface IOrderService
+public interface IOrderService : IBaseService<Order, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
 {
     Task<BaseResponse<List<OutputOrder>>> GetAll();
     Task<BaseResponse<List<OutputOrder>>> Get(InputIdentifyViewOrder inputIdentifyViewOrder);

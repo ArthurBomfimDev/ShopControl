@@ -26,9 +26,9 @@ public static class InjectionDependencyExtension
         services.AddScoped<IOrderValidateService, OrderValidateService>();
         services.AddScoped<IBrandService, BrandService>();
         services.AddScoped<IProductService, ProductService>();
-        services.AddScoped<IOrderService, OrderService>();
+        //services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<ICustomerService, CustomerService>();
-        services.AddScoped<IOrderService, OrderService>();
+        //services.AddScoped<IOrderService, OrderService>();
         services.AddAutoMapper(typeof(MappingProfile));
 
         return services;

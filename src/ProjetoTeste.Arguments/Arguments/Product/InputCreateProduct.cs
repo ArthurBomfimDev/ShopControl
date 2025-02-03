@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using System.Text.Json.Serialization;
 namespace ProjetoTeste.Arguments.Arguments.Product;
 
 [method: JsonConstructor]
-public class InputCreateProduct(string name, string code, string description, decimal price, long brandId, long stock)
+public class InputCreateProduct(string name, string code, string description, decimal price, long brandId, long stock) : BaseInputCreate<InputCreateProduct>
 {
     public string Name { get; private set; } = name;
     public string Code { get; private set; } = code;

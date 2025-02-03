@@ -6,9 +6,13 @@ using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 
 namespace ProjetoTeste.Infrastructure.Application.Service.Base;
 
-public class BaseService<TIRepository, TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO> : IBaseService<TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
+public abstract class BaseService<TIRepository, TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO> : IBaseService<TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
     where TEntity : BaseEntity, new()
-    where TInputIdentityViewDTO : IBaseIdentity
+    where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
+    where TInputIdentityUpdateDTO : BaseInputIdentityUpdate<TInputIdentityUpdateDTO>
+    where TInputIdentityDeleteDTO : BaseInputIdentityDelete<TInputIdentityDeleteDTO>
+    where TInputIdentityViewDTO : BaseInputIdentityView<TInputIdentityViewDTO>, IBaseIdentity
+    where TOutputDTO : BaseOutput<TOutputDTO>
     where TIRepository : IRepository<TEntity>
 {
     private readonly TIRepository _repository;
@@ -21,19 +25,19 @@ public class BaseService<TIRepository, TEntity, TInputCreateDTO, TInputIdentityU
     }
 
     #region Get
-    public async Task<TOutputDTO> Get(TInputIdentityViewDTO inputIdentifyViewDTO)
+    public virtual async Task<TOutputDTO> Get(TInputIdentityViewDTO inputIdentifyViewDTO)
     {
         var get = await _repository.Get(inputIdentifyViewDTO.Id);
         return _mapper.Map<TOutputDTO>(get);
     }
 
-    public async Task<List<TOutputDTO>> GetAll()
+    public virtual async Task<List<TOutputDTO>> GetAll()
     {
         var getAll = await _repository.GetAll();
         return _mapper.Map<List<TOutputDTO>>(getAll);
     }
 
-    public async Task<List<TOutputDTO>> GetListByListId(List<TInputIdentityViewDTO> listTInputIdentityViewDTO)
+    public virtual async Task<List<TOutputDTO>> GetListByListId(List<TInputIdentityViewDTO> listTInputIdentityViewDTO)
     {
         var getListByListId = await _repository.GetListByListId(listTInputIdentityViewDTO.Select(i => i.Id).ToList());
         return _mapper.Map<List<TOutputDTO>>(getListByListId);

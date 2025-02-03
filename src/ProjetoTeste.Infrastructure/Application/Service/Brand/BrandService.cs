@@ -3,7 +3,6 @@ using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Application.Service.Base;
-using ProjetoTeste.Infrastructure.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
@@ -59,10 +58,10 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                           {
                               inputCreateBrand = i,
                               RepeatedInputCreateBrandCode = listRepeatedInputCreateBrandCode.FirstOrDefault(j => j == i.Code),
-                              OriginalBrand = (listOriginalBrand.FirstOrDefault(j => j.Code == i.Code)).ToBrandDTO()
+                              OriginalBrand = (listOriginalBrand.FirstOrDefault(j => j.Code == i.Code))
                           }).ToList();
 
-        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
+        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, _mapper.Map<BrandDTO>(i.OriginalBrand))).ToList();
 
         var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
 
@@ -77,7 +76,7 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
 
         var listNewBrand = await _brandRepository.Create(listCreateBrand);
 
-        response.Content = listNewBrand.Select(i => i.ToOutputBrand()).ToList();
+        response.Content = _mapper.Map<List<OutputBrand>>(listNewBrand);
         return response;
     }
     #endregion
@@ -107,12 +106,12 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                           {
                               InputIdentityUpdateBrand = i,
                               RepeatedInputUpdateBrand = listRepeatedInputUpdateBrandIdentify.FirstOrDefault(j => j == i.Id),
-                              OriginalBrand = listOriginalBrand.FirstOrDefault(k => k.Id == i.Id)?.ToBrandDTO(),
+                              OriginalBrand = listOriginalBrand.FirstOrDefault(k => k.Id == i.Id),
                               RepeatedCode = listRepeatedCode.FirstOrDefault(l => l == i.InputUpdateBrand.Code),
                               CodeExists = listCodeExists.FirstOrDefault(m => m == i.InputUpdateBrand.Code)
                           }).ToList();
 
-        List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.CodeExists)).ToList();
+        List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, _mapper.Map<BrandDTO>(i.OriginalBrand), i.RepeatedCode, i.CodeExists)).ToList();
 
         var update = await _brandValidadeService.ValidateUpdate(listBrandValidate);
         response.Message = update.Message;
@@ -125,15 +124,13 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
         }
 
         var listBrandUpdate = (from i in update.Content
-                               from j in listOriginalBrand
-                               where j.Id == i.OriginalBrandDTO?.Id
-                               let name = j.Name = i.InputUpdate.InputUpdateBrand.Name
-                               let code = j.Code = i.InputUpdate.InputUpdateBrand.Code
-                               let description = j.Description = i.InputUpdate.InputUpdateBrand.Description
+                               let name = i.OriginalBrandDTO.Name = i.InputUpdate.InputUpdateBrand.Name
+                               let code = i.OriginalBrandDTO.Code = i.InputUpdate.InputUpdateBrand.Code
+                               let description = i.OriginalBrandDTO.Description = i.InputUpdate.InputUpdateBrand.Description
                                let successMessage = response.AddSuccessMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' foi atualizada com sucesso!")
-                               select j).ToList();
+                               select i.OriginalBrandDTO).ToList();
 
-        response.Content = await _brandRepository.Update(listBrandUpdate);
+        response.Content = await _brandRepository.Update(_mapper.Map<List<Brand>>(listBrandUpdate));
 
         return response;
     }
@@ -161,23 +158,27 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                           select new
                           {
                               InputDeleteBrand = i,
-                              OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Id == i.Id).ToBrandDTO(),
+                              OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Id == i.Id),
                               RepeteInputDelete = listRepeteInputDelete.FirstOrDefault(k => k == i),
                               BrandWithProduct = listBrandWithProduct.FirstOrDefault(l => l == i.Id)
                           }).ToList();
-        List<BrandValidate> listBrandValidate = listDelete.Select(i => new BrandValidate().ValidateDelete(i.InputDeleteBrand, i.OriginalBrand, i.RepeteInputDelete, i.BrandWithProduct)).ToList();
+        List<BrandValidate> listBrandValidate = listDelete.Select(i => new BrandValidate().ValidateDelete(i.InputDeleteBrand, _mapper.Map<BrandDTO>(i.OriginalBrand), i.RepeteInputDelete, i.BrandWithProduct)).ToList();
 
-        var deleteValidate = await _brandValidadeService.ValidateDelete(listBrandValidate);
-        response.Message = deleteValidate.Message;
-        response.Success = deleteValidate.Success;
+        var validate = await _brandValidadeService.ValidateDelete(listBrandValidate);
+        response.Message = validate.Message;
+        response.Success = validate.Success;
+
         if (!response.Success)
         {
             response.Content = false;
             return response;
         }
 
-        var listBrandDelete = await _brandRepository.GetListByListId(deleteValidate.Content);
-        response.Content = await _brandRepository.Delete(listBrandDelete);
+        var delete = (from i in validate.Content
+                      let message = response.AddSuccessMessage($"A marca com o Id: {i.OriginalBrandDTO.Id} foi deletada com sucesso.")
+                      select i.OriginalBrandDTO).ToList();
+
+        response.Content = await _brandRepository.Delete(_mapper.Map<List<Brand>>(delete));
         return response;
     }
     #endregion

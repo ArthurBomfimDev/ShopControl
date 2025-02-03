@@ -34,20 +34,20 @@ public class OrderService : IOrderService
     #region Get
     public async Task<BaseResponse<List<OutputOrder>>> GetAll()
     {
-        var listOrder = await _orderRepository.GetProductOrders();
+        var listOrder = await _orderRepository.GetAllWithProductOrders();
         var outputOrder = listOrder.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList();
         return new BaseResponse<List<OutputOrder>> { Success = true, Content = outputOrder };
     }
 
     public async Task<BaseResponse<List<OutputOrder>>> Get(InputIdentifyViewOrder inputIdentifyViewOrder)
     {
-        var order = await _orderRepository.GetProductOrdersId(inputIdentifyViewOrder.Id);
+        var order = await _orderRepository.GetByIdWithProductOrders(inputIdentifyViewOrder.Id);
         return new BaseResponse<List<OutputOrder>> { Success = true, Content = order.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
     }
 
     public async Task<BaseResponse<List<OutputOrder>>> GetListByListId(List<InputIdentifyViewOrder> listInputIdentifyViewOrder)
     {
-        var listOrder = await _orderRepository.GetProductOrdersByListId(listInputIdentifyViewOrder.Select(i => i.Id).ToList());
+        var listOrder = await _orderRepository.GetListByListIdWhithProductOrders(listInputIdentifyViewOrder.Select(i => i.Id).ToList());
         return new BaseResponse<List<OutputOrder>> { Success = true, Content = listOrder.Select(i => i.ToOutputOrder()).ToList() };
     }
     #endregion

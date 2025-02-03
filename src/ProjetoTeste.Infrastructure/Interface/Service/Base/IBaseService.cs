@@ -5,7 +5,11 @@ namespace ProjetoTeste.Infrastructure.Interface.Service.Base;
 
 public interface IBaseService<TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
     where TEntity : BaseEntity, new()
-    where TInputIdentityViewDTO : IBaseIdentity
+    where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
+    where TInputIdentityUpdateDTO : BaseInputIdentityUpdate<TInputIdentityUpdateDTO>
+    where TInputIdentityDeleteDTO : BaseInputIdentityDelete<TInputIdentityDeleteDTO>
+    where TInputIdentityViewDTO : BaseInputIdentityView<TInputIdentityViewDTO>, IBaseIdentity
+    where TOutputDTO : BaseOutput<TOutputDTO>
 {
     Task<List<TOutputDTO>> GetAll();
     Task<TOutputDTO> Get(TInputIdentityViewDTO inputIdentifyViewDTO);

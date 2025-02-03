@@ -1,6 +1,8 @@
-﻿namespace ProjetoTeste.Arguments.Arguments;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
 
-public class InputIdentityDeleteProduct
+namespace ProjetoTeste.Arguments.Arguments;
+
+public class InputIdentityDeleteProduct : BaseInputIdentityDelete<InputIdentityDeleteProduct>
 {
     public long Id { get; set; }
 }

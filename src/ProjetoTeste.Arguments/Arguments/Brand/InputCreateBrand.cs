@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using System.Text.Json.Serialization;
 namespace ProjetoTeste.Arguments.Arguments.Brand;
 
 [method: JsonConstructor]
-public class InputCreateBrand(string name, string code, string description)
+public class InputCreateBrand(string name, string code, string description) : BaseInputCreate<InputCreateBrand>
 {
     public string Name { get; private set; } = name;
     public string Code { get; private set; } = code;

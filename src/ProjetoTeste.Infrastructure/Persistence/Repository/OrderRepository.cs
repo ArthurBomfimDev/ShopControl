@@ -13,18 +13,18 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         {
         }
 
-        public async Task<List<Order>> GetProductOrders()
+        public async Task<List<Order>> GetAllWithProductOrders()
         {
             var get = await _dbSet.Include(o => o.ListProductOrder).ToListAsync();
             return get;
         }
-        public async Task<List<Order>> GetProductOrdersId(long id)
+        public async Task<List<Order>> GetByIdWithProductOrders(long id)
         {
             var get = await _dbSet.Include(o => o.ListProductOrder)
                 .Where(o => o.Id == id).ToListAsync();
             return get;
         }
-        public Task<List<Order>> GetProductOrdersByListId(List<long> listId)
+        public Task<List<Order>> GetListByListIdWhithProductOrders(List<long> listId)
         {
             return _dbSet.Include(i => i.ListProductOrder).Where(j => listId.Contains(j.Id)).ToListAsync();
         }

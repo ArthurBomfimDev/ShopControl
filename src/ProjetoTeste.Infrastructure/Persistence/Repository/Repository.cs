@@ -30,26 +30,12 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             return await _dbSet.FindAsync(id);
         }
 
-        //public async Task<TEntity>? Create(TEntity entity)
-        //{
-        //    await _dbSet.AddAsync(entity);
-        //    await _context.SaveChangesAsync();
-        //    return entity;
-        //}
-
         public async Task<List<TEntity>?> Create(List<TEntity>? entityList)
         {
             await _dbSet.AddRangeAsync(entityList);
             await _context.SaveChangesAsync();
             return entityList;
         }
-
-        //public async Task<bool> Update(TEntity entity)
-        //{
-        //    _dbSet.Update(entity);
-        //    await _context.SaveChangesAsync();
-        //    return true;
-        //}
 
         public async Task<bool> Update(List<TEntity>? entityList)
         {
@@ -58,12 +44,6 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             return true;
         }
 
-        //public async Task<bool> Delete(TEntity entity)
-        //{
-        //     _dbSet.Remove(entity);
-        //    await _context.SaveChangesAsync();
-        //    return true;
-        //}
         public async Task<bool> Delete(List<TEntity> entityList)
         {
             _dbSet.RemoveRange(entityList);

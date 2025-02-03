@@ -1,9 +1,10 @@
-﻿using ProjetoTeste.Arguments.Arguments.ProductOrder;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments.Order;
 
-public class OutputOrder
+public class OutputOrder : BaseOutput<OutputOrder>
 {
     public long Id { get; set; }
     public long CustomerId { get; set; }

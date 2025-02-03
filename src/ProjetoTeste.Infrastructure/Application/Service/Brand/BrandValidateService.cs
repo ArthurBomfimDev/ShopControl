@@ -124,9 +124,9 @@ public class BrandValidateService : IBrandValidateService
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<List<long>>?> ValidateDelete(List<BrandValidate> listBrandValidate)
+    public async Task<BaseResponse<List<BrandValidate>>?> ValidateDelete(List<BrandValidate> listBrandValidate)
     {
-        var response = new BaseResponse<List<long>>();
+        var response = new BaseResponse<List<BrandValidate>>();
 
         _ = (from i in listBrandValidate
              where i.RepeteInputDelete != null
@@ -148,15 +148,15 @@ public class BrandValidateService : IBrandValidateService
 
         var delete = (from i in listBrandValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"A marca com o Id: {i.InputIdentifyDeleteBrand.Id} foi deletada com sucesso.")
-                      select i.InputIdentifyDeleteBrand).ToList();
+                      select i).ToList();
+
         if (!delete.Any())
         {
             response.Success = false;
             return response;
         }
 
-        response.Content = delete.Select(i => i.Id).ToList();
+        response.Content = delete;
         return response;
     }
     #endregion
