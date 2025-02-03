@@ -7,7 +7,7 @@ namespace ProjetoTeste.Infrastructure.Conversor
     {
         public static OutputProductOrder? ToOuputProductOrder(this ProductOrder? productOrders)
         {
-            return productOrders == null ? default : new OutputProductOrder(productOrders.OrderId, productOrders.ProductId, productOrders.UnitPrice, productOrders.Quantity, productOrders.SubTotal);
+            return productOrders == null ? default : new OutputProductOrder(productOrders.OrderId, productOrders.ProductId, productOrders.Quantity, productOrders.UnitPrice, productOrders.SubTotal);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         }
         public async Task<List<Order>> GetByIdWithProductOrders(long id)
         {
-            var get = await _dbSet.Include(o => o.ListProductOrder)
+            var get = await _dbSet.AsNoTracking().Include(o => o.ListProductOrder)
                 .Where(o => o.Id == id).ToListAsync();
             return get;
         }

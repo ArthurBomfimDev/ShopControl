@@ -24,7 +24,7 @@ public class MappingProfile : Profile
         CreateMap<Customer, CustomerDTO>().ReverseMap();
 
         CreateMap<Order, OutputOrder>()
-            .ForMember(i => i.listProductOrders, opt => opt.MapFrom(src => src.ListProductOrder));
+            .ForMember(i => i.ListProductOrders, opt => opt.MapFrom(src => src.ListProductOrder));
         CreateMap<Order, OrderDTO>().ReverseMap();
 
         CreateMap<ProductOrder, OutputProductOrder>();

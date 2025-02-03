@@ -18,7 +18,6 @@ public class OrderValidateService : IOrderValidateService
 
         var create = (from i in listOrderValidate
                       where !i.Invalid
-                      let message = response.AddSuccessMessage($"Pedido do cliente com id: {i.InputCreateOrder.CustomerId} foi cadastrado com sucesso")
                       select i).ToList();
 
         if (!create.Any())

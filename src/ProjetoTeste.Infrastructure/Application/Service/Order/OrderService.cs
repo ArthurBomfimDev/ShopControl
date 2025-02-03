@@ -1,8 +1,9 @@
-﻿using ProjetoTeste.Arguments.Arguments;
+﻿using AutoMapper;
+using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
-using ProjetoTeste.Infrastructure.Conversor;
+using ProjetoTeste.Infrastructure.Application.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
@@ -10,7 +11,7 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class OrderService : IOrderService
+public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>, IOrderService
 {
     #region Dependency Injection
     private readonly IOrderRepository _orderRepository;
@@ -19,8 +20,9 @@ public class OrderService : IOrderService
     private readonly IProductOrderRepository _productOrderRepository;
     private readonly IBrandRepository _brandRepository;
     private readonly IOrderValidateService _orderValidateService;
+    private readonly IMapper _mapper;
 
-    public OrderService(IOrderRepository orderRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository, IBrandRepository brandRepository, IOrderValidateService orderValidateService)
+    public OrderService(IOrderRepository orderRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository, IBrandRepository brandRepository, IOrderValidateService orderValidateService, IMapper mapper) : base(orderRepository, mapper)
     {
         _orderRepository = orderRepository;
         _customerRepository = customerRepository;
@@ -28,27 +30,27 @@ public class OrderService : IOrderService
         _productOrderRepository = productOrderRepository;
         _brandRepository = brandRepository;
         _orderValidateService = orderValidateService;
+        _mapper = mapper;
     }
     #endregion
 
     #region Get
-    public async Task<BaseResponse<List<OutputOrder>>> GetAll()
+    public override async Task<List<OutputOrder>> GetAll()
     {
         var listOrder = await _orderRepository.GetAllWithProductOrders();
-        var outputOrder = listOrder.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList();
-        return new BaseResponse<List<OutputOrder>> { Success = true, Content = outputOrder };
+        return _mapper.Map<List<OutputOrder>>(listOrder);
     }
 
-    public async Task<BaseResponse<List<OutputOrder>>> Get(InputIdentifyViewOrder inputIdentifyViewOrder)
+    public async Task<List<OutputOrder>> GetByIdWithProducts(InputIdentifyViewOrder inputIdentifyViewOrder)
     {
         var order = await _orderRepository.GetByIdWithProductOrders(inputIdentifyViewOrder.Id);
-        return new BaseResponse<List<OutputOrder>> { Success = true, Content = order.Select(o => new OutputOrder(o.Id, o.CustomerId, (from i in o.ListProductOrder select i.ToOuputProductOrder()).ToList(), o.Total, o.OrderDate)).ToList() };
+        return _mapper.Map<List<OutputOrder>>(order);
     }
 
-    public async Task<BaseResponse<List<OutputOrder>>> GetListByListId(List<InputIdentifyViewOrder> listInputIdentifyViewOrder)
+    public override async Task<List<OutputOrder>> GetListByListId(List<InputIdentifyViewOrder> listInputIdentifyViewOrder)
     {
         var listOrder = await _orderRepository.GetListByListIdWhithProductOrders(listInputIdentifyViewOrder.Select(i => i.Id).ToList());
-        return new BaseResponse<List<OutputOrder>> { Success = true, Content = listOrder.Select(i => i.ToOutputOrder()).ToList() };
+        return _mapper.Map<List<OutputOrder>>(listOrder);
     }
     #endregion
 
@@ -98,11 +100,15 @@ public class OrderService : IOrderService
     public async Task<BaseResponse<OutputOrder>> Create(InputCreateOrder inputCreateOrder)
     {
         var response = new BaseResponse<OutputOrder>();
+
         var createValidate = await CreateMultiple([inputCreateOrder]);
+
         response.Success = createValidate.Success;
         response.Message = createValidate.Message;
+
         if (!response.Success)
             return response;
+
         response.Content = createValidate.Content.FirstOrDefault();
         return response;
     }
@@ -110,6 +116,7 @@ public class OrderService : IOrderService
     public async Task<BaseResponse<List<OutputOrder>>> CreateMultiple(List<InputCreateOrder> listinputCreateOrder)
     {
         var response = new BaseResponse<List<OutputOrder>>();
+
         var listCustomerId = (await _customerRepository.GetListByListId(listinputCreateOrder.Select(i => i.CustomerId).ToList())).Select(j => j.Id).ToList();
         var listCreate = (from i in listinputCreateOrder
                           select new
@@ -117,7 +124,9 @@ public class OrderService : IOrderService
                               InputCreateOrder = i,
                               CustomerId = listCustomerId.FirstOrDefault(j => j == i.CustomerId)
                           });
+
         List<OrderValidate> listOrderValidate = listCreate.Select(i => new OrderValidate().CreateValidate(i.InputCreateOrder, i.CustomerId)).ToList();
+
         var create = await _orderValidateService.CreateValidateOrder(listOrderValidate);
         response.Success = create.Success;
         response.Message = create.Message;
@@ -125,10 +134,11 @@ public class OrderService : IOrderService
             return response;
 
         var listCreateOrder = (from i in create.Content
+                               let message = response.AddSuccessMessage($"Pedido do cliente com id: {i.InputCreateOrder.CustomerId} foi cadastrado com sucesso")
                                select new Order(i.InputCreateOrder.CustomerId, DateTime.Now, default)).ToList();
 
         var listNewOrder = await _orderRepository.Create(listCreateOrder);
-        response.Content = listNewOrder.Select(i => i.ToOutputOrder()).ToList();
+        response.Content = _mapper.Map<List<OutputOrder>>(listNewOrder);
         return response;
     }
     #endregion
@@ -137,11 +147,14 @@ public class OrderService : IOrderService
     public async Task<BaseResponse<OutputProductOrder>> CreateProductOrder(InputCreateProductOrder inputCreateProductOrder)
     {
         var response = new BaseResponse<OutputProductOrder>();
+
         var createValidate = await CreateProductOrderMultiple([inputCreateProductOrder]);
+
         response.Success = createValidate.Success;
         response.Message = createValidate.Message;
         if (!response.Success)
             return response;
+
         response.Content = createValidate.Content.FirstOrDefault();
         return response;
     }
@@ -158,10 +171,10 @@ public class OrderService : IOrderService
                           {
                               InputCreateProductOrder = i,
                               OrderId = listOrder.Select(j => j.Id).FirstOrDefault(j => j == i.OrderId),
-                              Product = listProduct.FirstOrDefault(k => k.Id == i.ProductId).ToProductDTO(),
+                              Product = listProduct.FirstOrDefault(k => k.Id == i.ProductId)
                           });
 
-        List<ProductOrderValidate> listProductOrderValidate = listCreate.Select(i => new ProductOrderValidate().CreateValidate(i.InputCreateProductOrder, i.OrderId, i.Product)).ToList();
+        List<ProductOrderValidate> listProductOrderValidate = listCreate.Select(i => new ProductOrderValidate().CreateValidate(i.InputCreateProductOrder, i.OrderId, _mapper.Map<ProductDTO>(i.Product))).ToList();
 
         var create = await _orderValidateService.CreateValidateProductOrder(listProductOrderValidate);
 
@@ -198,7 +211,7 @@ public class OrderService : IOrderService
             return response;
         }
 
-        response.Content = listNewProductOrder.Select(i => i.ToOuputProductOrder()).ToList();
+        response.Content = _mapper.Map<List<OutputProductOrder>>(listNewProductOrder);
         return response;
     }
     #endregion
