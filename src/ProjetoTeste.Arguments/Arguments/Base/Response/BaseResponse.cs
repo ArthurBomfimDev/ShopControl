@@ -16,4 +16,9 @@ public class BaseResponse<TContent>
         Message.Add(new Notification(message, EnumNotificationType.Error));
         return true;
     }
+    public bool AddAlertMessage(string message)
+    {
+        Message.Add(new Notification(message, EnumNotificationType.Alert));
+        return true;
+    }
 }

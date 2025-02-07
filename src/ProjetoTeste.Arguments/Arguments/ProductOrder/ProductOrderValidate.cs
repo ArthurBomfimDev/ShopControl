@@ -2,7 +2,7 @@
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class ProductOrderValidate : BaseValidate
+public class ProductOrderValidate : BaseValidateDTO
 {
     public InputCreateProductOrder InputCreateProductOrder { get; private set; }
     public long OrderId { get; private set; }

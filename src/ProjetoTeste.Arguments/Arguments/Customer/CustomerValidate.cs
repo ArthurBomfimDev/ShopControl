@@ -2,7 +2,7 @@
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class CustomerValidate : BaseValidate
+public class CustomerValidate : BaseValidateDTO
 {
     public InputCreateCustomer? InputCreateCustomer { get; private set; }
     public InputIdentityUpdateCustomer? InputIdentityUpdateCustomer { get; private set; }
