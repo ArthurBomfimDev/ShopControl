@@ -2,7 +2,7 @@
 
 namespace ProjetoTeste.Infrastructure.Interface.Repositories;
 
-public interface IRepository<TEntity> where TEntity : BaseEntity, new()
+public interface IRepository<TEntity> where TEntity : BaseEntity
 {
     Task<List<TEntity?>> GetAll();
     Task<List<TEntity>> GetListByListId(List<long>? listId);

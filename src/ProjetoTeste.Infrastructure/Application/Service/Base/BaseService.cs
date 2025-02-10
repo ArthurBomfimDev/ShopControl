@@ -7,7 +7,7 @@ using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 namespace ProjetoTeste.Infrastructure.Application.Service.Base;
 
 public abstract class BaseService<TIRepository, TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO> : IBaseService<TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
-    where TEntity : BaseEntity, new()
+    where TEntity : BaseEntity
     where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
     where TInputIdentityUpdateDTO : BaseInputIdentityUpdate<TInputIdentityUpdateDTO>
     where TInputIdentityDeleteDTO : BaseInputIdentityDelete<TInputIdentityDeleteDTO>

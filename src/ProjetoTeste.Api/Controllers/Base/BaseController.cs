@@ -11,7 +11,7 @@ namespace ProjetoTeste.Api.Controllers.Base;
 [ApiController]
 public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityViewDTO, TOutputDTO> : Controller
     where TService : IBaseService<TEntity, TInputCreateDTO, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityViewDTO, TOutputDTO>
-    where TEntity : BaseEntity, new()
+    where TEntity : BaseEntity
     where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
     where TInputIndetityUpdate : BaseInputIdentityUpdate<TInputIndetityUpdate>
     where TInputIndetityDelete : BaseInputIdentityDelete<TInputIndetityDelete>

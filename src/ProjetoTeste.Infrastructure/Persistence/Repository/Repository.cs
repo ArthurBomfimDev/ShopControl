@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Persistence.Context;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Repository
 {
-    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity, new()
+    public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
         protected readonly AppDbContext _context;
         protected readonly DbSet<TEntity> _dbSet;
