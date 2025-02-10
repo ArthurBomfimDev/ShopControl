@@ -1,12 +1,13 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Base.Validate;
+using ProjetoTeste.Infrastructure.Application.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class BrandValidateService : IBrandValidateService
+public class BrandValidateService : BaseValdiate<BrandValidate>, IBrandValidateService
 {
-
     #region Create
     public async Task<BaseResponse<List<BrandValidate>>> ValidateCreate(List<BrandValidate> listBrandValidate)
     {
@@ -29,7 +30,8 @@ public class BrandValidateService : IBrandValidateService
              select i).ToList();
 
         _ = (from i in listBrandValidate
-             where i.InputCreate.Name.Length > 24 || string.IsNullOrEmpty(i.InputCreate.Name) || string.IsNullOrWhiteSpace(i.InputCreate.Name)
+             let resultInvalidLenght = InvalidLenght(i.InputCreate.Name,1,40)
+             where resultInvalidLenght != EnumValidateType.Valid
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage(i.InputCreate.Name.Length > 24 ? $"A marca: '{i.InputCreate.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres."
              : $"A marca: '{i.InputCreate.Name}' não pode ser cadastrado porque o nome está vazio.")

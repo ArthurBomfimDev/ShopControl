@@ -1,7 +1,9 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Base.Response;
 using ProjetoTeste.Arguments.Arguments.Base.Validate;
 using System.Net.Mail;
+using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application.Service.Base;
@@ -18,7 +20,7 @@ public class BaseValdiate<TValidateDTO> where TValidateDTO : BaseValidateDTO
     #region InvalidLength
     public static EnumValidateType InvalidLenght(string? value, int minLeght, int MaxLenght)
     {
-        if(string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(value))
             return minLeght == 0 ? EnumValidateType.Valid : EnumValidateType.Invalid;
 
         int lenght = value.Length;
@@ -86,5 +88,42 @@ public class BaseValdiate<TValidateDTO> where TValidateDTO : BaseValidateDTO
     }
     #endregion
 
+    #endregion
+
+    #region Notifiction
+    public static class NotifactionMessages
+    {
+        public const string InvalidLenghtKey = "InvalidLenght";
+    }
+
+    public bool InvalidLenght(string identifier, string? value, int minLeght, int maxLenght, EnumValidateType validateType, string propertyName)
+    {
+        return HandleValidation(identifier, validateType, NotifactionMessages.InvalidLenghtKey)
+    }
+
+    #endregion
+
+    #region Helper
+    private bool AddToDictionary(string key, DetailedNotification detailedNotification)
+    {
+        NotificationHelper.Add(key, detailedNotification);
+        return true;
+    }
+
+
+    private bool HandleValidation(string key, EnumValidateType validateType, string invalidMessage, string nonInformedMessage)
+    {
+        if (EnumValidateType.Invalid == validateType)
+        {
+            AddToDictionary(key, new DetailedNotification(key, [invalidMessage], EnumNotificationType.Error));
+            return true;
+        }
+        if (EnumValidateType.NotInformed == validateType)
+        {
+            AddToDictionary(key, new DetailedNotification(key, [nonInformedMessage], EnumNotificationType.Error));
+            return true;
+        }
+        return false;
+    }
     #endregion
 }

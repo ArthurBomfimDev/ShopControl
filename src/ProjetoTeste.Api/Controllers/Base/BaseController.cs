@@ -19,6 +19,7 @@ public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputI
     where TOutputDTO : BaseOutput<TOutputDTO>
 {
     #region Dependecy Injection
+    protected readonly Guid _guidSessionDataRequest = Guid.NewGuid();
     private readonly IUnitOfWork unitOfWork;
     private readonly TService service;
 
