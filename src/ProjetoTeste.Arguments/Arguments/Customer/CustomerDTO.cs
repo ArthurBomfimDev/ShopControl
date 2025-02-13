@@ -10,20 +10,20 @@ public class CustomerDTO
     public string Email { get; set; }
     public string Phone { get; set; }
 
+    public virtual List<OrderDTO?> ListOrder { get; set; }
     public CustomerDTO()
     {
-        
+
     }
 
-    public List<OrderDTO>? ListOrder { get; set; }
-
     [JsonConstructor]
-    public CustomerDTO(long id, string name, string cPF, string email, string phone)
+    public CustomerDTO(long id, string name, string cPF, string email, string phone, List<OrderDTO?> listOrder = null)
     {
         Id = id;
         Name = name;
         CPF = cPF;
         Email = email;
         Phone = phone;
+        ListOrder = listOrder;
     }
 }

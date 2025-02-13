@@ -11,7 +11,7 @@ public class InputIdentityUpdateBrand : BaseInputIdentityUpdate<InputIdentityUpd
 
     public InputIdentityUpdateBrand()
     {
-        
+
     }
 
     [JsonConstructor]

@@ -12,15 +12,16 @@ public class OrderDTO
 
     public OrderDTO()
     {
-        
+
     }
 
-    public OrderDTO(long id, long customerId, decimal total, DateTime orderDate, List<ProductOrderDTO> listProductOrder)
+    public OrderDTO(long id, long customerId, decimal total, DateTime orderDate, CustomerDTO customer, List<ProductOrderDTO> listProductOrder)
     {
         Id = id;
         CustomerId = customerId;
         Total = total;
         OrderDate = orderDate;
+        Customer = customer;
         ListProductOrder = listProductOrder;
     }
 }

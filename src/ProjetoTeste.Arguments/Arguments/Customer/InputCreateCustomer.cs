@@ -12,7 +12,7 @@ public class InputCreateCustomer : BaseInputCreate<InputCreateCustomer>
 
     public InputCreateCustomer()
     {
-        
+
     }
 
     [JsonConstructor]

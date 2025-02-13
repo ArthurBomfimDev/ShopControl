@@ -61,7 +61,7 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                               OriginalBrand = (listOriginalBrand.FirstOrDefault(j => j.Code == i.Code))
                           }).ToList();
 
-        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, _mapper.Map<BrandDTO>(i.OriginalBrand))).ToList();
+        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
 
         var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
 

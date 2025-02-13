@@ -13,7 +13,7 @@ public class InputCreateProduct : BaseInputCreate<InputCreateProduct>
 
     public InputCreateProduct()
     {
-        
+
     }
 
     [JsonConstructor]

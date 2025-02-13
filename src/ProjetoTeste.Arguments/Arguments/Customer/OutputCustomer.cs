@@ -13,7 +13,7 @@ namespace ProjetoTeste.Arguments.Arguments.Customer
 
         public OutputCustomer()
         {
-            
+
         }
 
         [JsonConstructor]

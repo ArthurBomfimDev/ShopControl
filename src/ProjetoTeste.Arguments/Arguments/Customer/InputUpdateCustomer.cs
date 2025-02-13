@@ -11,7 +11,7 @@ public class InputUpdateCustomer
 
     public InputUpdateCustomer()
     {
-        
+
     }
 
     [JsonConstructor]

@@ -13,7 +13,7 @@ public class OutputProductOrder : BaseOutput<OutputProductOrder>
 
     public OutputProductOrder()
     {
-        
+
     }
 
     [JsonConstructor]

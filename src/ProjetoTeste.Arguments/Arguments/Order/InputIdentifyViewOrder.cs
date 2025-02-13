@@ -9,7 +9,7 @@ public class InputIdentifyViewOrder : BaseInputIdentityView<InputIdentifyViewOrd
 
     public InputIdentifyViewOrder()
     {
-        
+
     }
 
     [JsonConstructor]

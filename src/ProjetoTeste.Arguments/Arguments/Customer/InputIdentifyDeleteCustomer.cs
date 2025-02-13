@@ -9,7 +9,7 @@ public class InputIdentifyDeleteCustomer : BaseInputIdentityDelete<InputIdentify
 
     public InputIdentifyDeleteCustomer()
     {
-        
+
     }
 
     [JsonConstructor]

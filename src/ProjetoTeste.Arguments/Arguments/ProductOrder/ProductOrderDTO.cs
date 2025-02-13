@@ -2,26 +2,30 @@
 
 public class ProductOrderDTO
 {
+    public long Id { get; private set; }
     public long OrderId { get; private set; }
     public long ProductId { get; private set; }
     public int Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
     public decimal SubTotal { get; private set; }
 
-    public OrderDTO? Order { get; private set; }
-    public ProductDTO? Product { get; private set; }
+    public virtual OrderDTO? Order { get; private set; }
+    public virtual ProductDTO? Product { get; private set; }
 
     public ProductOrderDTO()
     {
-        
+
     }
 
-    public ProductOrderDTO(long orderId, long productId, int quantity, decimal unitPrice, decimal subTotal)
+    public ProductOrderDTO(long id, long orderId, long productId, int quantity, decimal unitPrice, decimal subTotal, OrderDTO? order, ProductDTO? product)
     {
+        Id = id;
         OrderId = orderId;
         ProductId = productId;
         Quantity = quantity;
         UnitPrice = unitPrice;
         SubTotal = subTotal;
+        Order = order;
+        Product = product;
     }
 }

@@ -9,7 +9,7 @@ public class InputIdentityViewProduct : BaseInputIdentityView<InputIdentityViewP
 
     public InputIdentityViewProduct()
     {
-        
+
     }
 
     [JsonConstructor]

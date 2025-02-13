@@ -11,7 +11,7 @@ public class OutputBrand : BaseOutput<OutputBrand>
 
     public OutputBrand()
     {
-        
+
     }
 
     [JsonConstructor]

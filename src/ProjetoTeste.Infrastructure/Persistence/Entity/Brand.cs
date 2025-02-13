@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 
@@ -8,7 +9,7 @@ public class Brand : BaseEntity
     public string Code { get; set; }
     public string Description { get; set; }
 
-    public List<Product>? ListProduct { get; set; }
+    public virtual List<Product>? ListProduct { get; set; }
 
     public Brand()
     { }
@@ -20,4 +21,30 @@ public class Brand : BaseEntity
         Description = description;
         ListProduct = listProduct;
     }
+
+    #region Implicit Operator
+    public static implicit operator Brand(BrandDTO brandDTO)
+    {
+        return brandDTO != null ? new Brand
+        {
+            Id = brandDTO.Id,
+            Name = brandDTO.Name,
+            Code = brandDTO.Code,
+            Description = brandDTO.Description,
+            ListProduct = brandDTO.ListProduct.Select(i => (Product)i).ToList()
+        } : null;
+    }
+
+    public static implicit operator BrandDTO(Brand brand)
+    {
+        return brand != null ? new BrandDTO
+        (
+            brand.Id,
+            brand.Name,
+            brand.Code,
+            brand.Description,
+            brand.ListProduct.Select(i => (ProductDTO)i).ToList()
+        ) : null;
+    }
+    #endregion
 }

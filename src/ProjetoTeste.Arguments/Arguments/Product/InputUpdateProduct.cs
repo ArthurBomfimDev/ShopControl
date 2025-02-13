@@ -12,7 +12,7 @@ public class InputUpdateProduct
 
     public InputUpdateProduct()
     {
-        
+
     }
 
     [JsonConstructor]

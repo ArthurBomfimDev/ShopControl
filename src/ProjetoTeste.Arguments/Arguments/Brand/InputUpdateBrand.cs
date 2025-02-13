@@ -9,7 +9,7 @@ public class InputUpdateBrand
 
     public InputUpdateBrand()
     {
-        
+
     }
 
     [JsonConstructor]

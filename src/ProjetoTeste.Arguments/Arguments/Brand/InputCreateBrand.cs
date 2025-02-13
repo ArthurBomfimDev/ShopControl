@@ -10,7 +10,7 @@ public class InputCreateBrand : BaseInputCreate<InputCreateBrand>
 
     public InputCreateBrand()
     {
-        
+
     }
 
     [JsonConstructor]

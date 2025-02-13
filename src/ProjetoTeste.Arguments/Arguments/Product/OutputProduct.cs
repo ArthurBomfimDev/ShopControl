@@ -14,7 +14,7 @@ public class OutputProduct : BaseOutput<OutputProduct>
 
     public OutputProduct()
     {
-        
+
     }
 
     [JsonConstructor]

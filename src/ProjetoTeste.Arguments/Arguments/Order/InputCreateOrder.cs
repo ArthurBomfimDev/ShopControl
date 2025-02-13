@@ -9,7 +9,7 @@ namespace ProjetoTeste.Arguments.Arguments.Order
 
         public InputCreateOrder()
         {
-            
+
         }
 
         [JsonConstructor]

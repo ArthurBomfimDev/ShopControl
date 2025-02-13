@@ -9,7 +9,7 @@ public class OrderValidate : BaseValidate
 
     public OrderValidate()
     {
-        
+
     }
 
     public OrderValidate CreateValidate(InputCreateOrder inputCreateOrder, long customerId)

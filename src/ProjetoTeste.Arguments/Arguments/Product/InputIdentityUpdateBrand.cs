@@ -11,7 +11,7 @@ public class InputIdentityUpdateProduct : BaseInputIdentityUpdate<InputIdentityU
 
     public InputIdentityUpdateProduct()
     {
-        
+
     }
 
     [JsonConstructor]

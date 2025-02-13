@@ -11,7 +11,7 @@ public class InputCreateProductOrder : BaseInputCreate<InputCreateProductOrder>
 
     public InputCreateProductOrder()
     {
-        
+
     }
 
     [JsonConstructor]
