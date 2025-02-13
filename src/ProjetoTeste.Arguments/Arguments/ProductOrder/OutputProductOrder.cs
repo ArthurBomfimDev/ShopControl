@@ -3,12 +3,26 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments.ProductOrder;
 
-[method: JsonConstructor]
-public class OutputProductOrder(long orderId, long productId, int quantity, decimal unitPrice, decimal subTotal) : BaseOutput<OutputProductOrder>
+public class OutputProductOrder : BaseOutput<OutputProductOrder>
 {
-    public long OrderId { get; private set; } = orderId;
-    public long ProductId { get; private set; } = productId;
-    public int Quantity { get; private set; } = quantity;
-    public decimal UnitPrice { get; private set; } = unitPrice;
-    public decimal SubTotal { get; private set; } = subTotal;
+    public long OrderId { get; private set; }
+    public long ProductId { get; private set; }
+    public int Quantity { get; private set; }
+    public decimal UnitPrice { get; private set; }
+    public decimal SubTotal { get; private set; }
+
+    public OutputProductOrder()
+    {
+        
+    }
+
+    [JsonConstructor]
+    public OutputProductOrder(long orderId, long productId, int quantity, decimal unitPrice, decimal subTotal)
+    {
+        OrderId = orderId;
+        ProductId = productId;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+        SubTotal = subTotal;
+    }
 }

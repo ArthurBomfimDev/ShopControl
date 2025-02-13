@@ -3,9 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments.Order
 {
-    [method: JsonConstructor]
-    public class InputCreateOrder(long customerId) : BaseInputCreate<InputCreateOrder>
+    public class InputCreateOrder : BaseInputCreate<InputCreateOrder>
     {
-        public long CustomerId { get; set; } = customerId;
+        public long CustomerId { get; set; }
+
+        public InputCreateOrder()
+        {
+            
+        }
+
+        [JsonConstructor]
+        public InputCreateOrder(long customerId)
+        {
+            CustomerId = customerId;
+        }
     }
 }

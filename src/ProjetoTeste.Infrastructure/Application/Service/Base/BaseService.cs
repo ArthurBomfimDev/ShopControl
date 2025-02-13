@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Infrastructure.Conversor.BasesConversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service.Base;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
@@ -28,19 +29,19 @@ public abstract class BaseService<TIRepository, TEntity, TInputCreateDTO, TInput
     public virtual async Task<TOutputDTO> Get(TInputIdentityViewDTO inputIdentifyViewDTO)
     {
         var get = await _repository.Get(inputIdentifyViewDTO.Id);
-        return _mapper.Map<TOutputDTO>(get);
+        return get.Converter<TEntity, TOutputDTO>();
     }
 
     public virtual async Task<List<TOutputDTO>> GetAll()
     {
         var getAll = await _repository.GetAll();
-        return _mapper.Map<List<TOutputDTO>>(getAll);
+        return getAll.ConverterList<TEntity, TOutputDTO>();
     }
 
     public virtual async Task<List<TOutputDTO>> GetListByListId(List<TInputIdentityViewDTO> listTInputIdentityViewDTO)
     {
         var getListByListId = await _repository.GetListByListId(listTInputIdentityViewDTO.Select(i => i.Id).ToList());
-        return _mapper.Map<List<TOutputDTO>>(getListByListId);
+        return getListByListId.ConverterList<TEntity, TOutputDTO>();
     }
     #endregion
 

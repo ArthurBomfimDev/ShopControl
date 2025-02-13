@@ -7,6 +7,11 @@ public class OrderValidate : BaseValidate
     public InputCreateOrder InputCreateOrder { get; private set; }
     public long CustomerId { get; private set; }
 
+    public OrderValidate()
+    {
+        
+    }
+
     public OrderValidate CreateValidate(InputCreateOrder inputCreateOrder, long customerId)
     {
         InputCreateOrder = inputCreateOrder;

@@ -11,6 +11,11 @@ public class ProductOrderDTO
     public OrderDTO? Order { get; private set; }
     public ProductDTO? Product { get; private set; }
 
+    public ProductOrderDTO()
+    {
+        
+    }
+
     public ProductOrderDTO(long orderId, long productId, int quantity, decimal unitPrice, decimal subTotal)
     {
         OrderId = orderId;

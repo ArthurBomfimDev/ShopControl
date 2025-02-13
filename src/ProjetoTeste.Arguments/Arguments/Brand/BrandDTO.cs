@@ -10,6 +10,8 @@ public class BrandDTO
     public string Description { get; set; }
     public List<ProductDTO>? ListProduct { get; set; }
 
+    public BrandDTO() { }
+
     [JsonConstructor]
     public BrandDTO(long id, string name, string code, string description, List<ProductDTO>? listProduct)
     {

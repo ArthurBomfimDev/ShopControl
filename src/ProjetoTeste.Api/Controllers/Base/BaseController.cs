@@ -44,21 +44,21 @@ public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputI
     #endregion
 
     #region Get
-    [HttpGet("GetAll")]
+    [HttpGet("Get/All")]
     public virtual async Task<ActionResult<List<TOutputDTO>>> GetAll()
     {
         var getAll = await service.GetAll();
         return Ok(getAll);
     }
 
-    [HttpPost("Id")]
+    [HttpPost("Get/Id")]
     public virtual async Task<ActionResult<TOutputDTO>> Get(TInputIndeityViewDTO inputIdentifyView)
     {
         var get = await service.Get(inputIdentifyView);
         return Ok(get);
     }
 
-    [HttpPost("GetListByListId")]
+    [HttpPost("Get/ListByListId")]
     public virtual async Task<ActionResult<TOutputDTO>> GetListByListId(List<TInputIndeityViewDTO> listInputIdentifyView)
     {
         var getListByListId = await service.GetListByListId(listInputIdentifyView);

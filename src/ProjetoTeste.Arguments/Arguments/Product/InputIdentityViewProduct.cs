@@ -3,8 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-[method: JsonConstructor]
-public class InputIdentityViewProduct(long id) : BaseInputIdentityView<InputIdentityViewProduct>, IBaseIdentity
+public class InputIdentityViewProduct : BaseInputIdentityView<InputIdentityViewProduct>, IBaseIdentity
 {
-    public long Id { get; private set; } = id;
+    public long Id { get; private set; }
+
+    public InputIdentityViewProduct()
+    {
+        
+    }
+
+    [JsonConstructor]
+    public InputIdentityViewProduct(long id)
+    {
+        Id = id;
+    }
 }

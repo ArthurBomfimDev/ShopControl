@@ -3,8 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-[method: JsonConstructor]
-public class InputIdentifyDeleteBrand(long id) : BaseInputIdentityDelete<InputIdentifyDeleteBrand>
+public class InputIdentifyDeleteBrand : BaseInputIdentityDelete<InputIdentifyDeleteBrand>
 {
-    public long Id { get; private set; } = id;
+    public long Id { get; private set; }
+
+    public InputIdentifyDeleteBrand()
+    {
+        
+    }
+
+    [JsonConstructor]
+    public InputIdentifyDeleteBrand(long id)
+    {
+        Id = id;
+    }
 }

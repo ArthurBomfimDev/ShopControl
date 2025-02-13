@@ -78,30 +78,6 @@ public class OrderController : BaseController<IOrderService, Order, InputCreateO
     }
     #endregion
 
-    //#region Create Order
-    //[HttpPost]
-    //public async Task<ActionResult<OutputOrder>> Create(InputCreateOrder input)
-    //{
-    //    var create = await _orderService.Create(input);
-    //    if (!create.Success)
-    //    {
-    //        return BadRequest(create.Message);
-    //    }
-    //    return Ok(create.Content);
-    //}
-
-    //[HttpPost("Multiple")]
-    //public async Task<ActionResult<OutputOrder>> Create(List<InputCreateOrder> listInputCreateOrder)
-    //{
-    //    var create = await _orderService.CreateMultiple(listInputCreateOrder);
-    //    if (!create.Success)
-    //    {
-    //        return BadRequest(create);
-    //    }
-    //    return Ok(create);
-    //}
-    //#endregion
-
     #region Create ProductOrder
     [HttpPost("Create/ProductOrder")]
     public async Task<ActionResult<OutputOrder>> CreateProductOrder(InputCreateProductOrder input)

@@ -2,11 +2,24 @@
 
 namespace ProjetoTeste.Arguments.Arguments.Customer;
 
-[method: JsonConstructor]
-public class InputUpdateCustomer(string name, string cPF, string email, string phone)
+public class InputUpdateCustomer
 {
-    public string Name { get; private set; } = name;
-    public string CPF { get; private set; } = cPF;
-    public string Email { get; private set; } = email;
-    public string Phone { get; private set; } = phone;
+    public string Name { get; private set; }
+    public string CPF { get; private set; }
+    public string Email { get; private set; }
+    public string Phone { get; private set; }
+
+    public InputUpdateCustomer()
+    {
+        
+    }
+
+    [JsonConstructor]
+    public InputUpdateCustomer(string name, string cPF, string email, string phone)
+    {
+        Name = name;
+        CPF = cPF;
+        Email = email;
+        Phone = phone;
+    }
 }

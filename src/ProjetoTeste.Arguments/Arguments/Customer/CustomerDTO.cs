@@ -2,14 +2,28 @@
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-[method: JsonConstructor]
-public class CustomerDTO(long id, string name, string cPF, string email, string phone)
+public class CustomerDTO
 {
-    public long Id { get; set; } = id;
-    public string Name { get; set; } = name;
-    public string CPF { get; set; } = cPF;
-    public string Email { get; set; } = email;
-    public string Phone { get; set; } = phone;
+    public long Id { get; set; }
+    public string Name { get; set; }
+    public string CPF { get; set; }
+    public string Email { get; set; }
+    public string Phone { get; set; }
+
+    public CustomerDTO()
+    {
+        
+    }
 
     public List<OrderDTO>? ListOrder { get; set; }
+
+    [JsonConstructor]
+    public CustomerDTO(long id, string name, string cPF, string email, string phone)
+    {
+        Id = id;
+        Name = name;
+        CPF = cPF;
+        Email = email;
+        Phone = phone;
+    }
 }

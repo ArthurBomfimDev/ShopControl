@@ -2,14 +2,30 @@
 using System.Text.Json.Serialization;
 namespace ProjetoTeste.Arguments.Arguments.Product;
 
-[method: JsonConstructor]
-public class OutputProduct(long id, string name, string code, string description, decimal price, long brandId, long stock) : BaseOutput<OutputProduct>
+public class OutputProduct : BaseOutput<OutputProduct>
 {
-    public long Id { get; private set; } = id;
-    public string Name { get; private set; } = name;
-    public string Code { get; private set; } = code;
-    public string Description { get; private set; } = description;
-    public decimal Price { get; private set; } = price;
-    public long BrandId { get; private set; } = brandId;
-    public long Stock { get; private set; } = stock;
+    public long Id { get; private set; }
+    public string Name { get; private set; }
+    public string Code { get; private set; }
+    public string Description { get; private set; }
+    public decimal Price { get; private set; }
+    public long BrandId { get; private set; }
+    public long Stock { get; private set; }
+
+    public OutputProduct()
+    {
+        
+    }
+
+    [JsonConstructor]
+    public OutputProduct(long id, string name, string code, string description, decimal price, long brandId, long stock)
+    {
+        Id = id;
+        Name = name;
+        Code = code;
+        Description = description;
+        Price = price;
+        BrandId = brandId;
+        Stock = stock;
+    }
 }

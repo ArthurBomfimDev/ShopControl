@@ -3,8 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-[method: JsonConstructor]
-public class InputIdentifyViewOrder(long id) : BaseInputIdentityView<InputIdentifyViewOrder>, IBaseIdentity
+public class InputIdentifyViewOrder : BaseInputIdentityView<InputIdentifyViewOrder>, IBaseIdentity
 {
-    public long Id { get; private set; } = id;
+    public long Id { get; private set; }
+
+    public InputIdentifyViewOrder()
+    {
+        
+    }
+
+    [JsonConstructor]
+    public InputIdentifyViewOrder(long id)
+    {
+        Id = id;
+    }
 }

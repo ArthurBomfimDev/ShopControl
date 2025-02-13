@@ -10,6 +10,11 @@ public class OrderDTO
     public CustomerDTO Customer { get; private set; }
     public List<ProductOrderDTO> ListProductOrder { get; private set; }
 
+    public OrderDTO()
+    {
+        
+    }
+
     public OrderDTO(long id, long customerId, decimal total, DateTime orderDate, List<ProductOrderDTO> listProductOrder)
     {
         Id = id;

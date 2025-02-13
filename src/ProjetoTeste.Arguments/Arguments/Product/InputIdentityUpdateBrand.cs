@@ -4,9 +4,20 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-[method: JsonConstructor]
-public class InputIdentityUpdateProduct(long id, InputUpdateProduct inputUpdateProduct) : BaseInputIdentityUpdate<InputIdentityUpdateProduct>
+public class InputIdentityUpdateProduct : BaseInputIdentityUpdate<InputIdentityUpdateProduct>
 {
-    public long Id { get; private set; } = id;
-    public InputUpdateProduct InputUpdateProduct { get; private set; } = inputUpdateProduct;
+    public long Id { get; private set; }
+    public InputUpdateProduct InputUpdateProduct { get; private set; }
+
+    public InputIdentityUpdateProduct()
+    {
+        
+    }
+
+    [JsonConstructor]
+    public InputIdentityUpdateProduct(long id, InputUpdateProduct inputUpdateProduct)
+    {
+        Id = id;
+        InputUpdateProduct = inputUpdateProduct;
+    }
 }
