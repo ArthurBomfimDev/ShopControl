@@ -1,8 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Conversor;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
-using ProjetoTeste.Infrastructure.Interface.Service.Base;
-using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 
 namespace ProjetoTeste.Infrastructure.Application.Service.Base;
 

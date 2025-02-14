@@ -2,7 +2,7 @@
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class BrandValidateDTO : BaseValidate
+public class BrandValidateDTO : BaseValidateDTO
 {
     public InputCreateBrand? InputCreate { get; private set; }
     public string? RepeatedInputCreateCode { get; private set; }

@@ -14,8 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helper\" />
-    <Folder Include="Interface\" />
+    <ProjectReference Include="..\src\ProjetoTeste.Arguments\ProjetoTeste.Arguments.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,8 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Arguments.Enum.Validate;
+using ProjetoTeste.Domain.Helper;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
@@ -30,7 +34,7 @@ public class BaseValdiate<TValidateDTO> where TValidateDTO : BaseValidateDTO
     #region CPFValidate
     public static EnumValidateType CPFValidate(string cpf)
     {
-        if (string.IsNullOrWhiteSpace(cpf)) return EnumValidateType.NotInformed;
+        if (string.IsNullOrWhiteSpace(cpf)) return EnumValidateType.NonInformed;
 
         cpf = Regex.Replace(cpf, "[^0-9]", string.Empty); //Substitui todo q não é digito por uma string vazia Ex = 123.456.789-09
 
@@ -70,7 +74,7 @@ public class BaseValdiate<TValidateDTO> where TValidateDTO : BaseValidateDTO
     #region EmailValidate
     public static EnumValidateType EmailValidate(string email)
     {
-        if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email)) return EnumValidateType.NotInformed;
+        if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email)) return EnumValidateType.NonInformed;
         try
         {
             var validate = new MailAddress(email);
@@ -93,7 +97,7 @@ public class BaseValdiate<TValidateDTO> where TValidateDTO : BaseValidateDTO
 
     public bool InvalidLenght(string identifier, string? value, int minLeght, int maxLenght, EnumValidateType validateType, string propertyName)
     {
-        return HandleValidation(identifier, validateType, NotifactionMessages.InvalidLenghtKey)
+        return HandleValidation(identifier, validateType, NotifactionMessages.InvalidLenghtKey);
     }
 
     #endregion
@@ -113,7 +117,7 @@ public class BaseValdiate<TValidateDTO> where TValidateDTO : BaseValidateDTO
             AddToDictionary(key, new DetailedNotification(key, [invalidMessage], EnumNotificationType.Error));
             return true;
         }
-        if (EnumValidateType.NotInformed == validateType)
+        if (EnumValidateType.NonInformed == validateType)
         {
             AddToDictionary(key, new DetailedNotification(key, [nonInformedMessage], EnumNotificationType.Error));
             return true;
