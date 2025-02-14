@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ProjetoTeste.Arguments.Arguments;
+﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Infrastructure.Application.Service.Base;
@@ -16,14 +15,12 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
     private readonly IBrandRepository _brandRepository;
     private readonly IBrandValidateService _brandValidadeService;
     private readonly IProductRepository _productRepository;
-    private readonly IMapper _mapper;
 
-    public BrandService(IBrandRepository brandRepository, IBrandValidateService brandValidadeService, IProductRepository productRepository, IMapper mapper) : base(brandRepository, mapper)
+    public BrandService(IBrandRepository brandRepository, IBrandValidateService brandValidadeService, IProductRepository productRepository) : base(brandRepository)
     {
         _brandRepository = brandRepository;
         _brandValidadeService = brandValidadeService;
         _productRepository = productRepository;
-        _mapper = mapper;
     }
     #endregion
 
@@ -45,7 +42,7 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                               OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Code == i.Code)
                           }).ToList();
 
-        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, (BrandDTO)i.OriginalBrand)).ToList();
+        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
 
         var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
 
@@ -60,7 +57,9 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
 
         var listNewBrand = await _brandRepository.Create(listCreateBrand);
 
+        //response.Content = listNewBrand.Convert<Brand, BrandDTO, OutputBrand>();
         response.Content = listNewBrand.Select(i => (OutputBrand)(BrandDTO)i).ToList();
+
         return response;
     }
     #endregion
@@ -107,9 +106,9 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                                let code = i.OriginalBrandDTO.Code = i.InputUpdate.InputUpdateBrand.Code
                                let description = i.OriginalBrandDTO.Description = i.InputUpdate.InputUpdateBrand.Description
                                let successMessage = response.AddSuccessMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' foi atualizada com sucesso!")
-                               select i.OriginalBrandDTO).ToList();
+                               select (Brand)i.OriginalBrandDTO).ToList();
 
-        response.Content = await _brandRepository.Update(listBrandUpdate.Select(i => (Brand)i).ToList());
+        response.Content = await _brandRepository.Update(listBrandUpdate);
 
         return response;
     }
@@ -150,9 +149,9 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
 
         var delete = (from i in validate.Content
                       let message = response.AddSuccessMessage($"A marca com o Id: {i.OriginalBrandDTO.Id} foi deletada com sucesso.")
-                      select i.OriginalBrandDTO).ToList();
+                      select (Brand)i.OriginalBrandDTO).ToList();
 
-        response.Content = await _brandRepository.Delete(delete.Select(i => (Brand)i).ToList());
+        response.Content = await _brandRepository.Delete(delete);
         return response;
     }
     #endregion

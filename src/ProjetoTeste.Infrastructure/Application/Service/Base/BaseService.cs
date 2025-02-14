@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Infrastructure.Conversor.BasesConversor;
+﻿using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Conversor;
 using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service.Base;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
@@ -17,12 +16,10 @@ public abstract class BaseService<TIRepository, TEntity, TInputCreateDTO, TInput
     where TIRepository : IRepository<TEntity>
 {
     private readonly TIRepository _repository;
-    private readonly IMapper _mapper;
 
-    public BaseService(TIRepository repository, IMapper mapper)
+    public BaseService(TIRepository repository)
     {
         _repository = repository;
-        _mapper = mapper;
     }
 
     #region Get

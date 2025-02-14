@@ -1,4 +1,6 @@
-﻿namespace ProjetoTeste.Arguments.Arguments;
+﻿using ProjetoTeste.Arguments.Arguments.ProductOrder;
+
+namespace ProjetoTeste.Arguments.Arguments;
 
 public class ProductOrderDTO
 {
@@ -28,4 +30,19 @@ public class ProductOrderDTO
         Order = order;
         Product = product;
     }
+
+    #region Implicit Conversor
+    public static implicit operator OutputProductOrder(ProductOrderDTO productOrderDTO)
+    {
+        return productOrderDTO != null ? new OutputProductOrder
+            (
+            productOrderDTO.Id,
+            productOrderDTO.OrderId,
+            productOrderDTO.ProductId,
+            productOrderDTO.Quantity,
+            productOrderDTO.UnitPrice,
+            productOrderDTO.SubTotal
+            ) : null;
+    }
+    #endregion
 }

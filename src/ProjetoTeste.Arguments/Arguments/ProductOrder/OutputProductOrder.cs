@@ -5,6 +5,7 @@ namespace ProjetoTeste.Arguments.Arguments.ProductOrder;
 
 public class OutputProductOrder : BaseOutput<OutputProductOrder>
 {
+    public long Id { get; private set; }
     public long OrderId { get; private set; }
     public long ProductId { get; private set; }
     public int Quantity { get; private set; }
@@ -17,8 +18,9 @@ public class OutputProductOrder : BaseOutput<OutputProductOrder>
     }
 
     [JsonConstructor]
-    public OutputProductOrder(long orderId, long productId, int quantity, decimal unitPrice, decimal subTotal)
+    public OutputProductOrder(long id, long orderId, long productId, int quantity, decimal unitPrice, decimal subTotal)
     {
+        Id = id;
         OrderId = orderId;
         ProductId = productId;
         Quantity = quantity;

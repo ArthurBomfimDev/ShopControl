@@ -17,8 +17,8 @@ public class ProductController : BaseController<IProductService, Product, InputC
         _productService = productService;
     }
 
-    [HttpGet("GetListByBrandId")]
-    public async Task<ActionResult<OutputProduct>> GetListByBrandId([FromQuery] InputIdentityViewBrand inputIdentifyViewBrand)
+    [HttpPost("GetListByBrandId")]
+    public async Task<ActionResult<OutputProduct>> GetListByBrandId(InputIdentityViewBrand inputIdentifyViewBrand)
     {
         var product = await _productService.GetListByBrandId(inputIdentifyViewBrand);
         return Ok(product);

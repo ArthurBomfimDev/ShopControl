@@ -1,4 +1,6 @@
-﻿namespace ProjetoTeste.Arguments.Arguments;
+﻿using ProjetoTeste.Arguments.Arguments.Product;
+
+namespace ProjetoTeste.Arguments.Arguments;
 
 public class ProductDTO
 {
@@ -28,4 +30,20 @@ public class ProductDTO
         Brand = brand;
         ListProductOrder = listProductOrder;
     }
+
+    #region Implicit Conversor
+    public static implicit operator OutputProduct(ProductDTO productDTO)
+    {
+        return productDTO != null ? new OutputProduct
+            (
+                productDTO.Id,
+                productDTO.Name,
+                productDTO.Code,
+                productDTO.Description,
+                productDTO.Price,
+                productDTO.BrandId,
+                productDTO.Stock
+            ) : null;
+    }
+    #endregion
 }

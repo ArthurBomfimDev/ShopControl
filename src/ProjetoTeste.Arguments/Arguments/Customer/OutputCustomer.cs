@@ -5,7 +5,7 @@ namespace ProjetoTeste.Arguments.Arguments.Customer
 {
     public class OutputCustomer : BaseOutput<OutputCustomer>
     {
-        public long id { get; private set; }
+        public long Id { get; private set; }
         public string Name { get; private set; }
         public string CPF { get; private set; }
         public string Email { get; private set; }
@@ -19,7 +19,7 @@ namespace ProjetoTeste.Arguments.Arguments.Customer
         [JsonConstructor]
         public OutputCustomer(long id, string name, string cPF, string email, string phone)
         {
-            this.id = id;
+            Id = id;
             Name = name;
             CPF = cPF;
             Email = email;
