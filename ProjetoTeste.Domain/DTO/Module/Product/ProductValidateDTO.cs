@@ -2,7 +2,7 @@
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class ProductValidate : BaseValidate
+public class ProductValidateDTO : BaseValidate
 {
     public InputCreateProduct? InputCreateProduct { get; private set; }
     public InputIdentityUpdateProduct? InputIdentityUpdateProduct { get; private set; }
@@ -15,7 +15,7 @@ public class ProductValidate : BaseValidate
     public long? RepetedIdentity { get; private set; }
 
 
-    public ProductValidate ValidateCreate(InputCreateProduct inputCreateProduct, ProductDTO original, string repeteCode, long brandId)
+    public ProductValidateDTO ValidateCreate(InputCreateProduct inputCreateProduct, ProductDTO original, string repeteCode, long brandId)
     {
         InputCreateProduct = inputCreateProduct;
         Original = original;
@@ -23,7 +23,7 @@ public class ProductValidate : BaseValidate
         BrandId = brandId;
         return this;
     }
-    public ProductValidate ValidateUpdate(InputIdentityUpdateProduct? inputIdentityUpdateProduct, ProductDTO? original, string? originalCode, long? repeteIdentity, string? repeteCode, long? brandId)
+    public ProductValidateDTO ValidateUpdate(InputIdentityUpdateProduct? inputIdentityUpdateProduct, ProductDTO? original, string? originalCode, long? repeteIdentity, string? repeteCode, long? brandId)
     {
         InputIdentityUpdateProduct = inputIdentityUpdateProduct;
         Original = original;
@@ -33,7 +33,7 @@ public class ProductValidate : BaseValidate
         BrandId = brandId;
         return this;
     }
-    public ProductValidate ValidateDelete(InputIdentityDeleteProduct? inputIdentifyDeleteProduct, ProductDTO? original, long? repetedIdentity)
+    public ProductValidateDTO ValidateDelete(InputIdentityDeleteProduct? inputIdentifyDeleteProduct, ProductDTO? original, long? repetedIdentity)
     {
         InputIdentifyDeleteProduct = inputIdentifyDeleteProduct;
         Original = original;

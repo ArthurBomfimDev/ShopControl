@@ -14,6 +14,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjetoTeste.Infrastructure", "src\ProjetoTeste.Infrastructure\ProjetoTeste.Infrastructure.csproj", "{A6D9776F-2813-4280-B36B-840663A9B212}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjetoTeste.Domain", "ProjetoTeste.Domain\ProjetoTeste.Domain.csproj", "{FF377BA9-7517-428E-A177-582EFF1F0542}"
+	ProjectSection(ProjectDependencies) = postProject
+		{70F9A174-2E61-4A2D-AE5B-3F41E265A7E2} = {70F9A174-2E61-4A2D-AE5B-3F41E265A7E2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

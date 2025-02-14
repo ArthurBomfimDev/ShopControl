@@ -42,7 +42,7 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                               OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Code == i.Code)
                           }).ToList();
 
-        List<BrandValidate> listBrandValidate = listCreate.Select(i => new BrandValidate().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
+        List<BrandValidateDTO> listBrandValidate = listCreate.Select(i => new BrandValidateDTO().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
 
         var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
 
@@ -89,7 +89,7 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                               CodeExists = listCodeExists.FirstOrDefault(m => m == i.InputUpdateBrand.Code)
                           }).ToList();
 
-        List<BrandValidate> listBrandValidate = listUpdate.Select(i => new BrandValidate().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.CodeExists)).ToList();
+        List<BrandValidateDTO> listBrandValidate = listUpdate.Select(i => new BrandValidateDTO().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.CodeExists)).ToList();
 
         var update = await _brandValidadeService.ValidateUpdate(listBrandValidate);
         response.Message = update.Message;
@@ -135,7 +135,7 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                               RepeteInputDelete = listRepeteInputDelete.FirstOrDefault(k => k == i),
                               BrandWithProduct = listBrandWithProduct.FirstOrDefault(l => l == i.Id)
                           }).ToList();
-        List<BrandValidate> listBrandValidate = listDelete.Select(i => new BrandValidate().ValidateDelete(i.InputDeleteBrand, i.OriginalBrand, i.RepeteInputDelete, i.BrandWithProduct)).ToList();
+        List<BrandValidateDTO> listBrandValidate = listDelete.Select(i => new BrandValidateDTO().ValidateDelete(i.InputDeleteBrand, i.OriginalBrand, i.RepeteInputDelete, i.BrandWithProduct)).ToList();
 
         var validate = await _brandValidadeService.ValidateDelete(listBrandValidate);
         response.Message = validate.Message;

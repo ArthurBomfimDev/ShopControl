@@ -7,9 +7,9 @@ namespace ProjetoTeste.Infrastructure.Application.Service.Order;
 public class OrderValidateService : IOrderValidateService
 {
     #region Create Order
-    public async Task<BaseResponse<List<OrderValidate>>> CreateValidateOrder(List<OrderValidate> listOrderValidate)
+    public async Task<BaseResponse<List<OrderValidateDTO>>> CreateValidateOrder(List<OrderValidateDTO> listOrderValidate)
     {
-        var response = new BaseResponse<List<OrderValidate>>();
+        var response = new BaseResponse<List<OrderValidateDTO>>();
         _ = (from i in listOrderValidate
              where i.CustomerId == 0
              let setInvalid = i.SetInvalid()
@@ -31,9 +31,9 @@ public class OrderValidateService : IOrderValidateService
     #endregion
 
     #region Create ProductOrder
-    public async Task<BaseResponse<List<ProductOrderValidate>>> CreateValidateProductOrder(List<ProductOrderValidate> listProductOrderValidate)
+    public async Task<BaseResponse<List<ProductOrderValidateDTO>>> CreateValidateProductOrder(List<ProductOrderValidateDTO> listProductOrderValidate)
     {
-        var response = new BaseResponse<List<ProductOrderValidate>>();
+        var response = new BaseResponse<List<ProductOrderValidateDTO>>();
         _ = (from i in listProductOrderValidate
              where i.OrderId == default
              let setInvalid = i.SetInvalid()

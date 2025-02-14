@@ -1,6 +1,6 @@
 ﻿namespace ProjetoTeste.Arguments.Arguments;
 
-public class BaseValidate
+public class BaseValidateDTO
 {
     public bool Invalid { get; private set; }
 

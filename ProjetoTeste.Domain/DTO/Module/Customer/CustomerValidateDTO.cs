@@ -2,7 +2,7 @@
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class CustomerValidate : BaseValidate
+public class CustomerValidateDTO : BaseValidate
 {
     public InputCreateCustomer? InputCreateCustomer { get; private set; }
     public InputIdentityUpdateCustomer? InputIdentityUpdateCustomer { get; private set; }
@@ -11,21 +11,21 @@ public class CustomerValidate : BaseValidate
     public long? RepeteId { get; private set; }
     public InputIdentifyDeleteCustomer RepeatedDelete { get; private set; }
 
-    public CustomerValidate ValidateCreate(InputCreateCustomer inputCreateCustomer)
+    public CustomerValidateDTO ValidateCreate(InputCreateCustomer inputCreateCustomer)
     {
         InputCreateCustomer = inputCreateCustomer;
         return this;
     }
 
 
-    public CustomerValidate ValidateUpdate(InputIdentityUpdateCustomer inputIdentityUpdateCustomer, CustomerDTO original, long repeteId)
+    public CustomerValidateDTO ValidateUpdate(InputIdentityUpdateCustomer inputIdentityUpdateCustomer, CustomerDTO original, long repeteId)
     {
         InputIdentityUpdateCustomer = inputIdentityUpdateCustomer;
         OriginalDTO = original;
         RepeteId = repeteId;
         return this;
     }
-    public CustomerValidate ValidateDelete(InputIdentifyDeleteCustomer? inputIdentifyDeleteCustomer, CustomerDTO? original, InputIdentifyDeleteCustomer repeatedDelete)
+    public CustomerValidateDTO ValidateDelete(InputIdentifyDeleteCustomer? inputIdentifyDeleteCustomer, CustomerDTO? original, InputIdentifyDeleteCustomer repeatedDelete)
     {
         InputIdentifyDeleteCustomer = inputIdentifyDeleteCustomer;
         OriginalDTO = original;

@@ -106,7 +106,7 @@ public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrde
                               CustomerId = listCustomerId.FirstOrDefault(j => j == i.CustomerId)
                           });
 
-        List<OrderValidate> listOrderValidate = listCreate.Select(i => new OrderValidate().CreateValidate(i.InputCreateOrder, i.CustomerId)).ToList();
+        List<OrderValidateDTO> listOrderValidate = listCreate.Select(i => new OrderValidateDTO().CreateValidate(i.InputCreateOrder, i.CustomerId)).ToList();
 
         var create = await _orderValidateService.CreateValidateOrder(listOrderValidate);
         response.Success = create.Success;
@@ -155,7 +155,7 @@ public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrde
                               Product = listProduct.FirstOrDefault(k => k.Id == i.ProductId)
                           });
 
-        List<ProductOrderValidate> listProductOrderValidate = listCreate.Select(i => new ProductOrderValidate().CreateValidate(i.InputCreateProductOrder, i.OrderId, i.Product)).ToList();
+        List<ProductOrderValidateDTO> listProductOrderValidate = listCreate.Select(i => new ProductOrderValidateDTO().CreateValidate(i.InputCreateProductOrder, i.OrderId, i.Product)).ToList();
 
         var create = await _orderValidateService.CreateValidateProductOrder(listProductOrderValidate);
 

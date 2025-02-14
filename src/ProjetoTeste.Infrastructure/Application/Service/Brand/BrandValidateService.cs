@@ -8,9 +8,9 @@ public class BrandValidateService : IBrandValidateService
 {
 
     #region Create
-    public async Task<BaseResponse<List<BrandValidate>>> ValidateCreate(List<BrandValidate> listBrandValidate)
+    public async Task<BaseResponse<List<BrandValidateDTO>>> ValidateCreate(List<BrandValidateDTO> listBrandValidate)
     {
-        BaseResponse<List<BrandValidate>> response = new();
+        BaseResponse<List<BrandValidateDTO>> response = new();
         _ = (from i in listBrandValidate
              where i.InputCreate == null
              let SetInvalid = i.SetInvalid()
@@ -65,9 +65,9 @@ public class BrandValidateService : IBrandValidateService
     #endregion
 
     #region Update
-    public async Task<BaseResponse<List<BrandValidate?>>> ValidateUpdate(List<BrandValidate> listBrandValidate)
+    public async Task<BaseResponse<List<BrandValidateDTO?>>> ValidateUpdate(List<BrandValidateDTO> listBrandValidate)
     {
-        BaseResponse<List<BrandValidate?>> response = new();
+        BaseResponse<List<BrandValidateDTO?>> response = new();
 
         _ = (from i in listBrandValidate
              where i.OriginalBrandDTO == null
@@ -124,9 +124,9 @@ public class BrandValidateService : IBrandValidateService
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<List<BrandValidate>>?> ValidateDelete(List<BrandValidate> listBrandValidate)
+    public async Task<BaseResponse<List<BrandValidateDTO>>?> ValidateDelete(List<BrandValidateDTO> listBrandValidate)
     {
-        var response = new BaseResponse<List<BrandValidate>>();
+        var response = new BaseResponse<List<BrandValidateDTO>>();
 
         _ = (from i in listBrandValidate
              where i.RepeteInputDelete != null

@@ -2,7 +2,7 @@
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class BrandValidate : BaseValidate
+public class BrandValidateDTO : BaseValidate
 {
     public InputCreateBrand? InputCreate { get; private set; }
     public string? RepeatedInputCreateCode { get; private set; }
@@ -16,14 +16,14 @@ public class BrandValidate : BaseValidate
     public InputIdentifyDeleteBrand? RepeteInputDelete { get; private set; }
     public long? BrandWithProduct { get; private set; }
 
-    public BrandValidate ValidateCreate(InputCreateBrand? inputCreate, string? repeatedInputCreate, BrandDTO? originalBrand)
+    public BrandValidateDTO ValidateCreate(InputCreateBrand? inputCreate, string? repeatedInputCreate, BrandDTO? originalBrand)
     {
         InputCreate = inputCreate;
         RepeatedInputCreateCode = repeatedInputCreate;
         OriginalBrandDTO = originalBrand;
         return this;
     }
-    public BrandValidate ValidateUpdate(InputIdentityUpdateBrand? inputUpdate, long repetedInputUpdate, BrandDTO? originalBrand, string repetedCode, string? codeExists)
+    public BrandValidateDTO ValidateUpdate(InputIdentityUpdateBrand? inputUpdate, long repetedInputUpdate, BrandDTO? originalBrand, string repetedCode, string? codeExists)
     {
         InputUpdate = inputUpdate;
         RepetedInputUpdateIdentify = repetedInputUpdate;
@@ -32,7 +32,7 @@ public class BrandValidate : BaseValidate
         CodeExists = codeExists;
         return this;
     }
-    public BrandValidate ValidateDelete(InputIdentifyDeleteBrand inputIdentifyDeleteBrand, BrandDTO? originalBrand, InputIdentifyDeleteBrand repeteInputDelete, long? brandWIthProduct)
+    public BrandValidateDTO ValidateDelete(InputIdentifyDeleteBrand inputIdentifyDeleteBrand, BrandDTO? originalBrand, InputIdentifyDeleteBrand repeteInputDelete, long? brandWIthProduct)
     {
         InputIdentifyDeleteBrand = inputIdentifyDeleteBrand;
         OriginalBrandDTO = originalBrand;

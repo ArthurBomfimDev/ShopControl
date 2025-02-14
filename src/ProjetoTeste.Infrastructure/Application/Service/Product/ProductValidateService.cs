@@ -7,9 +7,9 @@ namespace ProjetoTeste.Infrastructure.Application;
 public class ProductValidateService : IProductValidateService
 {
     #region Create
-    public async Task<BaseResponse<List<ProductValidate>>> ValidateCreate(List<ProductValidate> listProductValidate)
+    public async Task<BaseResponse<List<ProductValidateDTO>>> ValidateCreate(List<ProductValidateDTO> listProductValidate)
     {
-        var response = new BaseResponse<List<ProductValidate>>();
+        var response = new BaseResponse<List<ProductValidateDTO>>();
         _ = (from i in listProductValidate
              where i.RepeteCode != null
              let setInvalid = i.SetInvalid()
@@ -77,9 +77,9 @@ public class ProductValidateService : IProductValidateService
     #endregion
 
     #region Update
-    public async Task<BaseResponse<List<ProductValidate>>> ValidateUpdate(List<ProductValidate> listProductValidate)
+    public async Task<BaseResponse<List<ProductValidateDTO>>> ValidateUpdate(List<ProductValidateDTO> listProductValidate)
     {
-        var response = new BaseResponse<List<ProductValidate>>();
+        var response = new BaseResponse<List<ProductValidateDTO>>();
         _ = (from i in listProductValidate
              where i.RepeteIdentity == default
              let setInvalid = i.SetInvalid()
@@ -159,9 +159,9 @@ public class ProductValidateService : IProductValidateService
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<List<ProductValidate>>> ValidateDelete(List<ProductValidate> listProductValidate)
+    public async Task<BaseResponse<List<ProductValidateDTO>>> ValidateDelete(List<ProductValidateDTO> listProductValidate)
     {
-        var response = new BaseResponse<List<ProductValidate>>();
+        var response = new BaseResponse<List<ProductValidateDTO>>();
 
         _ = (from i in listProductValidate
              where i.RepetedIdentity != 0

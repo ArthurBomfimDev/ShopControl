@@ -27,7 +27,7 @@ public class CustomerService : BaseService<ICustomerRepository, Customer, InputC
     {
         var response = new BaseResponse<List<OutputCustomer>>();
 
-        List<CustomerValidate> listCutomerValidate = listInputCreateCustomer.Select(i => new CustomerValidate().ValidateCreate(i)).ToList();
+        List<CustomerValidateDTO> listCutomerValidate = listInputCreateCustomer.Select(i => new CustomerValidateDTO().ValidateCreate(i)).ToList();
 
         var validateCreate = await _customerValidateService.ValidateCreate(listCutomerValidate);
 
@@ -62,7 +62,7 @@ public class CustomerService : BaseService<ICustomerRepository, Customer, InputC
                               RepeteId = listRepeteId.FirstOrDefault(k => k == i.Id),
                           }).ToList();
 
-        List<CustomerValidate> customerValidate = listUpdate.Select(i => new CustomerValidate().ValidateUpdate(i.InputIdentityUpdateCustomer, i.OriginalCustomer, i.RepeteId)).ToList();
+        List<CustomerValidateDTO> customerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdateCustomer, i.OriginalCustomer, i.RepeteId)).ToList();
 
         var updateValidate = await _customerValidateService.ValidateUpdate(customerValidate);
         response.Success = updateValidate.Success;
@@ -104,7 +104,7 @@ public class CustomerService : BaseService<ICustomerRepository, Customer, InputC
                               RepeatedDelete = listRepeatedDelete.FirstOrDefault(k => k.Id == i.Id)
                           });
 
-        List<CustomerValidate> customerValidate = listDelete.Select(i => new CustomerValidate().ValidateDelete(i.InputDeleteCustomer, i.Original, i.RepeatedDelete)).ToList();
+        List<CustomerValidateDTO> customerValidate = listDelete.Select(i => new CustomerValidateDTO().ValidateDelete(i.InputDeleteCustomer, i.Original, i.RepeatedDelete)).ToList();
 
         var deleteValidate = await _customerValidateService.ValidateDelete(customerValidate);
         response.Success = deleteValidate.Success;

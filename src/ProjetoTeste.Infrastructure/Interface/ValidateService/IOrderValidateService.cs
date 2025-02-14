@@ -5,6 +5,6 @@ namespace ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 public interface IOrderValidateService
 {
-    Task<BaseResponse<List<OrderValidate>>> CreateValidateOrder(List<OrderValidate> listOrderValidate);
-    Task<BaseResponse<List<ProductOrderValidate>>> CreateValidateProductOrder(List<ProductOrderValidate> listProductOrderValidate);
+    Task<BaseResponse<List<OrderValidateDTO>>> CreateValidateOrder(List<OrderValidateDTO> listOrderValidate);
+    Task<BaseResponse<List<ProductOrderValidateDTO>>> CreateValidateProductOrder(List<ProductOrderValidateDTO> listProductOrderValidate);
 }

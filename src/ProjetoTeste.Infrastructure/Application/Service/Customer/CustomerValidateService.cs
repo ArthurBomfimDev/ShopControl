@@ -66,9 +66,9 @@ public class CustomerValidateService : ICustomerValidateService
     #endregion
 
     #region Create
-    public async Task<BaseResponse<List<CustomerValidate>>> ValidateCreate(List<CustomerValidate> listCustomerValidate)
+    public async Task<BaseResponse<List<CustomerValidateDTO>>> ValidateCreate(List<CustomerValidateDTO> listCustomerValidate)
     {
-        var response = new BaseResponse<List<CustomerValidate>>();
+        var response = new BaseResponse<List<CustomerValidateDTO>>();
 
         _ = (from i in listCustomerValidate
              where i.InputCreateCustomer.Name.Length > 64 || string.IsNullOrEmpty(i.InputCreateCustomer.Name) || string.IsNullOrWhiteSpace(i.InputCreateCustomer.Name)
@@ -163,9 +163,9 @@ public class CustomerValidateService : ICustomerValidateService
     #endregion
 
     #region Update
-    public async Task<BaseResponse<List<CustomerValidate>>> ValidateUpdate(List<CustomerValidate> listCustomerValidate)
+    public async Task<BaseResponse<List<CustomerValidateDTO>>> ValidateUpdate(List<CustomerValidateDTO> listCustomerValidate)
     {
-        var response = new BaseResponse<List<CustomerValidate>>();
+        var response = new BaseResponse<List<CustomerValidateDTO>>();
 
         _ = (from i in listCustomerValidate
              where i.RepeteId != 0
@@ -279,9 +279,9 @@ public class CustomerValidateService : ICustomerValidateService
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<List<CustomerValidate>>> ValidateDelete(List<CustomerValidate> listCustomerValidate)
+    public async Task<BaseResponse<List<CustomerValidateDTO>>> ValidateDelete(List<CustomerValidateDTO> listCustomerValidate)
     {
-        var response = new BaseResponse<List<CustomerValidate>>();
+        var response = new BaseResponse<List<CustomerValidateDTO>>();
 
         _ = (from i in listCustomerValidate
              where i.RepeatedDelete != null

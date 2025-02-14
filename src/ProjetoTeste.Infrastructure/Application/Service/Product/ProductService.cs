@@ -52,7 +52,7 @@ public class ProductService : BaseService<IProductRepository, Product, InputCrea
                               BrandExists = listBrand.FirstOrDefault(l => l == i.BrandId)
                           }).ToList();
 
-        List<ProductValidate> listProductValidate = listCreate.Select(i => new ProductValidate().ValidateCreate(i.InputCreateProduct, i.OriginalCode, i.RepeteCode, i.BrandExists)).ToList();
+        List<ProductValidateDTO> listProductValidate = listCreate.Select(i => new ProductValidateDTO().ValidateCreate(i.InputCreateProduct, i.OriginalCode, i.RepeteCode, i.BrandExists)).ToList();
         var validateCreate = await _productValidateService.ValidateCreate(listProductValidate);
 
         response.Success = validateCreate.Success;
@@ -99,7 +99,7 @@ public class ProductService : BaseService<IProductRepository, Product, InputCrea
                               BrandExists = listBrand.FirstOrDefault(n => n == i.InputUpdateProduct.BrandId)
                           }).ToList();
 
-        List<ProductValidate> listProductValidate = listUpdate.Select(i => new ProductValidate().ValidateUpdate(i.InputIdentityUpdateProduct, i.OriginalIdentity, i.OriginalCode, i.RepeteIdentity, i.RepeteCode, i.BrandExists)).ToList();
+        List<ProductValidateDTO> listProductValidate = listUpdate.Select(i => new ProductValidateDTO().ValidateUpdate(i.InputIdentityUpdateProduct, i.OriginalIdentity, i.OriginalCode, i.RepeteIdentity, i.RepeteCode, i.BrandExists)).ToList();
         var validateUpdate = await _productValidateService.ValidateUpdate(listProductValidate);
 
         response.Success = validateUpdate.Success;
@@ -142,7 +142,7 @@ public class ProductService : BaseService<IProductRepository, Product, InputCrea
                                      RepetedIdentity = listRepetedIdentity.FirstOrDefault(k => k == i.Id)
                                  }).ToList();
 
-        List<ProductValidate> listProductValidate = listProductDelete.Select(i => new ProductValidate().ValidateDelete(i.InputDeleteProduct, i.listOriginalIdentity, i.RepetedIdentity)).ToList();
+        List<ProductValidateDTO> listProductValidate = listProductDelete.Select(i => new ProductValidateDTO().ValidateDelete(i.InputDeleteProduct, i.listOriginalIdentity, i.RepetedIdentity)).ToList();
 
         var validateDelete = await _productValidateService.ValidateDelete(listProductValidate);
 
