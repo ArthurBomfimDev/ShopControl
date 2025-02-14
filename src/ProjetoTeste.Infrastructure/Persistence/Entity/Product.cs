@@ -39,7 +39,7 @@ public class Product : BaseEntity
         BrandId = productDTO.BrandId,
         Stock = productDTO.Stock,
         Brand = productDTO.Brand,
-        ListProductOrder = productDTO.ListProductOrder.Select(i => (ProductOrder)i).ToList()
+        ListProductOrder = productDTO.ListProductOrder != null ? productDTO.ListProductOrder.Select(i => (ProductOrder)i).ToList() : null
     } : null;
 
     public static implicit operator ProductDTO(Product product)
@@ -54,7 +54,7 @@ public class Product : BaseEntity
             product.BrandId,
             product.Stock,
             product.Brand,
-            product.ListProductOrder.Select(i => (ProductOrderDTO)i).ToList()
+            product.ListProductOrder != null ? product.ListProductOrder.Select(i => (ProductOrderDTO)i).ToList() : null
         );
     }
     #endregion

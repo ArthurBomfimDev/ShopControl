@@ -4,7 +4,7 @@ namespace ProjetoTeste.Arguments.Arguments;
 
 public class BrandValidate : BaseValidate
 {
-    public InputCreateBrand InputCreate { get; private set; }
+    public InputCreateBrand? InputCreate { get; private set; }
     public string? RepeatedInputCreateCode { get; private set; }
     public List<InputIdentityUpdateBrand>? ListRepeatedInputIdetityUpdate { get; private set; }
     public BrandDTO? OriginalBrandDTO { get; private set; }
@@ -15,11 +15,6 @@ public class BrandValidate : BaseValidate
     public InputIdentifyDeleteBrand InputIdentifyDeleteBrand { get; private set; }
     public InputIdentifyDeleteBrand? RepeteInputDelete { get; private set; }
     public long? BrandWithProduct { get; private set; }
-
-    public BrandValidate()
-    {
-
-    }
 
     public BrandValidate ValidateCreate(InputCreateBrand? inputCreate, string? repeatedInputCreate, BrandDTO? originalBrand)
     {

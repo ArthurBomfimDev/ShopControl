@@ -46,9 +46,20 @@ public abstract class BaseService<TIRepository, TEntity, TInputCreateDTO, TInput
     #endregion
 
     #region Create
-    public virtual Task<BaseResponse<TOutputDTO>> Create(TInputCreateDTO inputCreateDTO)
+    public virtual async Task<BaseResponse<TOutputDTO>> Create(TInputCreateDTO inputCreateDTO)
     {
-        throw new NotImplementedException();
+        var response = new BaseResponse<TOutputDTO>();
+
+        var result = await CreateMultiple([inputCreateDTO]);
+
+        response.Message = result.Message;
+        response.Success = result.Success;
+
+        if (!response.Success)
+            return response;
+
+        response.Content = result.Content.FirstOrDefault();
+        return response;
     }
 
     public virtual Task<BaseResponse<List<TOutputDTO>>> CreateMultiple(List<TInputCreateDTO> listInputCreateDTO)
@@ -58,9 +69,9 @@ public abstract class BaseService<TIRepository, TEntity, TInputCreateDTO, TInput
     #endregion
 
     #region Update
-    public virtual Task<BaseResponse<bool>> Update(TInputIdentityUpdateDTO inputIdentityUpdateDTO)
+    public virtual async Task<BaseResponse<bool>> Update(TInputIdentityUpdateDTO inputIdentityUpdateDTO)
     {
-        throw new NotImplementedException();
+        return await UpdateMultiple([inputIdentityUpdateDTO]);
     }
 
     public virtual Task<BaseResponse<bool>> UpdateMultiple(List<TInputIdentityUpdateDTO> listInputIdentityUpdateDTO)
@@ -70,9 +81,9 @@ public abstract class BaseService<TIRepository, TEntity, TInputCreateDTO, TInput
     #endregion
 
     #region Delete
-    public virtual Task<BaseResponse<bool>> Delete(TInputIdentityDeleteDTO inputIdentifyDeleteDTO)
+    public virtual async Task<BaseResponse<bool>> Delete(TInputIdentityDeleteDTO inputIdentifyDeleteDTO)
     {
-        throw new NotImplementedException();
+        return await DeleteMultiple([inputIdentifyDeleteDTO]);
     }
 
     public virtual Task<BaseResponse<bool>> DeleteMultiple(List<TInputIdentityDeleteDTO> listInputIdentityDeleteDTO)

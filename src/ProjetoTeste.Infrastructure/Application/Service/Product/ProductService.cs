@@ -36,22 +36,6 @@ public class ProductService : BaseService<IProductRepository, Product, InputCrea
     #endregion
 
     #region Create
-    public override async Task<BaseResponse<OutputProduct>> Create(InputCreateProduct inputCreateProduct)
-    {
-        var response = new BaseResponse<OutputProduct>();
-
-        var createValidate = await CreateMultiple([inputCreateProduct]);
-
-        response.Success = createValidate.Success;
-        response.Message = createValidate.Message;
-
-        if (!response.Success)
-            return response;
-
-        response.Content = createValidate.Content.FirstOrDefault();
-        return response;
-    }
-
     public override async Task<BaseResponse<List<OutputProduct>>> CreateMultiple(List<InputCreateProduct> listinputCreateProduct)
     {
         var response = new BaseResponse<List<OutputProduct>>();
@@ -93,11 +77,6 @@ public class ProductService : BaseService<IProductRepository, Product, InputCrea
     #endregion
 
     #region Update
-    public override async Task<BaseResponse<bool>> Update(InputIdentityUpdateProduct inputIdentityUpdateProduct)
-    {
-        return await UpdateMultiple([inputIdentityUpdateProduct]);
-    }
-
     public override async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateProduct> listInputIdentityUpdateProduct)
     {
         var response = new BaseResponse<bool>();
@@ -150,11 +129,6 @@ public class ProductService : BaseService<IProductRepository, Product, InputCrea
     #endregion
 
     #region Delete
-    public override async Task<BaseResponse<bool>> Delete(InputIdentityDeleteProduct inputIdentifyDeleteProduct)
-    {
-        return await DeleteMultiple([inputIdentifyDeleteProduct]);
-    }
-
     public override async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentityDeleteProduct> listInputIdentifyDeleteProduct)
     {
         var response = new BaseResponse<bool>();

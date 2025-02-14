@@ -32,7 +32,7 @@ public class Order : BaseEntity
             Total = orderDTO.Total,
             OrderDate = orderDTO.OrderDate,
             Customer = orderDTO.Customer,
-            ListProductOrder = orderDTO.ListProductOrder.Select(i => (ProductOrder)i).ToList(),
+            ListProductOrder = orderDTO.ListProductOrder != null ? orderDTO.ListProductOrder.Select(i => (ProductOrder)i).ToList() : null,
         } : null;
     }
 
@@ -45,7 +45,7 @@ public class Order : BaseEntity
             order.Total,
             order.OrderDate,
             order.Customer,
-            order.ListProductOrder.Select(i => (ProductOrderDTO)i).ToList()
+            order.ListProductOrder != null ? order.ListProductOrder.Select(i => (ProductOrderDTO)i).ToList() : null
         ) : null;
     }
     #endregion

@@ -26,19 +26,7 @@ public class CustomerService : BaseService<ICustomerRepository, Customer, InputC
     #endregion
 
     #region Create
-    public async Task<BaseResponse<OutputCustomer>> Create(InputCreateCustomer inputCreateCustomer)
-    {
-        var response = new BaseResponse<OutputCustomer>();
-        var validateCreate = await CreateMultiple([inputCreateCustomer]);
-        response.Success = validateCreate.Success;
-        response.Message = validateCreate.Message;
-        if (!response.Success)
-            return response;
-        response.Content = validateCreate.Content.FirstOrDefault();
-        return response;
-    }
-
-    public async Task<BaseResponse<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreateCustomer)
+    public override async Task<BaseResponse<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreateCustomer)
     {
         var response = new BaseResponse<List<OutputCustomer>>();
 
@@ -61,12 +49,7 @@ public class CustomerService : BaseService<ICustomerRepository, Customer, InputC
     #endregion
 
     #region Update
-    public async Task<BaseResponse<bool>> Update(InputIdentityUpdateCustomer inputIdentityUpdateCustomer)
-    {
-        return await UpdateMultiple([inputIdentityUpdateCustomer]);
-    }
-
-    public async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
+    public override async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
     {
         var response = new BaseResponse<bool>();
         var originalCustomer = await _customerRepository.GetListByListId(listInputIdentityUpdateCustomer.Select(i => i.Id).ToList());
@@ -107,12 +90,7 @@ public class CustomerService : BaseService<ICustomerRepository, Customer, InputC
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<bool>> Delete(InputIdentifyDeleteCustomer inputIdentifyDeleteCustomer)
-    {
-        return await DeleteMultiple([inputIdentifyDeleteCustomer]);
-    }
-
-    public async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteCustomer> listInputIdentifyDeleteCustomer)
+    public override async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteCustomer> listInputIdentifyDeleteCustomer)
     {
         var response = new BaseResponse<bool>();
 

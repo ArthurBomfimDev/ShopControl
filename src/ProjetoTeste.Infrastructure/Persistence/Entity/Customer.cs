@@ -33,7 +33,7 @@ public class Customer : BaseEntity
             CPF = customerDTO.CPF,
             Email = customerDTO.Email,
             Phone = customerDTO.Phone,
-            ListOrder = customerDTO.ListOrder.Select(i => (Order)i).ToList()
+            ListOrder = customerDTO.ListOrder != null ? customerDTO.ListOrder.Select(i => (Order)i).ToList() : null
         } : null;
     }
     public static implicit operator CustomerDTO(Customer customer)
@@ -45,7 +45,7 @@ public class Customer : BaseEntity
             customer.CPF,
             customer.Email,
             customer.Phone,
-            customer.ListOrder.Select(i => (OrderDTO)i).ToList()
+            customer.ListOrder != null ? customer.ListOrder.Select(i => (OrderDTO)i).ToList() : null
         ) : null;
     }
     #endregion

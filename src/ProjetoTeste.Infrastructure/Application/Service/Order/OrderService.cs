@@ -97,23 +97,7 @@ public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrde
     #endregion
 
     #region Create Order
-    public async Task<BaseResponse<OutputOrder>> Create(InputCreateOrder inputCreateOrder)
-    {
-        var response = new BaseResponse<OutputOrder>();
-
-        var createValidate = await CreateMultiple([inputCreateOrder]);
-
-        response.Success = createValidate.Success;
-        response.Message = createValidate.Message;
-
-        if (!response.Success)
-            return response;
-
-        response.Content = createValidate.Content.FirstOrDefault();
-        return response;
-    }
-
-    public async Task<BaseResponse<List<OutputOrder>>> CreateMultiple(List<InputCreateOrder> listinputCreateOrder)
+    public override async Task<BaseResponse<List<OutputOrder>>> CreateMultiple(List<InputCreateOrder> listinputCreateOrder)
     {
         var response = new BaseResponse<List<OutputOrder>>();
 

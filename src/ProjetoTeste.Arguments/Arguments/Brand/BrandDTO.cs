@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using ProjetoTeste.Arguments.Arguments.Brand;
+using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
@@ -21,4 +22,15 @@ public class BrandDTO
         Description = description;
         ListProduct = listProduct;
     }
+
+    #region Implicit Operator
+    public static implicit operator OutputBrand(BrandDTO brandDTO)
+    {
+        return brandDTO != null ? new OutputBrand(
+            brandDTO.Id,
+            brandDTO.Name,
+            brandDTO.Code,
+            brandDTO.Description) : null;
+    }
+    #endregion
 }

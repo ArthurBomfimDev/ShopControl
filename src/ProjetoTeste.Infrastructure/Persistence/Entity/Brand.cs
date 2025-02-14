@@ -25,14 +25,17 @@ public class Brand : BaseEntity
     #region Implicit Operator
     public static implicit operator Brand(BrandDTO brandDTO)
     {
-        return brandDTO != null ? new Brand
+        if (brandDTO == null)
+            return null;
+
+        return new Brand
         {
             Id = brandDTO.Id,
             Name = brandDTO.Name,
             Code = brandDTO.Code,
             Description = brandDTO.Description,
-            ListProduct = brandDTO.ListProduct.Select(i => (Product)i).ToList()
-        } : null;
+            ListProduct = brandDTO.ListProduct != null ? brandDTO.ListProduct.Select(i => (Product)i).ToList() : null
+        };
     }
 
     public static implicit operator BrandDTO(Brand brand)
@@ -43,7 +46,7 @@ public class Brand : BaseEntity
             brand.Name,
             brand.Code,
             brand.Description,
-            brand.ListProduct.Select(i => (ProductDTO)i).ToList()
+            brand.ListProduct != null ? brand.ListProduct.Select(i => (ProductDTO)i).ToList() : null
         ) : null;
     }
     #endregion
