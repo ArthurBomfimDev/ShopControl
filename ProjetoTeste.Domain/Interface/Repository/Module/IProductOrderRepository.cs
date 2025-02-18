@@ -1,7 +1,5 @@
-﻿using ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Domain.Interface.Repository.Base;
 
-namespace ProjetoTeste.Infrastructure.Interface.Repositories;
-
-public interface IProductOrderRepository : IBaseRepository<ProductOrder>
-{
-}
+namespace ProjetoTeste.Domain.Interface.Repository;
+public interface IProductOrderRepository : IBaseRepository<ProductOrderDTO> { }

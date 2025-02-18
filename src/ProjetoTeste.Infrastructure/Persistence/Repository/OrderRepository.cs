@@ -1,32 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Order;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
+using ProjetoTeste.Domain.Interface.Repository;
 using ProjetoTeste.Infrastructure.Persistence.Context;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Repository
 {
-    public class OrderRepository : Repository<Order>, IOrderRepository
+    public class OrderRepository : BaseRepository<Order, OrderDTO>, IOrderRepository
     {
         public OrderRepository(AppDbContext context) : base(context)
         {
         }
 
-        public async Task<List<Order>> GetAllWithProductOrders()
+        public async Task<List<OrderDTO>> GetAllWithProductOrders()
         {
-            var get = await _dbSet.Include(o => o.ListProductOrder).ToListAsync();
-            return get;
+            var getAllWithProductOrders = await _dbSet.Include(o => o.ListProductOrder).ToListAsync();
+            return getAllWithProductOrders.Select(i => (OrderDTO)i).ToList();
         }
-        public async Task<List<Order>> GetByIdWithProductOrders(long id)
+        public async Task<List<OrderDTO>> GetByIdWithProductOrders(long id)
         {
-            var get = await _dbSet.AsNoTracking().Include(o => o.ListProductOrder)
+            var getByIdWithProductOrders = await _dbSet.AsNoTracking().Include(o => o.ListProductOrder)
                 .Where(o => o.Id == id).ToListAsync();
-            return get;
+            return getByIdWithProductOrders.Select(i => (OrderDTO)i).ToList();
         }
-        public Task<List<Order>> GetListByListIdWhithProductOrders(List<long> listId)
+        public async Task<List<OrderDTO>> GetListByListIdWhithProductOrders(List<long> listId)
         {
-            return _dbSet.Include(i => i.ListProductOrder).Where(j => listId.Contains(j.Id)).ToListAsync();
+            var getListByListIdWhithProductOrders = await _dbSet.Include(i => i.ListProductOrder).Where(j => listId.Contains(j.Id)).ToListAsync();
+            return getListByListIdWhithProductOrders.Select(i => (OrderDTO)i).ToList();
         }
 
         public async Task<List<OutputMaxSaleValueProduct>> GetMostOrderedProduct()

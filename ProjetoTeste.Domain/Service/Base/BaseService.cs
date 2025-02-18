@@ -1,41 +1,51 @@
-﻿using ProjetoTeste.Arguments.Arguments.Base;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Conversor;
+using ProjetoTeste.Domain.DTO.Base;
+using ProjetoTeste.Domain.Interface.Repository.Base;
+using ProjetoTeste.Domain.Interface.Service.Base;
+using ProjetoTeste.Domain.Service.Base;
+using ProjetoTeste.Infrastructure.Interface.Service.Base;
 
 namespace ProjetoTeste.Infrastructure.Application.Service.Base;
 
-public abstract class BaseService<TIRepository, TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO> : IBaseService<TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
-    where TEntity : BaseEntity
+public abstract class BaseService<TIRepository,TValidateService ,TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO, TValidateDTO> : BaseValdiate<TValidateDTO>, IBaseService<TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
+    where TDTO : BaseDTO<TDTO>
     where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
     where TInputIdentityUpdateDTO : BaseInputIdentityUpdate<TInputIdentityUpdateDTO>
     where TInputIdentityDeleteDTO : BaseInputIdentityDelete<TInputIdentityDeleteDTO>
     where TInputIdentityViewDTO : BaseInputIdentityView<TInputIdentityViewDTO>, IBaseIdentity
     where TOutputDTO : BaseOutput<TOutputDTO>
-    where TIRepository : IRepository<TEntity>
+    where TIRepository : IBaseRepository<TDTO>
+    where TValidateService : IBaseValidateService
+    where TValidateDTO : BaseValidateDTO
 {
     private readonly TIRepository _repository;
+    private readonly TValidateService _validateService;
 
-    public BaseService(TIRepository repository)
+    public BaseService(TIRepository repository, TValidateService validateService)
     {
         _repository = repository;
+        _validateService = validateService;
     }
 
     #region Get
     public virtual async Task<TOutputDTO> Get(TInputIdentityViewDTO inputIdentifyViewDTO)
     {
         var get = await _repository.Get(inputIdentifyViewDTO.Id);
-        return get.Converter<TEntity, TOutputDTO>();
+        return get.Converter<TDTO, TOutputDTO>();
     }
 
     public virtual async Task<List<TOutputDTO>> GetAll()
     {
         var getAll = await _repository.GetAll();
-        return getAll.ConverterList<TEntity, TOutputDTO>();
+        return getAll.ConverterList<TDTO, TOutputDTO>();
     }
 
     public virtual async Task<List<TOutputDTO>> GetListByListId(List<TInputIdentityViewDTO> listTInputIdentityViewDTO)
     {
         var getListByListId = await _repository.GetListByListId(listTInputIdentityViewDTO.Select(i => i.Id).ToList());
-        return getListByListId.ConverterList<TEntity, TOutputDTO>();
+        return getListByListId.ConverterList<TDTO, TOutputDTO>();
     }
     #endregion
 

@@ -1,17 +1,25 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Brand;
+using ProjetoTeste.Domain.DTO.Base;
 using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class BrandDTO
+public class BrandDTO : BaseDTO<BrandDTO>
 {
-    public long Id { get; set; }
     public string Name { get; set; }
     public string Code { get; set; }
     public string Description { get; set; }
     public List<ProductDTO>? ListProduct { get; set; }
 
     public BrandDTO() { }
+
+    public BrandDTO(string name, string code, string description, List<ProductDTO>? listProduct)
+    {
+        Name = name;
+        Code = code;
+        Description = description;
+        ListProduct = listProduct;
+    }
 
     [JsonConstructor]
     public BrandDTO(long id, string name, string code, string description, List<ProductDTO>? listProduct)

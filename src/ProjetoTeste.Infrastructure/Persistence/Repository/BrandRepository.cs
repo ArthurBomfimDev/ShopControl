@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
+using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Domain.Interface.Repository;
 using ProjetoTeste.Infrastructure.Persistence.Context;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Repository;
 
-public class BrandRepository : Repository<Brand>, IBrandRepository
+public class BrandRepository : BaseRepository<Brand, BrandDTO>, IBrandRepository
 {
     public BrandRepository(AppDbContext context) : base(context)
     {
@@ -16,23 +17,27 @@ public class BrandRepository : Repository<Brand>, IBrandRepository
         return _dbSet.Any(x => x.Id == id);
     }
 
-    public async Task<List<Brand>> GetListByListCode(List<string> listCode)
+    public async Task<List<BrandDTO>> GetListByListCode(List<string> listCode)
     {
-        return await _dbSet.Where(i => listCode.Contains(i.Code)).ToListAsync();
+        var getListByListCode = await _dbSet.Where(i => listCode.Contains(i.Code)).ToListAsync();
+        return getListByListCode.Select(i => (BrandDTO)i).ToList();
     }
 
-    public async Task<Brand> GetByCode(string code)
+    public async Task<BrandDTO> GetByCode(string code)
     {
-        return await _dbSet.FirstOrDefaultAsync(x => x.Code == code);
+        var getByCode = await _dbSet.FirstOrDefaultAsync(x => x.Code == code);
+        return getByCode;
     }
 
-    public async Task<List<Brand>> GetAllAndProduct()
+    public async Task<List<BrandDTO>> GetAllAndProduct()
     {
-        return await _context.Brand.Include(i => i.ListProduct).ToListAsync();
+        var getAllAndProduct = await _context.Brand.Include(i => i.ListProduct).ToListAsync();
+        return getAllAndProduct.Select(i => (BrandDTO)i).ToList();
     }
 
-    public async Task<List<Brand>> GetAndProduct(long id)
+    public async Task<List<BrandDTO>> GetAndProduct(long id)
     {
-        return await _context.Brand.Include(i => i.ListProduct).Where(i => i.Id == id).ToListAsync();
+        var getAndProduct = await _context.Brand.Include(i => i.ListProduct).Where(i => i.Id == id).ToListAsync();
+        return getAndProduct.Select(i => (BrandDTO)i).ToList();
     }
 }

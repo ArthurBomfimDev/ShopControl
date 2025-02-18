@@ -1,11 +1,12 @@
-﻿using ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Domain.Interface.Repository.Base;
 
-namespace ProjetoTeste.Infrastructure.Interface.Repositories;
+namespace ProjetoTeste.Domain.Interface.Repository;
 
-public interface IBrandRepository : IBaseRepository<Brand>
+public interface IBrandRepository : IBaseRepository<BrandDTO>
 {
-    Task<List<Brand>> GetListByListCode(List<string> listCode);
-    Task<Brand> GetByCode(string code);
-    Task<List<Brand>> GetAllAndProduct();
-    Task<List<Brand>> GetAndProduct(long id);
+    Task<List<BrandDTO>> GetListByListCode(List<string> listCode);
+    Task<BrandDTO> GetByCode(string code);
+    Task<List<BrandDTO>> GetAllAndProduct();
+    Task<List<BrandDTO>> GetAndProduct(long id);
 }

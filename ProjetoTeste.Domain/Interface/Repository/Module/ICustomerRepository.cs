@@ -1,12 +1,12 @@
-﻿using ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Domain.Interface.Repository.Base;
 
-namespace ProjetoTeste.Infrastructure.Interface.Repositories
+namespace ProjetoTeste.Domain.Interface.Repository;
+
+public interface ICustomerRepository : IBaseRepository<CustomerDTO>
 {
-    public interface ICustomerRepository : IBaseRepository<Customer>
-    {
-        bool EmailExists(string email);
-        bool CPFExists(string cpf);
-        bool PhoneExists(string phone);
-        bool Exists(long id);
-    }
+    bool EmailExists(string email);
+    bool CPFExists(string cpf);
+    bool PhoneExists(string phone);
+    bool Exists(long id);
 }

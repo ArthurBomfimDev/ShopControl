@@ -1,10 +1,10 @@
 ﻿using ProjetoTeste.Arguments.Arguments.ProductOrder;
+using ProjetoTeste.Domain.DTO.Base;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class ProductOrderDTO
+public class ProductOrderDTO : BaseDTO<ProductOrderDTO>
 {
-    public long Id { get; private set; }
     public long OrderId { get; private set; }
     public long ProductId { get; private set; }
     public int Quantity { get; private set; }

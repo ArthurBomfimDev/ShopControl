@@ -1,13 +1,13 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Product;
+using ProjetoTeste.Domain.DTO.Base;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class ProductDTO
+public class ProductDTO : BaseDTO<ProductDTO>
 {
     public ProductDTO()
     {
     }
-    public long Id { get; set; }
     public string Name { get; set; }
     public string Code { get; set; }
     public string Description { get; set; }

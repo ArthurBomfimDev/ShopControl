@@ -1,10 +1,10 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
+using ProjetoTeste.Domain.DTO.Base;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service.Base;
 
-public interface IBaseService<TEntity, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
-    where TEntity : BaseEntity
+public interface IBaseService<TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
+    where TDTO : BaseDTO<TDTO>
     where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
     where TInputIdentityUpdateDTO : BaseInputIdentityUpdate<TInputIdentityUpdateDTO>
     where TInputIdentityDeleteDTO : BaseInputIdentityDelete<TInputIdentityDeleteDTO>

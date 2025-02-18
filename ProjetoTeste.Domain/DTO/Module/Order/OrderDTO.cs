@@ -1,11 +1,11 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
+using ProjetoTeste.Domain.DTO.Base;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class OrderDTO
+public class OrderDTO : BaseDTO<OrderDTO>
 {
-    public long Id { get; private set; }
     public long CustomerId { get; private set; }
     public decimal Total { get; private set; }
     public DateTime OrderDate { get; private set; }

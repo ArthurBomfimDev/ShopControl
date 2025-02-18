@@ -22,7 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ProjetoTeste.Domain\ProjetoTeste.Domain.csproj" />
     <ProjectReference Include="..\ProjetoTeste.Arguments\ProjetoTeste.Arguments.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Interface\" />
   </ItemGroup>
 
 </Project>

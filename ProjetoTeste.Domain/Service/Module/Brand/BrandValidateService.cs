@@ -1,10 +1,11 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class BrandValidateService : IBrandValidateService
+public class BrandValidateService : BaseValdiate<BrandValidateDTO>, IBrandValidateService
 {
 
     #region Create
@@ -13,11 +14,11 @@ public class BrandValidateService : IBrandValidateService
         BaseResponse<List<BrandValidateDTO>> response = new();
         _ = (from i in listBrandValidate
              where i.InputCreate == null
-             let SetInvalid = i.SetInvalid()
+             let SetInvalid = i.SetIgnore()
              select i).ToList();
 
-        _ = (from i in listBrandValidate
-             where i.RepeatedInputCreateCode != null
+        _ = (from i in listBrandValidate.RemoveIng().Select((value, index) => new { Value = value, Index = index })
+             where i.Value.RepeatedInputCreateCode != null
              let setInvalid = i.SetInvalid()
              let message = response.AddErrorMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' não pode ser cadastrada porque o código está repetido. Por favor, escolha um código diferente.")
              select i).ToList();

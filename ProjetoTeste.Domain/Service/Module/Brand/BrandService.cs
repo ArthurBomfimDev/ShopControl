@@ -1,22 +1,21 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Brand;
+using ProjetoTeste.Domain.Interface.Repository;
 using ProjetoTeste.Infrastructure.Application.Service.Base;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand>, IBrandService
+public class BrandService : BaseService<IBrandRepository,BrandValidateService ,BrandDTO, InputCreateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand, BrandValidateDTO>, IBrandService
 {
     #region Dependency Injection
     private readonly IBrandRepository _brandRepository;
     private readonly IBrandValidateService _brandValidadeService;
     private readonly IProductRepository _productRepository;
 
-    public BrandService(IBrandRepository brandRepository, IBrandValidateService brandValidadeService, IProductRepository productRepository) : base(brandRepository)
+    public BrandService(IBrandRepository brandRepository, IBrandValidateService brandValidadeService, IProductRepository productRepository) : base(brandRepository, brandValidadeService)
     {
         _brandRepository = brandRepository;
         _brandValidadeService = brandValidadeService;
@@ -43,7 +42,6 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
                           }).ToList();
 
         List<BrandValidateDTO> listBrandValidate = listCreate.Select(i => new BrandValidateDTO().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
-
         var create = await _brandValidadeService.ValidateCreate(listBrandValidate);
 
         response.Message = create.Message;
@@ -53,7 +51,7 @@ public class BrandService : BaseService<IBrandRepository, Brand, InputCreateBran
 
         var listCreateBrand = (from i in create.Content
                                let successMessage = response.AddSuccessMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' foi cadastrada com sucesso!")
-                               select new Brand(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList();
+                               select new BrandDTO(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList();
 
         var listNewBrand = await _brandRepository.Create(listCreateBrand);
 

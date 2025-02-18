@@ -1,11 +1,11 @@
-﻿using ProjetoTeste.Infrastructure.Persistence.Entity;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Domain.Interface.Repository.Base;
 
-namespace ProjetoTeste.Infrastructure.Interface.Repositories;
-
-public interface IProductRepository : IBaseRepository<Product>
+namespace ProjetoTeste.Domain.Interface.Repository;
+public interface IProductRepository: IBaseRepository<ProductDTO>
 {
-    Task<List<Product>> GetListByBrandId(long id);
-    Task<List<Product>> GetListByCodeList(List<string> listCode);
+    Task<List<ProductDTO>> GetListByBrandId(long id);
+    Task<List<ProductDTO>> GetListByCodeList(List<string> listCode);
     bool ProductExists(long id);
     Task<bool> ExistUpdate(string code, long id);
     Task<List<long>> BrandId(List<long> ids);

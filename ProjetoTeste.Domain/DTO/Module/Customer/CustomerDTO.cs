@@ -1,11 +1,11 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Customer;
+using ProjetoTeste.Domain.DTO.Base;
 using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class CustomerDTO
+public class CustomerDTO : BaseDTO<CustomerDTO>
 {
-    public long Id { get; set; }
     public string Name { get; set; }
     public string CPF { get; set; }
     public string Email { get; set; }

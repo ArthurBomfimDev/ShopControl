@@ -1,11 +1,13 @@
-﻿namespace ProjetoTeste.Infrastructure.Interface.Repositories;
+﻿using ProjetoTeste.Domain.DTO.Base;
 
-public interface IBaseRepository<TEntity> where TEntity : BaseEntity
+namespace ProjetoTeste.Domain.Interface.Repository.Base;
+
+public interface IBaseRepository<TDTO> where TDTO : BaseDTO<TDTO>
 {
-    Task<List<TEntity?>> GetAll();
-    Task<List<TEntity>> GetListByListId(List<long>? listId);
-    Task<TEntity?> Get(long id);
-    Task<List<TEntity>?> Create(List<TEntity> listEntity);
-    Task<bool> Update(List<TEntity> listEntity);
-    Task<bool> Delete(List<TEntity> listEntity);
+    Task<List<TDTO?>> GetAll();
+    Task<List<TDTO>> GetListByListId(List<long>? listId);
+    Task<TDTO?> Get(long id);
+    Task<List<TDTO>?> Create(List<TDTO> listEntity);
+    Task<bool> Update(List<TDTO> listEntity);
+    Task<bool> Delete(List<TDTO> listEntity);
 }
