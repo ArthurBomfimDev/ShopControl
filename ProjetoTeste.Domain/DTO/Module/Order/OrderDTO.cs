@@ -2,7 +2,7 @@
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Domain.DTO.Base;
 
-namespace ProjetoTeste.Arguments.Arguments;
+namespace ProjetoTeste.Domain.DTO;
 
 public class OrderDTO : BaseDTO<OrderDTO>
 {
@@ -14,6 +14,13 @@ public class OrderDTO : BaseDTO<OrderDTO>
     public List<ProductOrderDTO> ListProductOrder { get; private set; }
 
     public OrderDTO() { }
+
+    public OrderDTO(long customerId, DateTime orderDate, List<ProductOrderDTO> listProductOrder)
+    {
+        CustomerId = customerId;
+        OrderDate = orderDate;
+        ListProductOrder = listProductOrder;
+    }
 
     public OrderDTO(long id, long customerId, decimal total, DateTime orderDate, CustomerDTO customer, List<ProductOrderDTO> listProductOrder)
     {

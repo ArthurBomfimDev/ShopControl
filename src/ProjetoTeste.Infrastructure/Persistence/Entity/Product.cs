@@ -1,4 +1,4 @@
-﻿using ProjetoTeste.Arguments.Arguments;
+﻿using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Entity;

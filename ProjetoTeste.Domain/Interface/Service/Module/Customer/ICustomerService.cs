@@ -1,9 +1,9 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Customer;
+using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Interface.Service.Base;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service;
 
-public interface ICustomerService : IBaseService<Customer, InputCreateCustomer, InputIdentityUpdateCustomer, InputIdentifyDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer>
+public interface ICustomerService : IBaseService<CustomerDTO, InputCreateCustomer, InputIdentityUpdateCustomer, InputIdentifyDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer>
 { }

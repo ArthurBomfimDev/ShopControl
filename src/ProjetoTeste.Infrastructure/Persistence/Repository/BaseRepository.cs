@@ -7,7 +7,7 @@ using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Repository
 {
-    public abstract class BaseRepository<TEntity, TDTO> : IBaseRepository<TDTO> 
+    public abstract class BaseRepository<TEntity, TDTO> : IBaseRepository<TDTO>
         where TEntity : BaseEntity
         where TDTO : BaseDTO<TDTO>
     {

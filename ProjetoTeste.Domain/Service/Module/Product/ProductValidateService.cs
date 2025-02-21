@@ -1,5 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Domain.Interface.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Infrastructure.Application;
@@ -193,6 +194,21 @@ public class ProductValidateService : IProductValidateService
 
         response.Content = delete;
         return response;
+    }
+
+    void IBaseValidateService<ProductValidateDTO>.ValidateCreate(List<ProductValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
+    }
+
+    void IBaseValidateService<ProductValidateDTO>.ValidateUpdate(List<ProductValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
+    }
+
+    void IBaseValidateService<ProductValidateDTO>.ValidateDelete(List<ProductValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
     }
     #endregion
 

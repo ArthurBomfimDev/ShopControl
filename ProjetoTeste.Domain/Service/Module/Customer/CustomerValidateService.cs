@@ -1,5 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Domain.Interface.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
@@ -307,6 +308,21 @@ public class CustomerValidateService : ICustomerValidateService
 
         response.Content = delete;
         return response;
+    }
+
+    void IBaseValidateService<CustomerValidateDTO>.ValidateCreate(List<CustomerValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
+    }
+
+    void IBaseValidateService<CustomerValidateDTO>.ValidateUpdate(List<CustomerValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
+    }
+
+    void IBaseValidateService<CustomerValidateDTO>.ValidateDelete(List<CustomerValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
     }
     #endregion
 }

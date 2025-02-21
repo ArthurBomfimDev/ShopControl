@@ -1,8 +1,8 @@
 ﻿namespace ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 
-public class DetailedNotification(string? key, List<string>? listMessage, EnumNotificationType notificationType)
+public class DetailedNotification(string? identifier, List<string>? listMessage, EnumNotificationType notificationType)
 {
-    public string? Key { get; set; } = key;
+    public string? Identifier { get; set; } = identifier;
     public List<string>? ListMessage { get; set; } = listMessage;
     public EnumNotificationType NotificationType { get; set; } = notificationType;
 }

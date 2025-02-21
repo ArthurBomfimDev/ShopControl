@@ -1,5 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Order;
+using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Repository.Base;
 
 namespace ProjetoTeste.Domain.Interface.Repository;

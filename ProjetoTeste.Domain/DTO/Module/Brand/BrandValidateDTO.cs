@@ -1,4 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Brand;
+using ProjetoTeste.Domain.DTO;
 
 namespace ProjetoTeste.Arguments.Arguments;
 

@@ -78,5 +78,20 @@ public class OrderValidateService : IOrderValidateService
         response.Content = create;
         return response;
     }
+
+    public void ValidateCreate(List<OrderValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ValidateDelete(List<OrderValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ValidateUpdate(List<OrderValidateDTO> listTValidateDTO)
+    {
+        throw new NotImplementedException();
+    }
     #endregion
 }

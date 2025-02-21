@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Domain.DTO.Base;
 using ProjetoTeste.Infrastructure.Interface.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
@@ -9,9 +11,10 @@ namespace ProjetoTeste.Api.Controllers.Base;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityViewDTO, TOutputDTO> : Controller
-    where TService : IBaseService<TEntity, TInputCreateDTO, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityViewDTO, TOutputDTO>
+public abstract class BaseController<TService, TDTO, TEntity, TInputCreateDTO, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityViewDTO, TOutputDTO> : Controller
+    where TService : IBaseService<TDTO, TInputCreateDTO, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityViewDTO, TOutputDTO>
     where TEntity : BaseEntity
+    where TDTO : BaseDTO<TDTO>
     where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
     where TInputIndetityUpdate : BaseInputIdentityUpdate<TInputIndetityUpdate>
     where TInputIndetityDelete : BaseInputIdentityDelete<TInputIndetityDelete>
@@ -68,21 +71,17 @@ public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputI
 
     #region Create
     [HttpPost("Create")]
-    public virtual async Task<ActionResult<BaseResponse<List<TOutputDTO>>>> Create(TInputCreateDTO inputCreateDTO)
+    public virtual async Task<ActionResult<BaseResult<List<TOutputDTO>>>> Create(TInputCreateDTO inputCreateDTO)
     {
         var create = await service.Create(inputCreateDTO);
-        if (create.Success == false)
-        {
-            return BadRequest(create);
-        }
         return Ok(create);
     }
 
     [HttpPost("Create/Multiple")]
-    public virtual async Task<ActionResult<BaseResponse<List<TOutputDTO>>>> Create(List<TInputCreateDTO> listTInputCreateDTO)
+    public virtual async Task<ActionResult<BaseResult<List<TOutputDTO>>>> Create(List<TInputCreateDTO> listTInputCreateDTO)
     {
         var create = await service.CreateMultiple(listTInputCreateDTO);
-        if (create.Success == false)
+        if (create.IsSuccess == false)
         {
             return BadRequest(create);
         }
@@ -92,10 +91,10 @@ public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputI
 
     #region Update
     [HttpPut("Update")]
-    public virtual async Task<ActionResult<BaseResponse<bool>>> Update(TInputIndetityUpdate inputIdentityUpdateDTO)
+    public virtual async Task<ActionResult<BaseResult<bool>>> Update(TInputIndetityUpdate inputIdentityUpdateDTO)
     {
         var update = await service.Update(inputIdentityUpdateDTO);
-        if (!update.Success)
+        if (!update.IsSuccess)
         {
             return BadRequest(update);
         }
@@ -103,10 +102,10 @@ public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputI
     }
 
     [HttpPut("Update/Multiple")]
-    public virtual async Task<ActionResult<BaseResponse<bool>>> Update(List<TInputIndetityUpdate> listTInputIndetityUpdate)
+    public virtual async Task<ActionResult<BaseResult<bool>>> Update(List<TInputIndetityUpdate> listTInputIndetityUpdate)
     {
         var listUpdate = await service.UpdateMultiple(listTInputIndetityUpdate);
-        if (!listUpdate.Success)
+        if (!listUpdate.IsSuccess)
         {
             return BadRequest(listUpdate);
         }
@@ -119,7 +118,7 @@ public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputI
     public virtual async Task<ActionResult<BaseResponse<bool>>> Delete(TInputIndetityDelete inputIdentifyDeleteDTO)
     {
         var delete = await service.Delete(inputIdentifyDeleteDTO);
-        if (!delete.Success)
+        if (!delete.IsSuccess)
         {
             return BadRequest(delete);
         }
@@ -130,7 +129,7 @@ public abstract class BaseController<TService, TEntity, TInputCreateDTO, TInputI
     public virtual async Task<ActionResult<BaseResponse<bool>>> Delete(List<TInputIndetityDelete> listInputIdentifyDeleteDTO)
     {
         var listDelete = await service.DeleteMultiple(listInputIdentifyDeleteDTO);
-        if (!listDelete.Success)
+        if (!listDelete.IsSuccess)
         {
             return BadRequest(listDelete);
         }

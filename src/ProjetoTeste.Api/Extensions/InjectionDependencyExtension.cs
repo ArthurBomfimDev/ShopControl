@@ -1,6 +1,7 @@
-﻿using ProjetoTeste.Infrastructure.Application;
+﻿using ProjetoTeste.Domain.Interface.Repository;
+using ProjetoTeste.Domain.Service;
+using ProjetoTeste.Infrastructure.Application;
 using ProjetoTeste.Infrastructure.Application.Service.Order;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
@@ -25,9 +26,9 @@ public static class InjectionDependencyExtension
         services.AddScoped<IProductValidateService, ProductValidateService>();
         services.AddScoped<IOrderValidateService, OrderValidateService>();
         services.AddScoped<IBrandService, BrandService>();
-        services.AddScoped<IProductService, ProductService>();
+        //services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IOrderService, OrderService>();
-        services.AddScoped<ICustomerService, CustomerService>();
+        //services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddAutoMapper(typeof(MappingProfile));
 

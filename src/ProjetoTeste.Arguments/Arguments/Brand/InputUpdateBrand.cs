@@ -1,9 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 namespace ProjetoTeste.Arguments.Arguments.Brand;
 
 public class InputUpdateBrand
 {
     public string Name { get; private set; }
+
+    [Required(ErrorMessage = "O campo {0} é OBRIGATÓRIO - Identificador")]
     public string Code { get; private set; }
     public string Description { get; private set; }
 

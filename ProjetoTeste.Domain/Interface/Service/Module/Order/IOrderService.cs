@@ -2,12 +2,12 @@
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
+using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Interface.Service.Base;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Infrastructure.Interface.Service;
 
-public interface IOrderService : IBaseService<Order, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
+public interface IOrderService : IBaseService<OrderDTO, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
 {
     Task<List<OutputOrder>> GetByIdWithProducts(InputIdentifyViewOrder inputIdentifyViewOrder);
     Task<OutputMaxSaleValueProduct> BestSellerProduct();

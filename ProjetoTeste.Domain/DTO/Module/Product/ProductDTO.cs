@@ -1,7 +1,7 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Domain.DTO.Base;
 
-namespace ProjetoTeste.Arguments.Arguments;
+namespace ProjetoTeste.Domain.DTO;
 
 public class ProductDTO : BaseDTO<ProductDTO>
 {
@@ -17,6 +17,17 @@ public class ProductDTO : BaseDTO<ProductDTO>
 
     public virtual BrandDTO? Brand { get; set; }
     public virtual List<ProductOrderDTO>? ListProductOrder { get; set; }
+
+    public ProductDTO(string name, string code, string description, decimal price, long brandId, long stock, List<ProductOrderDTO>? listProductOrder)
+    {
+        Name = name;
+        Code = code;
+        Description = description;
+        Price = price;
+        BrandId = brandId;
+        Stock = stock;
+        ListProductOrder = listProductOrder;
+    }
 
     public ProductDTO(long id, string name, string code, string description, decimal price, long brandId, long stock, BrandDTO? brand, List<ProductOrderDTO>? listProductOrder)
     {

@@ -2,7 +2,7 @@
 using ProjetoTeste.Domain.DTO.Base;
 using System.Text.Json.Serialization;
 
-namespace ProjetoTeste.Arguments.Arguments;
+namespace ProjetoTeste.Domain.DTO;
 
 public class BrandDTO : BaseDTO<BrandDTO>
 {

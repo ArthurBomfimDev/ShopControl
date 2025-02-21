@@ -1,16 +1,17 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
+using ProjetoTeste.Domain.DTO;
+using ProjetoTeste.Domain.Interface.Repository;
 using ProjetoTeste.Infrastructure.Application.Service.Base;
-using ProjetoTeste.Infrastructure.Interface.Repositories;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
-using ProjetoTeste.Infrastructure.Persistence.Entity;
 
-namespace ProjetoTeste.Infrastructure.Application;
+namespace ProjetoTeste.Domain.Service;
 
-public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>, IOrderService
+public class OrderService : BaseService<IOrderRepository, IOrderValidateService, OrderDTO, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder, OrderValidateDTO>, IOrderService
 {
     #region Dependency Injection
     private readonly IOrderRepository _orderRepository;
@@ -20,7 +21,7 @@ public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrde
     private readonly IBrandRepository _brandRepository;
     private readonly IOrderValidateService _orderValidateService;
 
-    public OrderService(IOrderRepository orderRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository, IBrandRepository brandRepository, IOrderValidateService orderValidateService) : base(orderRepository)
+    public OrderService(IOrderRepository orderRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOrderRepository productOrderRepository, IBrandRepository brandRepository, IOrderValidateService orderValidateService) : base(orderRepository, orderValidateService)
     {
         _orderRepository = orderRepository;
         _customerRepository = customerRepository;
@@ -94,7 +95,7 @@ public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrde
     #endregion
 
     #region Create Order
-    public override async Task<BaseResponse<List<OutputOrder>>> CreateMultiple(List<InputCreateOrder> listinputCreateOrder)
+    public override async Task<BaseResult<List<OutputOrder>>> CreateMultiple(List<InputCreateOrder> listinputCreateOrder)
     {
         var response = new BaseResponse<List<OutputOrder>>();
 
@@ -108,19 +109,19 @@ public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrde
 
         List<OrderValidateDTO> listOrderValidate = listCreate.Select(i => new OrderValidateDTO().CreateValidate(i.InputCreateOrder, i.CustomerId)).ToList();
 
-        var create = await _orderValidateService.CreateValidateOrder(listOrderValidate);
-        response.Success = create.Success;
-        response.Message = create.Message;
-        if (!response.Success)
-            return response;
+        //var create = await _orderValidateService.CreateValidateOrder(listOrderValidate);
+        //response.Success = create.Success;
+        //response.Message = create.Message;
+        //if (!response.Success)
+        //    return BaseResult<List<OutputOrder>>.Failure();
 
-        var listCreateOrder = (from i in create.Content
-                               let message = response.AddSuccessMessage($"Pedido do cliente com id: {i.InputCreateOrder.CustomerId} foi cadastrado com sucesso")
-                               select new Order(i.InputCreateOrder.CustomerId, DateTime.Now, default)).ToList();
+        //var listCreateOrder = (from i in create.Content
+        //                       let message = response.AddSuccessMessage($"Pedido do cliente com id: {i.InputCreateOrder.CustomerId} foi cadastrado com sucesso")
+        //                       select new OrderDTO(i.InputCreateOrder.CustomerId, DateTime.Now, default)).ToList();
 
-        var listNewOrder = await _orderRepository.Create(listCreateOrder);
-        response.Content = listNewOrder.Select(i => (OutputOrder)(OrderDTO)i).ToList();
-        return response;
+        //var listNewOrder = await _orderRepository.Create(listCreateOrder);
+        //response.Content = listNewOrder.Select(i => (OutputOrder)(OrderDTO)i).ToList();
+        return BaseResult<List<OutputOrder>>.Failure();
     }
     #endregion
 
@@ -166,7 +167,7 @@ public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrde
 
         var createValidate = (from i in create.Content
                               let message = response.AddSuccessMessage($"O pedido com Id: '{i.OrderId}' do produto com o Id: '{i.InputCreateProductOrder.ProductId}' e quantidade: '{i.InputCreateProductOrder.Quantity}' foi efetuado com sucesso.")
-                              select new ProductOrder(i.OrderId, i.Product.Id, i.InputCreateProductOrder.Quantity, i.Product.Price, (i.Product.Price * i.InputCreateProductOrder.Quantity))).ToList();
+                              select new ProductOrderDTO(i.OrderId, i.Product.Id, i.InputCreateProductOrder.Quantity, i.Product.Price, (i.Product.Price * i.InputCreateProductOrder.Quantity))).ToList();
 
         var listNewProductOrder = await _productOrderRepository.Create(createValidate);
 
@@ -178,21 +179,21 @@ public class OrderService : BaseService<IOrderRepository, Order, InputCreateOrde
             listUpdateProduct[i].Stock = create.Content[i].Product.Stock;
         }
 
-        var totalOrder = (from i in listUpdateOrder
-                          from j in createValidate
-                          where i.Id == j.OrderId
-                          let total = i.Total += j.SubTotal
-                          select i).ToList();
+        //    var totalOrder = (from i in listUpdateOrder
+        //                      from j in createValidate
+        //                      where i.Id == j.OrderId
+        //                      let total = i.Total += j.SubTotal
+        //                      select i).ToList();
 
-        var updateProduct = await _productRepository.Update(listUpdateProduct);
-        var updateOrder = await _orderRepository.Update(totalOrder);
-        if (!updateProduct || !updateOrder)
-        {
-            response.AddErrorMessage("Não foi possivél efetuar o pedido");
-            return response;
-        }
+        //    var updateProduct = await _productRepository.Update(listUpdateProduct);
+        //    var updateOrder = await _orderRepository.Update(totalOrder);
+        //    if (!updateProduct || !updateOrder)
+        //    {
+        //        response.AddErrorMessage("Não foi possivél efetuar o pedido");
+        //        return response;
+        //    }
 
-        response.Content = listNewProductOrder.Select(i => (OutputProductOrder)(ProductOrderDTO)i).ToList();
+        //    response.Content = listNewProductOrder.Select(i => (OutputProductOrder)(ProductOrderDTO)i).ToList();
         return response;
     }
     #endregion

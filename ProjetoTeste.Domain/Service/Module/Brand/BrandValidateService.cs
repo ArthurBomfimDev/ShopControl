@@ -1,164 +1,129 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
-using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Enum.Validate;
+using ProjetoTeste.Domain.Helper;
 using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class BrandValidateService : BaseValdiate<BrandValidateDTO>, IBrandValidateService
+public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValidateService
 {
 
     #region Create
-    public async Task<BaseResponse<List<BrandValidateDTO>>> ValidateCreate(List<BrandValidateDTO> listBrandValidate)
+    public void ValidateCreate(List<BrandValidateDTO> listBrandValidate)
     {
-        BaseResponse<List<BrandValidateDTO>> response = new();
-        _ = (from i in listBrandValidate
-             where i.InputCreate == null
-             let SetInvalid = i.SetIgnore()
-             select i).ToList();
+        NotificationHelper.CreateDict();
 
-        _ = (from i in listBrandValidate.RemoveIng().Select((value, index) => new { Value = value, Index = index })
-             where i.Value.RepeatedInputCreateCode != null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' não pode ser cadastrada porque o código está repetido. Por favor, escolha um código diferente.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.InputCreate == null
+         let SetInvalid = i.SetIgnore()
+         select InvalidNull(listBrandValidate.IndexOf(i))).ToList();
 
-        _ = (from i in listBrandValidate
-             where i.OriginalBrandDTO != null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca: '{i.InputCreate.Name}' com o código '{i.InputCreate.Code}' não pode ser cadastrada porque o código já está em uso. Por favor, escolha um código diferente.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.RepeatedInputCreateCode != null
+         let setInvalid = i.SetInvalid()
+         select RepeatedIdentifier(i.InputCreate.Code, "Código")).ToList();
 
-        _ = (from i in listBrandValidate
-             where i.InputCreate.Name.Length > 24 || string.IsNullOrEmpty(i.InputCreate.Name) || string.IsNullOrWhiteSpace(i.InputCreate.Name)
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(i.InputCreate.Name.Length > 24 ? $"A marca: '{i.InputCreate.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres."
-             : $"A marca: '{i.InputCreate.Name}' não pode ser cadastrado porque o nome está vazio.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.OriginalBrandDTO != null
+         let setInvalid = i.SetInvalid()
+         select AlreadyExists(i.InputCreate.Code, "Código")).ToList();
 
-        _ = (from i in listBrandValidate
-             where i.InputCreate.Code.Length > 6 || string.IsNullOrEmpty(i.InputCreate.Code) || string.IsNullOrWhiteSpace(i.InputCreate.Code)
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(i.InputCreate.Code.Length > 6 ? $"A marca: '{i.InputCreate.Name}' possui um código com mais de 6 caracteres e não pode ser cadastrado."
-             : $"A marca: '{i.InputCreate.Name}' possui um código vazio e não pode ser cadastrado.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         let resultInvalidLenght = InvalidLenght(i.InputCreate.Name, 1, 64)
+         where resultInvalidLenght != EnumValidateType.Valid
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidLenght(i.InputCreate!.Code, i.InputCreate.Name, 1, 64, resultInvalidLenght, "Nome")).ToList();
 
-        _ = (from i in listBrandValidate
-             where i.InputCreate.Description.Length > 100 || string.IsNullOrEmpty(i.InputCreate.Description) || string.IsNullOrWhiteSpace(i.InputCreate.Description)
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(i.InputCreate.Description.Length > 100 ? $"A marca: '{i.InputCreate.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado."
-             : $"A marca: '{i.InputCreate.Name}' possui uma descrição vazia e não pode ser cadastrado.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         let resultInvalidLenght = InvalidLenght(i.InputCreate.Code, 1, 6)
+         where resultInvalidLenght != EnumValidateType.Valid
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidLenght(i.InputCreate!.Code, i.InputCreate.Code, 1, 6, resultInvalidLenght, "Código")).ToList();
 
-        var create = (from i in listBrandValidate
-                      where !i.Invalid
-                      select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         let resultInvalidLenght = InvalidLenght(i.InputCreate.Description, 0, 100)
+         where resultInvalidLenght != EnumValidateType.Valid
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidLenght(i.InputCreate!.Code, i.InputCreate.Description, 0, 100, resultInvalidLenght, "Descrição")).ToList();
 
-        if (!create.Any())
-        {
-            response.Success = false;
-            return response;
-        }
-
-        response.Content = create;
-        return response;
+        (from i in RemoveInvalid(listBrandValidate)
+         select SuccessfullyRegistered(i.InputCreate.Code, "Marca")).ToList();
     }
     #endregion
 
     #region Update
-    public async Task<BaseResponse<List<BrandValidateDTO?>>> ValidateUpdate(List<BrandValidateDTO> listBrandValidate)
+    public void ValidateUpdate(List<BrandValidateDTO> listBrandValidate)
     {
-        BaseResponse<List<BrandValidateDTO?>> response = new();
+        NotificationHelper.CreateDict();
 
-        _ = (from i in listBrandValidate
-             where i.OriginalBrandDTO == null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o Id: '{i.InputUpdate.Id}' não pode ser atualizada porque o Id não existe.")
-             select i).ToList();
+        (from i in listBrandValidate
+         where i.InputUpdate == null || i.InputUpdate.InputUpdateBrand == null
+         let setIgnore = i.SetIgnore()
+         select InvalidNull(listBrandValidate.IndexOf(i))).ToList();
 
-        _ = (from i in listBrandValidate
-             where i.RepetedCode != null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' não pode ser atualizada porque o código é repetido. Por favor, escolha um código diferente.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.OriginalBrandDTO == null
+         let setInvalid = i.SetInvalid()
+         select NotFoundId(i.InputUpdate.InputUpdateBrand.Code, "Marca", i.InputUpdate.Id)).ToList();
 
-        _ = (from i in listBrandValidate
-             where !i.Invalid && i.CodeExists != null && i.CodeExists != i.OriginalBrandDTO?.Code
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' com o código '{i.InputUpdate.InputUpdateBrand.Code}' não pode ser atualizada porque o código já está em uso por outra marca. Por favor, escolha um código diferente.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.RepetedInputUpdateIdentify != 0
+         let setInvalid = i.SetInvalid()
+         select RepeatedId(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.Id)).ToList();
 
-        _ = (from i in listBrandValidate
-             where string.IsNullOrEmpty(i.InputUpdate.InputUpdateBrand.Name) || string.IsNullOrWhiteSpace(i.InputUpdate.InputUpdateBrand.Name) || i.InputUpdate.InputUpdateBrand.Name.Length > 24
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(string.IsNullOrEmpty(i.InputUpdate.InputUpdateBrand.Name) || string.IsNullOrWhiteSpace(i.InputUpdate.InputUpdateBrand.Name) ? $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' não pode ser cadastrado porque o nome está vazio."
-             : $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' não pode ser cadastrado porque o nome excede o limite de 24 caracteres.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.RepetedCode != null
+         let setInvalid = i.SetInvalid()
+         select RepeatedIdentifier(i.InputUpdate.InputUpdateBrand.Code, "Código")).ToList();
 
-        _ = (from i in listBrandValidate
-             where string.IsNullOrEmpty(i.InputUpdate.InputUpdateBrand.Code) || string.IsNullOrWhiteSpace(i.InputUpdate.InputUpdateBrand.Code) || i.InputUpdate.InputUpdateBrand.Code.Length > 6
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(string.IsNullOrEmpty(i.InputUpdate.InputUpdateBrand.Code) || string.IsNullOrWhiteSpace(i.InputUpdate.InputUpdateBrand.Code) ? $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' possui um código vazio e não pode ser cadastrado."
-             : $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' possui um código com mais de 6 caracteres e não pode ser cadastrado.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where !i.Invalid && i.CodeExists != null && i.CodeExists != i.OriginalBrandDTO?.Code
+         let setInvalid = i.SetInvalid()
+         select AlreadyExists(i.InputUpdate.InputUpdateBrand.Code, "Código")).ToList();
 
-        _ = (from i in listBrandValidate
-             where string.IsNullOrWhiteSpace(i.InputUpdate.InputUpdateBrand.Description) || string.IsNullOrEmpty(i.InputUpdate.InputUpdateBrand.Description) || i.InputUpdate.InputUpdateBrand.Description.Length > 100
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(i.InputUpdate.InputUpdateBrand.Description.Length > 100 ? $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado."
-             : $"A marca: '{i.InputUpdate.InputUpdateBrand.Name}' possui uma descrição vazia e não pode ser cadastrado.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Name, 1, 24)
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Name, 1, 24, resultInvalidLenght, "Nome")).ToList();
 
-        var update = (from i in listBrandValidate
-                      where !i.Invalid
-                      select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, 1, 6)
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Code, 1, 6, resultInvalidLenght, "Código")).ToList();
 
-        if (!update.Any())
-        {
-            response.Success = false;
-            return response;
-        }
+        (from i in RemoveIgnore(listBrandValidate)
+         let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Description, 0, 100)
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Description, 0, 100, resultInvalidLenght, "Descrição")).ToList();
 
-        response.Content = update;
-        return response;
+        (from i in RemoveInvalid(listBrandValidate)
+         select SuccessfullyUpdated(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.Id, "Marca")).ToList();
     }
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<List<BrandValidateDTO>>?> ValidateDelete(List<BrandValidateDTO> listBrandValidate)
+    public void ValidateDelete(List<BrandValidateDTO> listBrandValidate)
     {
-        var response = new BaseResponse<List<BrandValidateDTO>>();
+        NotificationHelper.CreateDict();
 
-        _ = (from i in listBrandValidate
-             where i.RepeteInputDelete != null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O Id: {i.InputIdentifyDeleteBrand.Id} foi digitado repetidas vezes, não é possível deletar a marca com esse Id")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.RepeteInputDelete != null
+         let setInvalid = i.SetInvalid()
+         select RepeatedId(i.InputIdentifyDeleteBrand.Id.ToString(), i.InputIdentifyDeleteBrand.Id)).ToList();
 
-        _ = (from i in listBrandValidate
-             where i.OriginalBrandDTO == null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca com o Id: {i.InputIdentifyDeleteBrand.Id} não foi encontrada. Por favor, verifique o ID e tente novamente.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.OriginalBrandDTO == null
+         let setInvalid = i.SetInvalid()
+         select NotFoundId(i.InputIdentifyDeleteBrand.Id.ToString(), "Marca", i.InputIdentifyDeleteBrand.Id)).ToList();
 
-        _ = (from i in listBrandValidate
-             where i.BrandWithProduct != 0
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"A marca com o Id: {i.InputIdentifyDeleteBrand.Id} não pode ser deletada, pois possui produtos cadastrados.")
-             select i).ToList();
+        (from i in RemoveIgnore(listBrandValidate)
+         where i.BrandWithProduct != 0
+         let setInvalid = i.SetInvalid()
+         select LikedValue(i.InputIdentifyDeleteBrand.Id.ToString(), "Produto(s)", "Marca")).ToList();
 
-        var delete = (from i in listBrandValidate
-                      where !i.Invalid
-                      select i).ToList();
-
-        if (!delete.Any())
-        {
-            response.Success = false;
-            return response;
-        }
-
-        response.Content = delete;
-        return response;
+        (from i in RemoveInvalid(listBrandValidate)
+         select SuccessfullyDeleted(i.InputIdentifyDeleteBrand.Id.ToString(), "Marca")).ToList();
     }
     #endregion
 }

@@ -1,5 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Arguments.Conversor;
 using ProjetoTeste.Domain.DTO.Base;
 using ProjetoTeste.Domain.Interface.Repository.Base;
@@ -9,7 +10,7 @@ using ProjetoTeste.Infrastructure.Interface.Service.Base;
 
 namespace ProjetoTeste.Infrastructure.Application.Service.Base;
 
-public abstract class BaseService<TIRepository,TValidateService ,TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO, TValidateDTO> : BaseValdiate<TValidateDTO>, IBaseService<TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
+public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO, TValidateDTO> : BaseValidate<TValidateDTO>, IBaseService<TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
     where TDTO : BaseDTO<TDTO>
     where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
     where TInputIdentityUpdateDTO : BaseInputIdentityUpdate<TInputIdentityUpdateDTO>
@@ -17,7 +18,7 @@ public abstract class BaseService<TIRepository,TValidateService ,TDTO, TInputCre
     where TInputIdentityViewDTO : BaseInputIdentityView<TInputIdentityViewDTO>, IBaseIdentity
     where TOutputDTO : BaseOutput<TOutputDTO>
     where TIRepository : IBaseRepository<TDTO>
-    where TValidateService : IBaseValidateService
+    where TValidateService : IBaseValidateService<TValidateDTO>
     where TValidateDTO : BaseValidateDTO
 {
     private readonly TIRepository _repository;
@@ -50,47 +51,37 @@ public abstract class BaseService<TIRepository,TValidateService ,TDTO, TInputCre
     #endregion
 
     #region Create
-    public virtual async Task<BaseResponse<TOutputDTO>> Create(TInputCreateDTO inputCreateDTO)
+    public virtual async Task<BaseResult<TOutputDTO>> Create(TInputCreateDTO inputCreateDTO)
     {
-        var response = new BaseResponse<TOutputDTO>();
-
-        var result = await CreateMultiple([inputCreateDTO]);
-
-        response.Message = result.Message;
-        response.Success = result.Success;
-
-        if (!response.Success)
-            return response;
-
-        response.Content = result.Content.FirstOrDefault();
-        return response;
+        throw new NotImplementedException();
+        //var result = await CreateMultiple([inputCreateDTO]);
     }
 
-    public virtual Task<BaseResponse<List<TOutputDTO>>> CreateMultiple(List<TInputCreateDTO> listInputCreateDTO)
+    public virtual Task<BaseResult<List<TOutputDTO>>> CreateMultiple(List<TInputCreateDTO> listInputCreateDTO)
     {
         throw new NotImplementedException();
     }
     #endregion
 
     #region Update
-    public virtual async Task<BaseResponse<bool>> Update(TInputIdentityUpdateDTO inputIdentityUpdateDTO)
+    public virtual async Task<BaseResult<bool>> Update(TInputIdentityUpdateDTO inputIdentityUpdateDTO)
     {
         return await UpdateMultiple([inputIdentityUpdateDTO]);
     }
 
-    public virtual Task<BaseResponse<bool>> UpdateMultiple(List<TInputIdentityUpdateDTO> listInputIdentityUpdateDTO)
+    public virtual Task<BaseResult<bool>> UpdateMultiple(List<TInputIdentityUpdateDTO> listInputIdentityUpdateDTO)
     {
         throw new NotImplementedException();
     }
     #endregion
 
     #region Delete
-    public virtual async Task<BaseResponse<bool>> Delete(TInputIdentityDeleteDTO inputIdentifyDeleteDTO)
+    public virtual async Task<BaseResult<bool>> Delete(TInputIdentityDeleteDTO inputIdentifyDeleteDTO)
     {
         return await DeleteMultiple([inputIdentifyDeleteDTO]);
     }
 
-    public virtual Task<BaseResponse<bool>> DeleteMultiple(List<TInputIdentityDeleteDTO> listInputIdentityDeleteDTO)
+    public virtual Task<BaseResult<bool>> DeleteMultiple(List<TInputIdentityDeleteDTO> listInputIdentityDeleteDTO)
     {
         throw new NotImplementedException();
     }

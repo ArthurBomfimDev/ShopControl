@@ -4,8 +4,7 @@ using ProjetoTeste.Domain.Interface.Service.Base;
 
 namespace ProjetoTeste.Infrastructure.Interface.ValidateService;
 
-public interface IOrderValidateService : IBaseValidateService
+public interface IOrderValidateService : IBaseValidateService<OrderValidateDTO>
 {
-    Task<BaseResponse<List<OrderValidateDTO>>> CreateValidateOrder(List<OrderValidateDTO> listOrderValidate);
     Task<BaseResponse<List<ProductOrderValidateDTO>>> CreateValidateProductOrder(List<ProductOrderValidateDTO> listProductOrderValidate);
 }

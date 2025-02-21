@@ -1,4 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Customer;
+using ProjetoTeste.Domain.DTO;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
@@ -7,7 +8,7 @@ public class CustomerValidateDTO : BaseValidateDTO
     public InputCreateCustomer? InputCreateCustomer { get; private set; }
     public InputIdentityUpdateCustomer? InputIdentityUpdateCustomer { get; private set; }
     public InputIdentifyDeleteCustomer? InputIdentifyDeleteCustomer { get; private set; }
-    public CustomerDTO? OriginalDTO { get; private set; }
+    public Domain.DTO.CustomerDTO? OriginalDTO { get; private set; }
     public long? RepeteId { get; private set; }
     public InputIdentifyDeleteCustomer RepeatedDelete { get; private set; }
 

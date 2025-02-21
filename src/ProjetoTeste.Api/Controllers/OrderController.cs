@@ -2,15 +2,17 @@
 using ProjetoTeste.Api.Controllers.Base;
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
+using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
+using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Api.Controllers;
 
-public class OrderController : BaseController<IOrderService, Order, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
+public class OrderController : BaseController<IOrderService, OrderDTO, Order, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
 {
     private readonly IOrderService _orderService;
 
@@ -114,14 +116,14 @@ public class OrderController : BaseController<IOrderService, Order, InputCreateO
     #region Update
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPut("Update")]
-    public override async Task<ActionResult<BaseResponse<bool>>> Update(BaseInputIdentityUpdate_0 inputIdentityUpdateDTO)
+    public override async Task<ActionResult<BaseResult<bool>>> Update(BaseInputIdentityUpdate_0 inputIdentityUpdateDTO)
     {
         throw new NotImplementedException();
     }
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPut("Update/Multiple")]
-    public override async Task<ActionResult<BaseResponse<bool>>> Update(List<BaseInputIdentityUpdate_0> listTInputIndetityUpdate)
+    public override async Task<ActionResult<BaseResult<bool>>> Update(List<BaseInputIdentityUpdate_0> listTInputIndetityUpdate)
     {
         throw new NotImplementedException();
     }
