@@ -24,4 +24,10 @@ public class ProductController : BaseController<IProductService, ProductDTO, Pro
         var product = await _productService.GetListByBrandId(inputIdentifyViewBrand);
         return Ok(product);
     }
+
+    [HttpPost("Send/Image")]
+    public async Task<ActionResult<FormFile>> Image(IFormFile file)
+    {
+        return Ok(file);
+    }
 }

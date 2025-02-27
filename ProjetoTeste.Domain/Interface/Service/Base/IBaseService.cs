@@ -4,21 +4,21 @@ using ProjetoTeste.Domain.DTO.Base;
 
 namespace ProjetoTeste.Domain.Interface.Service.Base;
 
-public interface IBaseService<TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
+public interface IBaseService<TDTO, TInputCreate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput>
     where TDTO : BaseDTO<TDTO>
-    where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
-    where TInputIdentityUpdateDTO : BaseInputIdentityUpdate<TInputIdentityUpdateDTO>
-    where TInputIdentityDeleteDTO : BaseInputIdentityDelete<TInputIdentityDeleteDTO>
-    where TInputIdentityViewDTO : BaseInputIdentityView<TInputIdentityViewDTO>, IBaseIdentity
-    where TOutputDTO : BaseOutput<TOutputDTO>
+    where TInputCreate : BaseInputCreate<TInputCreate>
+    where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputIdentityUpdate>
+    where TInputIdentityDelete : BaseInputIdentityDelete<TInputIdentityDelete>
+    where TInputIdentityView : BaseInputIdentityView<TInputIdentityView>, IBaseIdentity
+    where TOutput : BaseOutput<TOutput>
 {
-    Task<List<TOutputDTO>> GetAll();
-    Task<TOutputDTO> Get(TInputIdentityViewDTO inputIdentifyViewDTO);
-    Task<List<TOutputDTO>> GetListByListId(List<TInputIdentityViewDTO> listTInputIdentityViewDTO);
-    Task<BaseResult<TOutputDTO>> Create(TInputCreateDTO inputCreateDTO);
-    Task<BaseResult<List<TOutputDTO>>> CreateMultiple(List<TInputCreateDTO> listInputCreateDTO);
-    Task<BaseResult<bool>> Update(TInputIdentityUpdateDTO inputIdentityUpdateDTO);
-    Task<BaseResult<bool>> UpdateMultiple(List<TInputIdentityUpdateDTO> listInputIdentityUpdateDTO);
-    Task<BaseResult<bool>> Delete(TInputIdentityDeleteDTO inputIdentifyDeleteDTO);
-    Task<BaseResult<bool>> DeleteMultiple(List<TInputIdentityDeleteDTO> listInputIdentityDeleteDTO);
+    Task<List<TOutput>> GetAll();
+    Task<TOutput> Get(TInputIdentityView inputIdentifyViewDTO);
+    Task<List<TOutput>> GetListByListId(List<TInputIdentityView> listTInputIdentityViewDTO);
+    Task<BaseResult<TOutput>> Create(TInputCreate inputCreateDTO);
+    Task<BaseResult<List<TOutput>>> CreateMultiple(List<TInputCreate> listInputCreateDTO);
+    Task<BaseResult<bool>> Update(TInputIdentityUpdate inputIdentityUpdateDTO);
+    Task<BaseResult<bool>> UpdateMultiple(List<TInputIdentityUpdate> listInputIdentityUpdateDTO);
+    Task<BaseResult<bool>> Delete(TInputIdentityDelete inputIdentifyDeleteDTO);
+    Task<BaseResult<bool>> DeleteMultiple(List<TInputIdentityDelete> listInputIdentityDeleteDTO);
 }

@@ -34,7 +34,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
         public async Task<TDTO?> Get(long id)
         {
             var get = await _dbSet.FindAsync(id);
-            return get.ConverterReflection<TEntity, TDTO>();
+            return (dynamic)get;
         }
 
         public async Task<List<TDTO>?> Create(List<TDTO>? listDTO)

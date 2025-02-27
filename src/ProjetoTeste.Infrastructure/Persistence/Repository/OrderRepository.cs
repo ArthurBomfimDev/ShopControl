@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Order;
-using ProjetoTeste.Arguments.Conversor;
 using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Repository;
 using ProjetoTeste.Infrastructure.Persistence.Context;
@@ -30,7 +29,7 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
                 Customer = x.Customer
             }).ToListAsync();
 
-            return listOrder.ConverterList<Order, OrderDTO>();
+            return listOrder.Select(i => (OrderDTO)i).ToList();
         }
         public async Task<List<OrderDTO>> GetByIdWithProductOrders(long id)
         {

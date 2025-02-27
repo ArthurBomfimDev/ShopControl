@@ -11,15 +11,15 @@ namespace ProjetoTeste.Api.Controllers.Base;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public abstract class BaseController<TService, TDTO, TEntity, TInputCreateDTO, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityViewDTO, TOutputDTO> : Controller
-    where TService : IBaseService<TDTO, TInputCreateDTO, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityViewDTO, TOutputDTO>
+public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityView, TOutput> : Controller
+    where TService : IBaseService<TDTO, TInputCreate, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityView, TOutput>
     where TEntity : BaseEntity
     where TDTO : BaseDTO<TDTO>
-    where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
+    where TInputCreate : BaseInputCreate<TInputCreate>
     where TInputIndetityUpdate : BaseInputIdentityUpdate<TInputIndetityUpdate>
     where TInputIndetityDelete : BaseInputIdentityDelete<TInputIndetityDelete>
-    where TInputIndeityViewDTO : BaseInputIdentityView<TInputIndeityViewDTO>, IBaseIdentity
-    where TOutputDTO : BaseOutput<TOutputDTO>
+    where TInputIndeityView : BaseInputIdentityView<TInputIndeityView>, IBaseIdentity
+    where TOutput : BaseOutput<TOutput>
 {
     #region Dependecy Injection
     private readonly IUnitOfWork unitOfWork;
@@ -48,21 +48,21 @@ public abstract class BaseController<TService, TDTO, TEntity, TInputCreateDTO, T
 
     #region Get
     [HttpGet("Get/All")]
-    public virtual async Task<ActionResult<List<TOutputDTO>>> GetAll()
+    public virtual async Task<ActionResult<List<TOutput>>> GetAll()
     {
         var getAll = await service.GetAll();
         return Ok(getAll);
     }
 
     [HttpPost("Get/Id")]
-    public virtual async Task<ActionResult<TOutputDTO>> Get(TInputIndeityViewDTO inputIdentifyView)
+    public virtual async Task<ActionResult<TOutput>> Get(TInputIndeityView inputIdentifyView)
     {
         var get = await service.Get(inputIdentifyView);
         return Ok(get);
     }
 
     [HttpPost("Get/ListByListId")]
-    public virtual async Task<ActionResult<TOutputDTO>> GetListByListId(List<TInputIndeityViewDTO> listInputIdentifyView)
+    public virtual async Task<ActionResult<TOutput>> GetListByListId(List<TInputIndeityView> listInputIdentifyView)
     {
         var getListByListId = await service.GetListByListId(listInputIdentifyView);
         return Ok(getListByListId);
@@ -71,14 +71,14 @@ public abstract class BaseController<TService, TDTO, TEntity, TInputCreateDTO, T
 
     #region Create
     [HttpPost("Create")]
-    public virtual async Task<ActionResult<BaseResult<List<TOutputDTO>>>> Create(TInputCreateDTO inputCreateDTO)
+    public virtual async Task<ActionResult<BaseResult<List<TOutput>>>> Create([FromForm] TInputCreate inputCreateDTO)
     {
         var create = await service.Create(inputCreateDTO);
         return Ok(create);
     }
 
     [HttpPost("Create/Multiple")]
-    public virtual async Task<ActionResult<BaseResult<List<TOutputDTO>>>> Create(List<TInputCreateDTO> listTInputCreateDTO)
+    public virtual async Task<ActionResult<BaseResult<List<TOutput>>>> Create(List<TInputCreate> listTInputCreateDTO)
     {
         var create = await service.CreateMultiple(listTInputCreateDTO);
         if (create.IsSuccess == false)

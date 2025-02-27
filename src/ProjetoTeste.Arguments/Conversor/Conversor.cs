@@ -63,7 +63,7 @@ public static class Conversor
         return true;
     }
 
-    public static List<TDestination> ConverterList<TSource, TDestination>(this List<TSource> listTSource)
+    public static List<TDestination> ConverterReflectionList<TSource, TDestination>(this List<TSource> listTSource)
     where TSource : class
     where TDestination : class
     {
@@ -73,7 +73,7 @@ public static class Conversor
     #endregion
 
     #region Implicit Conversor List
-    public static List<TDestination> Converter<TSource, TDestination>(this List<TSource> listSource)
+    public static List<TDestination> ConverterList<TSource, TDestination>(this List<TSource> listSource)
     {
         return listSource.Select(i => (TDestination)(dynamic)i).ToList();
     }

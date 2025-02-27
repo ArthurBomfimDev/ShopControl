@@ -8,16 +8,16 @@ using ProjetoTeste.Domain.Interface.Service.Base;
 
 namespace ProjetoTeste.Domain.Service.Base;
 
-public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO, TValidateDTO> : BaseValidate<TValidateDTO>, IBaseService<TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
+public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCreate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput, TValidate> : BaseValidate<TValidate>, IBaseService<TDTO, TInputCreate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput>
     where TDTO : BaseDTO<TDTO>
-    where TInputCreateDTO : BaseInputCreate<TInputCreateDTO>
-    where TInputIdentityUpdateDTO : BaseInputIdentityUpdate<TInputIdentityUpdateDTO>
-    where TInputIdentityDeleteDTO : BaseInputIdentityDelete<TInputIdentityDeleteDTO>
-    where TInputIdentityViewDTO : BaseInputIdentityView<TInputIdentityViewDTO>, IBaseIdentity
-    where TOutputDTO : BaseOutput<TOutputDTO>
+    where TInputCreate : BaseInputCreate<TInputCreate>
+    where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputIdentityUpdate>
+    where TInputIdentityDelete : BaseInputIdentityDelete<TInputIdentityDelete>
+    where TInputIdentityView : BaseInputIdentityView<TInputIdentityView>, IBaseIdentity
+    where TOutput : BaseOutput<TOutput>
     where TIRepository : IBaseRepository<TDTO>
-    where TValidateService : IBaseValidateService<TValidateDTO>
-    where TValidateDTO : BaseValidateDTO
+    where TValidateService : IBaseValidateService<TValidate>
+    where TValidate : BaseValidateDTO
 {
     private readonly TIRepository _repository;
     private readonly TValidateService _validateService;
@@ -29,57 +29,58 @@ public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCr
     }
 
     #region Get
-    public virtual async Task<TOutputDTO> Get(TInputIdentityViewDTO inputIdentifyViewDTO)
+    public virtual async Task<TOutput> Get(TInputIdentityView inputIdentifyViewDTO)
     {
         var get = await _repository.Get(inputIdentifyViewDTO.Id);
-        return get.ConverterReflection<TDTO, TOutputDTO>();
+        return (dynamic)get;
     }
 
-    public virtual async Task<List<TOutputDTO>> GetAll()
+    public virtual async Task<List<TOutput>> GetAll()
     {
         var getAll = await _repository.GetAll();
-        return getAll.ConverterList<TDTO, TOutputDTO>();
+        return getAll.ConverterList<TDTO, TOutput>();
     }
 
-    public virtual async Task<List<TOutputDTO>> GetListByListId(List<TInputIdentityViewDTO> listTInputIdentityViewDTO)
+    public virtual async Task<List<TOutput>> GetListByListId(List<TInputIdentityView> listTInputIdentityViewDTO)
     {
         var getListByListId = await _repository.GetListByListId(listTInputIdentityViewDTO.Select(i => i.Id).ToList());
-        return getListByListId.ConverterList<TDTO, TOutputDTO>();
+        return getListByListId.ConverterList<TDTO, TOutput>();
     }
     #endregion
 
     #region Create
-    public virtual async Task<BaseResult<TOutputDTO>> Create(TInputCreateDTO inputCreateDTO)
+    public virtual async Task<BaseResult<TOutput>> Create(TInputCreate inputCreateDTO)
     {
-        throw new NotImplementedException();
-        //var result = await CreateMultiple([inputCreateDTO]);
+        var create = await CreateMultiple([inputCreateDTO]);
+
+        return create.IsSuccess == true ? BaseResult<TOutput>.Success(create.Value.FirstOrDefault(), create.listNotification) : BaseResult<TOutput>.Failure(create.listNotification);
     }
 
-    public virtual Task<BaseResult<List<TOutputDTO>>> CreateMultiple(List<TInputCreateDTO> listInputCreateDTO)
+    public virtual Task<BaseResult<List<TOutput>>> CreateMultiple(List<TInputCreate> listInputCreateDTO)
     {
         throw new NotImplementedException();
     }
     #endregion
 
     #region Update
-    public virtual async Task<BaseResult<bool>> Update(TInputIdentityUpdateDTO inputIdentityUpdateDTO)
+    public virtual async Task<BaseResult<bool>> Update(TInputIdentityUpdate inputIdentityUpdateDTO)
     {
         return await UpdateMultiple([inputIdentityUpdateDTO]);
     }
 
-    public virtual Task<BaseResult<bool>> UpdateMultiple(List<TInputIdentityUpdateDTO> listInputIdentityUpdateDTO)
+    public virtual Task<BaseResult<bool>> UpdateMultiple(List<TInputIdentityUpdate> listInputIdentityUpdateDTO)
     {
         throw new NotImplementedException();
     }
     #endregion
 
     #region Delete
-    public virtual async Task<BaseResult<bool>> Delete(TInputIdentityDeleteDTO inputIdentifyDeleteDTO)
+    public virtual async Task<BaseResult<bool>> Delete(TInputIdentityDelete inputIdentifyDeleteDTO)
     {
         return await DeleteMultiple([inputIdentifyDeleteDTO]);
     }
 
-    public virtual Task<BaseResult<bool>> DeleteMultiple(List<TInputIdentityDeleteDTO> listInputIdentityDeleteDTO)
+    public virtual Task<BaseResult<bool>> DeleteMultiple(List<TInputIdentityDelete> listInputIdentityDeleteDTO)
     {
         throw new NotImplementedException();
     }
