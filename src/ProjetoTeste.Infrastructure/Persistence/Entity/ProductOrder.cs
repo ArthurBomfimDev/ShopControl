@@ -28,7 +28,7 @@ public class ProductOrder : BaseEntity
     #region Implict Conversor
     public static implicit operator ProductOrder(ProductOrderDTO productOrderDTO)
     {
-        return productOrderDTO.Order != null ? new ProductOrder
+        return productOrderDTO != null ? new ProductOrder
         {
             Id = productOrderDTO.Id,
             OrderId = productOrderDTO.OrderId,
@@ -43,7 +43,7 @@ public class ProductOrder : BaseEntity
 
     public static implicit operator ProductOrderDTO(ProductOrder productOrder)
     {
-        return productOrder.Order != null ? new ProductOrderDTO
+        return productOrder != null ? new ProductOrderDTO
         (
             productOrder.Id,
             productOrder.OrderId,

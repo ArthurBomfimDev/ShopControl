@@ -16,10 +16,10 @@ public class ProductValidateDTO : BaseValidateDTO
     public long? RepetedIdentity { get; private set; }
 
 
-    public ProductValidateDTO ValidateCreate(InputCreateProduct inputCreateProduct, ProductDTO original, string repeteCode, long brandId)
+    public ProductValidateDTO ValidateCreate(InputCreateProduct inputCreateProduct, string? originalCode, string repeteCode, long brandId)
     {
         InputCreateProduct = inputCreateProduct;
-        Original = original;
+        OriginalCode = originalCode;
         RepeteCode = repeteCode;
         BrandId = brandId;
         return this;

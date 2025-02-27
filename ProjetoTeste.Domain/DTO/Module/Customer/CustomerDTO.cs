@@ -15,6 +15,14 @@ public class CustomerDTO : BaseDTO<CustomerDTO>
 
     public CustomerDTO() { }
 
+    public CustomerDTO(string name, string cPF, string email, string phone)
+    {
+        Name = name;
+        CPF = cPF;
+        Email = email;
+        Phone = phone;
+    }
+
     [JsonConstructor]
     public CustomerDTO(long id, string name, string cPF, string email, string phone, List<OrderDTO?> listOrder = null)
     {

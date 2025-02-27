@@ -1,115 +1,49 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
-using ProjetoTeste.Arguments.Arguments.Base;
-using ProjetoTeste.Domain.Interface.Service.Base;
+using ProjetoTeste.Arguments.Enum.Validate;
+using ProjetoTeste.Domain.Helper;
+using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
-using System.Net.Mail;
-using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class CustomerValidateService : ICustomerValidateService
+public class CustomerValidateService : BaseValidate<CustomerValidateDTO>, ICustomerValidateService
 {
-
-    #region CPFValidate
-    public bool CPFValidate(string cpf)
-    {
-        if (string.IsNullOrWhiteSpace(cpf)) return false;
-
-        cpf = Regex.Replace(cpf, "[^0-9]", string.Empty); //Substitui todo q não é digito por uma string vazia Ex = 123.456.789-09
-
-        if (cpf.Length != 11) return false;
-
-        if (new string(cpf[0], cpf.Length) == cpf) return false; // Verifica se o cpf é composto pelo primeiro digito repetido
-
-        int[] multiplicadores1 = { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-        int[] multiplicadores2 = { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-
-        int soma = 0;
-        for (int i = 0; i < 9; i++)
-        {
-            soma += (cpf[i] - '0') * multiplicadores1[i]; // (cpf[i] - '0') -> jeito de converter um caracter em um digito numerico (substitui o valor unico) ex '0' = valor unicode 48 -> '0': = 48 - 48 = 0
-        }
-
-        int resto = soma % 11;
-        int primeiroDigitoVerificador = resto < 2 ? 0 : 11 - resto; // (operador ternário)  Verifica o primeiro digito verificador se é menor que dois, ser for é igual a 0, se for maior que dois a conta é (11 - resto)
-
-        if (cpf[9] - '0' != primeiroDigitoVerificador) return false; //verificar se o o primeiro digito veriicador é igual o primeiro
-
-        soma = 0;
-        for (int i = 0; i < 10; i++)
-        {
-            soma += (cpf[i] - '0') * multiplicadores2[i];
-        }
-
-        resto = soma % 11;
-        int segundoDigitoVerificador = resto < 2 ? 0 : 11 - resto;
-
-        if (cpf[10] - '0' != segundoDigitoVerificador) return false;
-
-        return true;
-    }
-    #endregion
-
-    #region EmailValidate
-    public bool EmailValidate(string email)
-    {
-        if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email)) return false;
-        try
-        {
-            var validate = new MailAddress(email);
-            return true;
-        }
-        catch (FormatException)
-        {
-            return false;
-        }
-    }
-    #endregion
-
     #region Create
-    public async Task<BaseResponse<List<CustomerValidateDTO>>> ValidateCreate(List<CustomerValidateDTO> listCustomerValidate)
+    public void ValidateCreate(List<CustomerValidateDTO> listCustomerValidate)
     {
-        var response = new BaseResponse<List<CustomerValidateDTO>>();
+        (from i in listCustomerValidate
+         where i.InputCreateCustomer == null
+         let setInvalid = i.SetIgnore()
+         select i).ToList();
 
-        _ = (from i in listCustomerValidate
-             where i.InputCreateCustomer.Name.Length > 64 || string.IsNullOrEmpty(i.InputCreateCustomer.Name) || string.IsNullOrWhiteSpace(i.InputCreateCustomer.Name)
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(i.InputCreateCustomer.Name.Length > 64 ? $"O cliente com o nome: '{i.InputCreateCustomer.Name}' não pode ser cadastrado, pois o nome excede o limite de 64 caracteres."
-             : $"O cliente com o nome: '{i.InputCreateCustomer.Name}' não pode ser cadastrado, pois o nome está vazio")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         let cpfValidate = CPFValidate(i.InputCreateCustomer.CPF)
+         where cpfValidate != EnumValidateType.Valid
+         let setInvalid = cpfValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidEmail(i.InputCreateCustomer.CPF, i.InputCreateCustomer.CPF)).ToList();
 
-        _ = (from i in listCustomerValidate
-             where EmailValidate(i.InputCreateCustomer.Email) == false || i.InputCreateCustomer.Email.Length > 64
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(i.InputCreateCustomer.Email.Length > 64 ? $"O cliente: '{i.InputCreateCustomer.Name}' com o E-mail: '{i.InputCreateCustomer.Email}' não pode ser cadastrado, pois o e-mail excede o limite de 64 caracteres."
-             : $"O cliente: '{i.InputCreateCustomer.Name}' com o E-mail: '{i.InputCreateCustomer.Email}' não pode ser cadastrado, pois o e-mail não é válido.")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         let resultInvalidLenght = InvalidLenght(i.InputCreateCustomer.Name, 1, 64)
+         where resultInvalidLenght != EnumValidateType.Valid
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidLenght(i.InputCreateCustomer.CPF, i.InputCreateCustomer.Name, 1, 64, resultInvalidLenght, "Nome")).ToList();
 
-        _ = (from i in listCustomerValidate
-             where CPFValidate(i.InputCreateCustomer.CPF) == false
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o CPF: '{i.InputCreateCustomer.CPF}' não pode ser cadastrado, pois o CPF é inválido.")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         let emailValidate = EmailValidate(i.InputCreateCustomer.Email)
+         where emailValidate != EnumValidateType.Valid
+         let setInvalid = i.SetInvalid()
+         select InvalidEmail(i.InputCreateCustomer.CPF, i.InputCreateCustomer.Email)).ToList();
 
-        _ = (from i in listCustomerValidate
-             where !i.Invalid
-             where (i.InputCreateCustomer.Phone.Length > 15) || (i.InputCreateCustomer.Phone.Length < 11)
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O cliente: '{i.InputCreateCustomer.Name}' com o telefone: '{i.InputCreateCustomer.Phone}' não pode ser cadastrado, pois o número de telefone é inválido.")
-             select i).ToList();
 
-        var create = (from i in listCustomerValidate
-                      where !i.Invalid
-                      select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         let resultPheneValidate = PhoneValidate(i.InputCreateCustomer.Phone)
+         where resultPheneValidate != EnumValidateType.Valid
+         let setInvalid = resultPheneValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidPhone(i.InputCreateCustomer.CPF, i.InputCreateCustomer.Phone)).ToList();
 
-        if (!create.Any())
-        {
-            response.Success = false;
-            return response;
-        }
+        (from i in RemoveInvalid(listCustomerValidate)
+         select SuccessfullyRegistered(i.InputCreateCustomer.CPF, "Cliente")).ToList();
 
-        response.Content = create;
-        return response;
         #region ValidateUnic
         ////var cpfExistsList = (from i in inputCreateList
         ////                     where _customerRepository.CPFExists(i.CPF) == true
@@ -164,60 +98,48 @@ public class CustomerValidateService : ICustomerValidateService
     #endregion
 
     #region Update
-    public async Task<BaseResponse<List<CustomerValidateDTO>>> ValidateUpdate(List<CustomerValidateDTO> listCustomerValidate)
+    public void ValidateUpdate(List<CustomerValidateDTO> listCustomerValidate)
     {
-        var response = new BaseResponse<List<CustomerValidateDTO>>();
 
-        _ = (from i in listCustomerValidate
-             where i.RepeteId != 0
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O ID: '{i.InputIdentityUpdateCustomer.Id}' está duplicado. Não é possível concluir a operação.")
-             select i).ToList();
+        NotificationHelper.CreateDict();
 
-        _ = (from i in listCustomerValidate
-             where i.OriginalDTO == null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O cliente com o ID: '{i.InputIdentityUpdateCustomer.Id}' não existe. Atualização não permitida.")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         where i.RepeteId != 0
+         let setInvalid = i.SetInvalid()
+         select RepeatedId(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF, i.InputIdentityUpdateCustomer.Id)).ToList();
 
-        _ = (from i in listCustomerValidate
-             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name.Length > 64 || string.IsNullOrEmpty(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name) || string.IsNullOrWhiteSpace(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name)
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name.Length > 64 ? $"O cliente com Id: {i.InputIdentityUpdateCustomer.Id} o nome: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name}' não pode ser atualizado, pois o nome excede o limite de 64 caracteres."
-             : $"O cliente com Id: {i.InputIdentityUpdateCustomer.Id} não pode ser atualizado, pois o nome está vazio")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         where i.OriginalDTO == null
+         let setInvalid = i.SetInvalid()
+         select NotFoundId(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF, "Cliente", i.InputIdentityUpdateCustomer.Id)).ToList();
 
-        _ = (from i in listCustomerValidate
-             where EmailValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email) == false || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email.Length > 64
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage(EmailValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email) == false ? $"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail é inválido."
-             : $"O clientecom Id: {i.InputIdentityUpdateCustomer.Id}' com o e-mail: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email}' não pode ser atualizado, pois o e-mail excede o limite de 64 caracteres.")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         let cpfValidate = CPFValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF)
+         where cpfValidate != EnumValidateType.Valid
+         let setInvalid = cpfValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidCPF(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF, i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF)).ToList();
 
-        _ = (from i in listCustomerValidate
-             where CPFValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF) == false
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o CPF: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF}' não pode ser atualizado, pois o CPF é inválido.")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name, 1, 64)
+         where resultInvalidLenght != EnumValidateType.Valid
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidLenght(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF, i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name, 1, 64, resultInvalidLenght, "Nome")).ToList();
 
-        _ = (from i in listCustomerValidate
-             where i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length > 15 || i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone.Length < 11
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O clientecom Id: {i.InputIdentityUpdateCustomer.Id} com o telefone: '{i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone}' não pode ser atualizado, pois o número de telefone é inválido.")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         let emailValidate = EmailValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email)
+         where emailValidate != EnumValidateType.Valid
+         let setInvalid = i.SetInvalid()
+         select InvalidEmail(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF, i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email)).ToList();
 
-        var update = (from i in listCustomerValidate
-                      where !i.Invalid
-                      select i).ToList();
 
-        if (!listCustomerValidate.Any())
-        {
-            response.Success = false;
-            return response;
-        }
+        (from i in RemoveIgnore(listCustomerValidate)
+         let resultPheneValidate = PhoneValidate(i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone)
+         where resultPheneValidate != EnumValidateType.Valid
+         let setInvalid = resultPheneValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select InvalidPhone(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF, i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone)).ToList();
 
-        response.Content = update;
-        return response;
+        (from i in RemoveInvalid(listCustomerValidate)
+         select SuccessfullyUpdated(i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF, i.InputIdentityUpdateCustomer.Id, "Cliente")).ToList();
 
         #region Unique
         //if (idList.Count != inputUpdateList.Count)
@@ -280,49 +202,22 @@ public class CustomerValidateService : ICustomerValidateService
     #endregion
 
     #region Delete
-    public async Task<BaseResponse<List<CustomerValidateDTO>>> ValidateDelete(List<CustomerValidateDTO> listCustomerValidate)
+    public void ValidateDelete(List<CustomerValidateDTO> listCustomerValidate)
     {
-        var response = new BaseResponse<List<CustomerValidateDTO>>();
+        NotificationHelper.CreateDict();
 
-        _ = (from i in listCustomerValidate
-             where i.RepeatedDelete != null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"O Id: {i.InputIdentifyDeleteCustomer.Id} foi digitado repetidas vezes, não é possível deletar o cliente com esse Id")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         where i.RepeatedDelete != null
+         let setInvalid = i.SetInvalid()
+         select RepeatedId(i.InputIdentifyDeleteCustomer.Id.ToString(), i.InputIdentifyDeleteCustomer.Id)).ToList();
 
-        _ = (from i in listCustomerValidate
-             where i.OriginalDTO == null
-             let setInvalid = i.SetInvalid()
-             let message = response.AddErrorMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer.Id} é inválido. Verifique os dados.")
-             select i).ToList();
+        (from i in RemoveIgnore(listCustomerValidate)
+         where i.OriginalDTO == null
+         let setInvalid = i.SetInvalid()
+         select NotFoundId(i.InputIdentifyDeleteCustomer.Id.ToString(), "Cliente", i.InputIdentifyDeleteCustomer.Id)).ToList();
 
-        var delete = (from i in listCustomerValidate
-                      where !i.Invalid
-                      select i).ToList();
-
-        if (!delete.Any())
-        {
-            response.Success = false;
-            return response;
-        }
-
-        response.Content = delete;
-        return response;
-    }
-
-    void IBaseValidateService<CustomerValidateDTO>.ValidateCreate(List<CustomerValidateDTO> listTValidateDTO)
-    {
-        throw new NotImplementedException();
-    }
-
-    void IBaseValidateService<CustomerValidateDTO>.ValidateUpdate(List<CustomerValidateDTO> listTValidateDTO)
-    {
-        throw new NotImplementedException();
-    }
-
-    void IBaseValidateService<CustomerValidateDTO>.ValidateDelete(List<CustomerValidateDTO> listTValidateDTO)
-    {
-        throw new NotImplementedException();
+        (from i in RemoveInvalid(listCustomerValidate)
+         select SuccessfullyDeleted(i.InputIdentifyDeleteCustomer.Id.ToString(), "Cliente")).ToList();
     }
     #endregion
 }

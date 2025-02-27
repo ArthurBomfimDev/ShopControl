@@ -3,9 +3,9 @@ using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Domain.DTO;
-using ProjetoTeste.Infrastructure.Interface.Service.Base;
+using ProjetoTeste.Domain.Interface.Service.Base;
 
-namespace ProjetoTeste.Infrastructure.Interface.Service;
+namespace ProjetoTeste.Domain.Interface.Service;
 
 public interface IOrderService : IBaseService<OrderDTO, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
 {

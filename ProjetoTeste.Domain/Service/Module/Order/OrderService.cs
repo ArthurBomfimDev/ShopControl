@@ -5,8 +5,8 @@ using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Repository;
-using ProjetoTeste.Infrastructure.Application.Service.Base;
-using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Domain.Interface.Service;
+using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Domain.Service;
@@ -36,7 +36,7 @@ public class OrderService : BaseService<IOrderRepository, IOrderValidateService,
     public override async Task<List<OutputOrder>> GetAll()
     {
         var listOrder = await _orderRepository.GetAllWithProductOrders();
-        return listOrder.Select(i => (OutputOrder)(OrderDTO)i).ToList();
+        return listOrder.Select(i => (OutputOrder)i).ToList();
     }
 
     public async Task<List<OutputOrder>> GetByIdWithProducts(InputIdentifyViewOrder inputIdentifyViewOrder)

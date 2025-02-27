@@ -1,127 +1,111 @@
-﻿//using ProjetoTeste.Arguments.Arguments;
-//using ProjetoTeste.Arguments.Arguments.Base;
-//using ProjetoTeste.Arguments.Arguments.Customer;
-//using ProjetoTeste.Infrastructure.Application.Service.Base;
-//using ProjetoTeste.Infrastructure.Interface.Repositories;
-//using ProjetoTeste.Infrastructure.Interface.Service;
-//using ProjetoTeste.Infrastructure.Interface.ValidateService;
-//using ProjetoTeste.Domain.Interface.Repository;
+﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Arguments.Arguments.Customer;
+using ProjetoTeste.Domain.DTO;
+using ProjetoTeste.Domain.Interface.Repository;
+using ProjetoTeste.Domain.Interface.Service;
+using ProjetoTeste.Domain.Service.Base;
+using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
-//namespace ProjetoTeste.Infrastructure.Application;
+namespace ProjetoTeste.Domain.Service;
 
-//public class CustomerService : BaseService<ICustomerRepository, CustomerDTO, InputCreateCustomer, InputIdentityUpdateCustomer, InputIdentifyDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer, CustomerValidateDTO>, ICustomerService
-//{
-//    #region Dependency Injection
-//    private readonly ICustomerRepository _customerRepository;
-//    private readonly ICustomerValidateService _customerValidateService;
+public class CustomerService : BaseService<ICustomerRepository, ICustomerValidateService, CustomerDTO, InputCreateCustomer, InputIdentityUpdateCustomer, InputIdentifyDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer, CustomerValidateDTO>, ICustomerService
+{
+    #region Dependency Injection
+    private readonly ICustomerRepository _customerRepository;
+    private readonly ICustomerValidateService _customerValidateService;
 
-//    public CustomerService(ICustomerRepository customerRepository, ICustomerValidateService customerValidateService) : base(customerRepository, customerValidateService)
-//    {
-//        _customerRepository = customerRepository;
-//        _customerValidateService = customerValidateService;
-//    }
-//    #endregion
+    public CustomerService(ICustomerRepository customerRepository, ICustomerValidateService customerValidateService) : base(customerRepository, customerValidateService)
+    {
+        _customerRepository = customerRepository;
+        _customerValidateService = customerValidateService;
+    }
+    #endregion
 
-//    #region Create
-//    public override async Task<BaseResponse<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreateCustomer)
-//    {
-//        var response = new BaseResponse<List<OutputCustomer>>();
+    #region Create
+    public override async Task<BaseResult<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreateCustomer)
+    {
+        List<CustomerValidateDTO> listCutomerValidate = listInputCreateCustomer.Select(i => new CustomerValidateDTO().ValidateCreate(i)).ToList();
 
-//        List<CustomerValidateDTO> listCutomerValidate = listInputCreateCustomer.Select(i => new CustomerValidateDTO().ValidateCreate(i)).ToList();
+        _customerValidateService.ValidateCreate(listCutomerValidate);
 
-//        var validateCreate = await _customerValidateService.ValidateCreate(listCutomerValidate);
+        var (success, errors) = GetValidationResult();
+        if (success.Count == 0)
+            return BaseResult<List<OutputCustomer>>.Failure(errors);
 
-//        response.Success = validateCreate.Success;
-//        response.Message = validateCreate.Message;
-//        if (!response.Success) return response;
+        var listCreate = (from i in listCutomerValidate
+                          select new CustomerDTO(i.InputCreateCustomer.Name, i.InputCreateCustomer.CPF, i.InputCreateCustomer.Email, i.InputCreateCustomer.Phone)).ToList();
 
-//        var listCreate = (from i in validateCreate.Content
-//                          let message = response.AddSuccessMessage($"O cliente: '{i.InputCreateCustomer.Name}' foi cadastrado com sucesso.")
-//                          select new Customer(i.InputCreateCustomer.Name, i.InputCreateCustomer.CPF, i.InputCreateCustomer.Email, i.InputCreateCustomer.Phone)).ToList();
+        var create = await _customerRepository.Create(listCreate);
 
-//        var create = await _customerRepository.Create(listCreate);
-//        response.Content = create.Select(i => (OutputCustomer)(CustomerDTO)i).ToList();
-//        return response;
-//    }
-//    #endregion
+        return BaseResult<List<OutputCustomer>>.Success(create.Select(i => (OutputCustomer)i).ToList(), [.. success, .. errors]);
+    }
+    #endregion
 
-//    #region Update
-//    public override async Task<BaseResponse<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
-//    {
-//        var response = new BaseResponse<bool>();
-//        var originalCustomer = await _customerRepository.GetListByListId(listInputIdentityUpdateCustomer.Select(i => i.Id).ToList());
-//        var listRepeteId = (from i in listInputIdentityUpdateCustomer
-//                            where listInputIdentityUpdateCustomer.Count(j => j.Id == i.Id) > 1
-//                            select i.Id).ToList();
+    #region Update
+    public override async Task<BaseResult<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
+    {
+        var originalCustomer = await _customerRepository.GetListByListId(listInputIdentityUpdateCustomer.Select(i => i.Id).ToList());
+        var listRepeteId = (from i in listInputIdentityUpdateCustomer
+                            where listInputIdentityUpdateCustomer.Count(j => j.Id == i.Id) > 1
+                            select i.Id).ToList();
 
-//        var listUpdate = (from i in listInputIdentityUpdateCustomer
-//                          select new
-//                          {
-//                              InputIdentityUpdateCustomer = i,
-//                              OriginalCustomer = originalCustomer.FirstOrDefault(j => j.Id == i.Id),
-//                              RepeteId = listRepeteId.FirstOrDefault(k => k == i.Id),
-//                          }).ToList();
+        var listUpdate = (from i in listInputIdentityUpdateCustomer
+                          select new
+                          {
+                              InputIdentityUpdateCustomer = i,
+                              OriginalCustomer = originalCustomer.FirstOrDefault(j => j.Id == i.Id),
+                              RepeteId = listRepeteId.FirstOrDefault(k => k == i.Id),
+                          }).ToList();
 
-//        List<CustomerValidateDTO> customerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdateCustomer, i.OriginalCustomer, i.RepeteId)).ToList();
+        List<CustomerValidateDTO> listCustomerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdateCustomer, i.OriginalCustomer, i.RepeteId)).ToList();
+        _customerValidateService.ValidateUpdate(listCustomerValidate);
 
-//        var updateValidate = await _customerValidateService.ValidateUpdate(customerValidate);
-//        response.Success = updateValidate.Success;
-//        response.Message = updateValidate.Message;
-//        if (!response.Success)
-//        {
-//            response.Content = false;
-//            return response;
-//        }
+        var (succes, errors) = GetValidationResult();
+        if (succes.Count == 0)
+            return BaseResult<bool>.Failure(errors);
 
-//        var listUpdateCustomer = (from i in updateValidate.Content
-//                                  let name = i.OriginalDTO.Name = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name
-//                                  let cpf = i.OriginalDTO.CPF = i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF
-//                                  let email = i.OriginalDTO.Email = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email
-//                                  let phone = i.OriginalDTO.Phone = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone
-//                                  let message = response.AddSuccessMessage($"O cliente com o ID: '{i.InputIdentityUpdateCustomer.Id}' foi atualizado com sucesso.")
-//                                  select (Customer)i.OriginalDTO).ToList();
+        var listUpdateCustomer = (from i in listCustomerValidate
+                                  let name = i.OriginalDTO.Name = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name
+                                  let cpf = i.OriginalDTO.CPF = i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF
+                                  let email = i.OriginalDTO.Email = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email
+                                  let phone = i.OriginalDTO.Phone = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone
+                                  select i.OriginalDTO).ToList();
 
-//        response.Content = await _customerRepository.Update(listUpdateCustomer);
-//        return response;
-//    }
-//    #endregion
+        await _customerRepository.Update(listUpdateCustomer);
+        return BaseResult<bool>.Success(true, [.. succes, .. errors]);
+    }
+    #endregion
 
-//    #region Delete
-//    public override async Task<BaseResponse<bool>> DeleteMultiple(List<InputIdentifyDeleteCustomer> listInputIdentifyDeleteCustomer)
-//    {
-//        var response = new BaseResponse<bool>();
+    #region Delete
+    public override async Task<BaseResult<bool>> DeleteMultiple(List<InputIdentifyDeleteCustomer> listInputIdentifyDeleteCustomer)
+    {
+        var listOriginal = await _customerRepository.GetListByListId(listInputIdentifyDeleteCustomer.Select(i => i.Id).ToList());
+        var listRepeatedDelete = (from i in listInputIdentifyDeleteCustomer
+                                  where listInputIdentifyDeleteCustomer.Count(j => j.Id == i.Id) > 1
+                                  select i).ToList();
 
-//        var listOriginal = await _customerRepository.GetListByListId(listInputIdentifyDeleteCustomer.Select(i => i.Id).ToList());
-//        var listRepeatedDelete = (from i in listInputIdentifyDeleteCustomer
-//                                  where listInputIdentifyDeleteCustomer.Count(j => j.Id == i.Id) > 1
-//                                  select i).ToList();
+        var listDelete = (from i in listInputIdentifyDeleteCustomer
+                          select new
+                          {
+                              InputDeleteCustomer = i,
+                              Original = listOriginal.FirstOrDefault(j => j.Id == i.Id),
+                              RepeatedDelete = listRepeatedDelete.FirstOrDefault(k => k.Id == i.Id)
+                          });
 
-//        var listDelete = (from i in listInputIdentifyDeleteCustomer
-//                          select new
-//                          {
-//                              InputDeleteCustomer = i,
-//                              Original = listOriginal.FirstOrDefault(j => j.Id == i.Id),
-//                              RepeatedDelete = listRepeatedDelete.FirstOrDefault(k => k.Id == i.Id)
-//                          });
+        List<CustomerValidateDTO> listCustomerValidate = listDelete.Select(i => new CustomerValidateDTO().ValidateDelete(i.InputDeleteCustomer, i.Original, i.RepeatedDelete)).ToList();
+        _customerValidateService.ValidateDelete(listCustomerValidate);
 
-//        List<CustomerValidateDTO> customerValidate = listDelete.Select(i => new CustomerValidateDTO().ValidateDelete(i.InputDeleteCustomer, i.Original, i.RepeatedDelete)).ToList();
+        var (succes, errors) = GetValidationResult();
+        if (succes.Count == 0)
+            return BaseResult<bool>.Failure(errors);
 
-//        var deleteValidate = await _customerValidateService.ValidateDelete(customerValidate);
-//        response.Success = deleteValidate.Success;
-//        response.Message = deleteValidate.Message;
-//        if (!response.Success)
-//        {
-//            response.Content = false;
-//            return response;
-//        }
+        var listDeleteCustomer = (from i in listCustomerValidate
+                                  select i.OriginalDTO).ToList();
 
-//        var listDeleteCustomer = (from i in deleteValidate.Content
-//                                  let message = response.AddSuccessMessage($"Cliente com ID: {i.InputIdentifyDeleteCustomer.Id} foi excluído com sucesso.")
-//                                  select (Customer)i.OriginalDTO).ToList();
+        await _customerRepository.Delete(listDeleteCustomer);
 
-//        response.Content = await _customerRepository.Delete(listDeleteCustomer);
-//        return response;
-//    }
-//    #endregion
-
-//}
+        return BaseResult<bool>.Success(true, [.. succes, .. errors]);
+    }
+    #endregion
+}

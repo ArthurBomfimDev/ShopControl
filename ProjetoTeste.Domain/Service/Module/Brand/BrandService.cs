@@ -3,8 +3,8 @@ using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Repository;
-using ProjetoTeste.Infrastructure.Application.Service.Base;
-using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Domain.Interface.Service;
+using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Domain.Service;
@@ -52,7 +52,7 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
 
         var listNewBrand = await _brandRepository.Create(listCreateBrand);
 
-        return BaseResult<List<OutputBrand>>.Success(listNewBrand.Select(i => (OutputBrand)(BrandDTO)i).ToList(), [.. success, .. errors]);
+        return BaseResult<List<OutputBrand>>.Success(listNewBrand.Select(i => (OutputBrand)i).ToList(), [.. success, .. errors]);
         //response.Content = listNewBrand.Convert<Brand, BrandDTO, OutputBrand>();
 
     }

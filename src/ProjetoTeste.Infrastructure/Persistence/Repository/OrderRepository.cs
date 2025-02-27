@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Order;
+using ProjetoTeste.Arguments.Conversor;
 using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Repository;
 using ProjetoTeste.Infrastructure.Persistence.Context;
@@ -10,14 +11,26 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
 {
     public class OrderRepository : BaseRepository<Order, OrderDTO>, IOrderRepository
     {
-        public OrderRepository(AppDbContext context) : base(context)
+        private readonly IProductOrderRepository _productOrderRepository;
+
+        public OrderRepository(AppDbContext context, IProductOrderRepository productOrderRepository) : base(context)
         {
+            _productOrderRepository = productOrderRepository;
         }
 
         public async Task<List<OrderDTO>> GetAllWithProductOrders()
         {
-            var getAllWithProductOrders = await _dbSet.Include(o => o.ListProductOrder).ToListAsync();
-            return getAllWithProductOrders.Select(i => (OrderDTO)i).ToList();
+            var listOrder = await _dbSet.Select(x => new Order
+            {
+                Id = x.Id,
+                CustomerId = x.CustomerId,
+                ListProductOrder = x.ListProductOrder,
+                OrderDate = x.OrderDate,
+                Total = x.Total,
+                Customer = x.Customer
+            }).ToListAsync();
+
+            return listOrder.ConverterList<Order, OrderDTO>();
         }
         public async Task<List<OrderDTO>> GetByIdWithProductOrders(long id)
         {

@@ -2,7 +2,7 @@
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Domain.DTO;
-using ProjetoTeste.Infrastructure.Interface.Service;
+using ProjetoTeste.Domain.Interface.Service;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 

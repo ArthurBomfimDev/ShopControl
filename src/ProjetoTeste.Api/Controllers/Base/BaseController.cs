@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Domain.DTO.Base;
-using ProjetoTeste.Infrastructure.Interface.Service.Base;
+using ProjetoTeste.Domain.Interface.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 

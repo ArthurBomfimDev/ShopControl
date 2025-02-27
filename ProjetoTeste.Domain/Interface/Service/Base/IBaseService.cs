@@ -2,7 +2,7 @@
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Domain.DTO.Base;
 
-namespace ProjetoTeste.Infrastructure.Interface.Service.Base;
+namespace ProjetoTeste.Domain.Interface.Service.Base;
 
 public interface IBaseService<TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
     where TDTO : BaseDTO<TDTO>

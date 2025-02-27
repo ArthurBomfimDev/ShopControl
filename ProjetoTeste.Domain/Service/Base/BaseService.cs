@@ -5,10 +5,8 @@ using ProjetoTeste.Arguments.Conversor;
 using ProjetoTeste.Domain.DTO.Base;
 using ProjetoTeste.Domain.Interface.Repository.Base;
 using ProjetoTeste.Domain.Interface.Service.Base;
-using ProjetoTeste.Domain.Service.Base;
-using ProjetoTeste.Infrastructure.Interface.Service.Base;
 
-namespace ProjetoTeste.Infrastructure.Application.Service.Base;
+namespace ProjetoTeste.Domain.Service.Base;
 
 public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO, TValidateDTO> : BaseValidate<TValidateDTO>, IBaseService<TDTO, TInputCreateDTO, TInputIdentityUpdateDTO, TInputIdentityDeleteDTO, TInputIdentityViewDTO, TOutputDTO>
     where TDTO : BaseDTO<TDTO>
@@ -34,7 +32,7 @@ public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCr
     public virtual async Task<TOutputDTO> Get(TInputIdentityViewDTO inputIdentifyViewDTO)
     {
         var get = await _repository.Get(inputIdentifyViewDTO.Id);
-        return get.Converter<TDTO, TOutputDTO>();
+        return get.ConverterReflection<TDTO, TOutputDTO>();
     }
 
     public virtual async Task<List<TOutputDTO>> GetAll()

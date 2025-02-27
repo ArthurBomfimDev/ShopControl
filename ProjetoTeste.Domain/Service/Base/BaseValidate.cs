@@ -3,6 +3,7 @@ using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Arguments.Enum.Validate;
 using ProjetoTeste.Domain.Helper;
+using ProjetoTeste.Domain.Notification;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
@@ -89,54 +90,30 @@ public class BaseValidate<TValidateDTO> where TValidateDTO : BaseValidateDTO
     }
     #endregion
 
+    #region PhoneValidate
+    public static EnumValidateType PhoneValidate(string phone)
+    {
+        if (string.IsNullOrEmpty(phone) || string.IsNullOrWhiteSpace(phone)) return EnumValidateType.NonInformed;
+        phone = phone.Replace(" ", "").Replace("+", "").Replace("-", "");
+        if (phone.Length > 10 && phone.Length < 16 && phone.All(char.IsDigit)) return EnumValidateType.Valid;
+        return EnumValidateType.Invalid;
+    }
+
     #endregion
 
-    #region Notifiction
-
-    #region NotifcationKey
-    internal static class NotifactionKey
-    {
-        public const string InvalidLenghtKey = "InvalidLenght";
-        public const string NullFieldKey = "NullField";
-        public const string RepeatedIdentifierKey = "RepetedIdentifier";
-        public const string AlreadyExistsKey = "AlreadyExists";
-        public const string InvalidRecordKey = "InvalidRecord";
-        public const string SuccessfullyRegisteredKey = "SuccessfullyRegistered";
-        public const string SuccessfullyUpdatedKey = "SuccessfullyUpdated";
-        public const string SuccessfullyDeletedKey = "SuccessfullyDeleted";
-        public const string InvalidNullKey = "InvalidNull";
-        public const string NotFoundIdKey = "NotFoundId";
-        public const string RepetaedIdKey = "RepeatedId";
-        public const string LikedValueKey = "LinkedValue";
-    }
-    #endregion
-
-    #region NotficationMessage
-    public static class NotificationMessage
-    {
-        public static string InvalidLenghtMessage(string fieldName, string? value, int minLeght, int MaxLenght) => $"ERROR KEY: {NotifactionKey.InvalidLenghtKey.ToString()} - O Campo: {fieldName}, com valor: '{value}' deve ter entre {minLeght} e {MaxLenght} caracters.";
-        public static string NullFieldMessage(string fieldName) => $"ERROR KEY: {NotifactionKey.NullFieldKey.ToString()} - O Campo: {fieldName} está vazio.";
-        public static string InvalidNullMessage(int index) => $"ERROR KEY: {NotifactionKey.InvalidNullKey.ToString()} - O item na posição {index + 1} está vazio e não pode ser cadastrado.";
-        public static string RepeatedIdentifier(string fieldName, string? value) => $"ERROR KEY: {NotifactionKey.RepeatedIdentifierKey.ToString()} - O Campo identificador: {fieldName}, com valor '{value}', foi insirido repetidas vezes e não pode ser cadastrado.";
-        public static string RepeatedId(long Id) => $"ERROR KEY: {NotifactionKey.RepetaedIdKey.ToString()} - O Id: {Id}, foi insirido repetidas vezes e não pode ser utilizado.";
-        public static string AlreadyExists(string fieldName, string? value) => $"ERROR KEY: {NotifactionKey.AlreadyExistsKey.ToString()} - O Campo identificador: {fieldName}, com valor '{value}', não pode ser utilizado, pois já está em uso.";
-        public static string NotFoundId(string className, long id) => $"ERROR KEY: {NotifactionKey.NotFoundIdKey.ToString()} - {className} com Id: {id} não pode ser utilizado(a), pois não foi encontrado.";
-        public static string LikedValue(string className, string likedValue) => $"ERROR KEY: {NotifactionKey.LikedValueKey.ToString()} - {className} não pode ser deletado(a), pois possui {likedValue} atrelado.";
-        public static string SuccessfullyRegistered(string className, string idetifier) => $"SUCCESS: {NotifactionKey.SuccessfullyRegisteredKey.ToString()} - {className} com identifcador: '{idetifier}' foi cadastrado(a) com sucesso.";
-        public static string SuccessfullyUpdated(string className, string idetifier, long id) => $"SUCCESS: {NotifactionKey.SuccessfullyUpdatedKey.ToString()} - {className} com identifcador: '{idetifier}' e Id: {id} foi atualizado(a) com sucesso.";
-        public static string SuccessfullyDeleted(string className, string id) => $"SUCCESS: {NotifactionKey.SuccessfullyDeletedKey.ToString()} - {className} com Id: {id} foi deletado(a) com sucesso.";
-    }
     #endregion
 
     #region MessageGeneration
+
+    #region Error
     public bool InvalidNull(int index)
     {
-        return AddErrorMessage(index.ToString(), NotificationMessage.InvalidNullMessage(index));
+        return AddErrorMessage(index.ToString(), NotificationMessage.InvalidNull(index));
     }
 
     public bool InvalidLenght(string identifier, string? value, int minLeght, int maxLenght, EnumValidateType validateType, string propertyName)
     {
-        return HandleValidation(identifier, validateType, NotifactionKey.InvalidLenghtKey, NotificationMessage.InvalidLenghtMessage(propertyName, value, minLeght, maxLenght), NotifactionKey.NullFieldKey, NotificationMessage.NullFieldMessage(propertyName));
+        return HandleValidation(identifier, validateType, NotificationKey.InvalidLenghtKey, NotificationMessage.InvalidLenght(propertyName, value, minLeght, maxLenght), NotificationKey.NullFieldKey, NotificationMessage.NullField(propertyName));
     }
 
     public bool RepeatedIdentifier(string identifier, string fieldName)
@@ -148,7 +125,6 @@ public class BaseValidate<TValidateDTO> where TValidateDTO : BaseValidateDTO
     {
         return AddErrorMessage(identifier, NotificationMessage.AlreadyExists(fieldName, identifier));
     }
-
 
     public bool NotFoundId(string idetifier, string className, long id)
     {
@@ -165,6 +141,38 @@ public class BaseValidate<TValidateDTO> where TValidateDTO : BaseValidateDTO
         return AddErrorMessage(idetifier, NotificationMessage.LikedValue(className, linkedValue));
     }
 
+    public bool InvalidCPF(string idetifier, string cpfValue)
+    {
+        return AddErrorMessage(idetifier, NotificationMessage.InvalidCPF(cpfValue));
+    }
+
+    public bool InvalidEmail(string idetifier, string emailValue)
+    {
+        return AddErrorMessage(idetifier, NotificationMessage.InvalidEmail(emailValue));
+    }
+
+    public bool InvalidPhone(string idetifier, string phoneValue)
+    {
+        return AddErrorMessage(idetifier, NotificationMessage.InvalidPhone(phoneValue));
+    }
+
+    public bool NegativeStock(string idetifier, long stock)
+    {
+        return AddErrorMessage(idetifier, NotificationMessage.NegativeStock(stock));
+    }
+
+    public bool NegativePrice(string idetifier, decimal price)
+    {
+        return AddErrorMessage(idetifier, NotificationMessage.NegativePrice(price));
+    }
+
+    public bool InvalidRelatedProperty(string idetifier, string fieldName, long relatedId)
+    {
+        return AddErrorMessage(idetifier, NotificationMessage.InvalidRelatedProperty(fieldName, relatedId));
+    }
+    #endregion
+
+    #region Success
     public bool SuccessfullyRegistered(string idetifier, string className)
     {
         return AddSuccessMessage(idetifier, NotificationMessage.SuccessfullyRegistered(className, idetifier));
@@ -224,4 +232,5 @@ public class BaseValidate<TValidateDTO> where TValidateDTO : BaseValidateDTO
         return (successes, errors);
     }
     #endregion
+
 }

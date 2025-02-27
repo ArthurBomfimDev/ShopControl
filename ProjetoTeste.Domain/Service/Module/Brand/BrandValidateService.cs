@@ -84,16 +84,19 @@ public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValida
 
         (from i in RemoveIgnore(listBrandValidate)
          let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Name, 1, 24)
+         where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
          select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Name, 1, 24, resultInvalidLenght, "Nome")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, 1, 6)
+         where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
          select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Code, 1, 6, resultInvalidLenght, "Código")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Description, 0, 100)
+         where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
          select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Description, 0, 100, resultInvalidLenght, "Descrição")).ToList();
 
