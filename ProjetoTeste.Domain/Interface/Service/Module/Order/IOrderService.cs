@@ -1,7 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Order;
-using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Service.Base;
 
@@ -17,6 +16,4 @@ public interface IOrderService : IBaseService<OrderDTO, InputCreateOrder, BaseIn
     Task<OutputBrandBestSeller> BrandBestSeller();
     Task<HighestAverageSalesValue> HighestAverageSalesValue();
     Task<string> Total();
-    Task<BaseResponse<OutputProductOrder>> CreateProductOrder(InputCreateProductOrder inputCreateProductOrder);
-    Task<BaseResponse<List<OutputProductOrder>>> CreateProductOrderMultiple(List<InputCreateProductOrder> listinputCreateProductOrder);
 }

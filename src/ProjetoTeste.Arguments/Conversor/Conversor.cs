@@ -5,7 +5,7 @@ namespace ProjetoTeste.Arguments.Conversor;
 public static class Conversor
 {
     #region Conversor Reflection
-    public static TDestination ConverterReflection<TSource, TDestination>(this TSource source)
+    public static TDestination? ConverterReflection<TSource, TDestination>(this TSource source)
         where TSource : class
         where TDestination : class
     {

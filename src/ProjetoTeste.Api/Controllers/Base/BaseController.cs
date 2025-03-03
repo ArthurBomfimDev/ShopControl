@@ -22,26 +22,26 @@ public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInp
     where TOutput : BaseOutput<TOutput>
 {
     #region Dependecy Injection
-    private readonly IUnitOfWork unitOfWork;
-    private readonly TService service;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly TService _service;
 
     public BaseController(IUnitOfWork unitOfWork, TService service)
     {
-        this.unitOfWork = unitOfWork;
-        this.service = service;
+        _unitOfWork = unitOfWork;
+        _service = service;
     }
     #endregion
 
     #region Transacation
     public override void OnActionExecuting(ActionExecutingContext context) //overide substitui o comportamento padrão do controller
     {
-        unitOfWork.BeginTransaction();
+        _unitOfWork.BeginTransaction();
         base.OnActionExecuting(context);
     }
 
     public override void OnActionExecuted(ActionExecutedContext context)
     {
-        unitOfWork.Commit();
+        _unitOfWork.Commit();
         base.OnActionExecuted(context);
     }
     #endregion
@@ -50,37 +50,37 @@ public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInp
     [HttpGet("Get/All")]
     public virtual async Task<ActionResult<List<TOutput>>> GetAll()
     {
-        var getAll = await service.GetAll();
+        var getAll = await _service.GetAll();
         return Ok(getAll);
     }
 
     [HttpPost("Get/Id")]
     public virtual async Task<ActionResult<TOutput>> Get(TInputIndeityView inputIdentifyView)
     {
-        var get = await service.Get(inputIdentifyView);
+        var get = await _service.Get(inputIdentifyView);
         return Ok(get);
     }
 
     [HttpPost("Get/ListByListId")]
     public virtual async Task<ActionResult<TOutput>> GetListByListId(List<TInputIndeityView> listInputIdentifyView)
     {
-        var getListByListId = await service.GetListByListId(listInputIdentifyView);
+        var getListByListId = await _service.GetListByListId(listInputIdentifyView);
         return Ok(getListByListId);
     }
     #endregion
 
     #region Create
     [HttpPost("Create")]
-    public virtual async Task<ActionResult<BaseResult<List<TOutput>>>> Create([FromForm] TInputCreate inputCreateDTO)
+    public virtual async Task<ActionResult<BaseResult<List<TOutput>>>> Create(TInputCreate inputCreateDTO)
     {
-        var create = await service.Create(inputCreateDTO);
+        var create = await _service.Create(inputCreateDTO);
         return Ok(create);
     }
 
     [HttpPost("Create/Multiple")]
     public virtual async Task<ActionResult<BaseResult<List<TOutput>>>> Create(List<TInputCreate> listTInputCreateDTO)
     {
-        var create = await service.CreateMultiple(listTInputCreateDTO);
+        var create = await _service.CreateMultiple(listTInputCreateDTO);
         if (create.IsSuccess == false)
         {
             return BadRequest(create);
@@ -93,7 +93,7 @@ public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInp
     [HttpPut("Update")]
     public virtual async Task<ActionResult<BaseResult<bool>>> Update(TInputIndetityUpdate inputIdentityUpdateDTO)
     {
-        var update = await service.Update(inputIdentityUpdateDTO);
+        var update = await _service.Update(inputIdentityUpdateDTO);
         if (!update.IsSuccess)
         {
             return BadRequest(update);
@@ -104,7 +104,7 @@ public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInp
     [HttpPut("Update/Multiple")]
     public virtual async Task<ActionResult<BaseResult<bool>>> Update(List<TInputIndetityUpdate> listTInputIndetityUpdate)
     {
-        var listUpdate = await service.UpdateMultiple(listTInputIndetityUpdate);
+        var listUpdate = await _service.UpdateMultiple(listTInputIndetityUpdate);
         if (!listUpdate.IsSuccess)
         {
             return BadRequest(listUpdate);
@@ -117,7 +117,7 @@ public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInp
     [HttpDelete("Delete")]
     public virtual async Task<ActionResult<BaseResponse<bool>>> Delete(TInputIndetityDelete inputIdentifyDeleteDTO)
     {
-        var delete = await service.Delete(inputIdentifyDeleteDTO);
+        var delete = await _service.Delete(inputIdentifyDeleteDTO);
         if (!delete.IsSuccess)
         {
             return BadRequest(delete);
@@ -128,7 +128,7 @@ public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInp
     [HttpDelete("Delete/Multiple")]
     public virtual async Task<ActionResult<BaseResponse<bool>>> Delete(List<TInputIndetityDelete> listInputIdentifyDeleteDTO)
     {
-        var listDelete = await service.DeleteMultiple(listInputIdentifyDeleteDTO);
+        var listDelete = await _service.DeleteMultiple(listInputIdentifyDeleteDTO);
         if (!listDelete.IsSuccess)
         {
             return BadRequest(listDelete);

@@ -1,6 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Enum.Validate;
-using ProjetoTeste.Domain.Helper;
 using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
@@ -12,7 +11,7 @@ public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValida
     #region Create
     public void ValidateCreate(List<BrandValidateDTO> listBrandValidate)
     {
-        NotificationHelper.CreateDict();
+        CreateDictionary();
 
         (from i in RemoveIgnore(listBrandValidate)
          where i.InputCreate == null
@@ -33,19 +32,19 @@ public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValida
          let resultInvalidLenght = InvalidLenght(i.InputCreate.Name, 1, 64)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputCreate!.Code, i.InputCreate.Name, 1, 64, resultInvalidLenght, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate!.Code, i.InputCreate.Name, 1, 64, "Nome") : NullField(i.InputCreate.Code, "Nome")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          let resultInvalidLenght = InvalidLenght(i.InputCreate.Code, 1, 6)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputCreate!.Code, i.InputCreate.Code, 1, 6, resultInvalidLenght, "Código")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate!.Code, i.InputCreate.Code, 1, 6, "Código") : NullField(i.InputCreate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          let resultInvalidLenght = InvalidLenght(i.InputCreate.Description, 0, 100)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputCreate!.Code, i.InputCreate.Description, 0, 100, resultInvalidLenght, "Descrição")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate!.Code, i.InputCreate.Description, 0, 100, "Descrição") : NullField(i.InputCreate.Code, "Descrição")).ToList();
 
         (from i in RemoveInvalid(listBrandValidate)
          select SuccessfullyRegistered(i.InputCreate.Code, "Marca")).ToList();
@@ -55,7 +54,7 @@ public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValida
     #region Update
     public void ValidateUpdate(List<BrandValidateDTO> listBrandValidate)
     {
-        NotificationHelper.CreateDict();
+        CreateDictionary();
 
         (from i in listBrandValidate
          where i.InputUpdate == null || i.InputUpdate.InputUpdateBrand == null
@@ -86,19 +85,19 @@ public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValida
          let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Name, 1, 24)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Name, 1, 24, resultInvalidLenght, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Name, 1, 24, "Nome") : NullField(i.InputUpdate.InputUpdateBrand.Code, "Nome")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, 1, 6)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Code, 1, 6, resultInvalidLenght, "Código")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Code, 1, 6, "Código") : NullField(i.InputUpdate.InputUpdateBrand.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdateBrand.Description, 0, 100)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Description, 0, 100, resultInvalidLenght, "Descrição")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.InputUpdateBrand.Description, 0, 100, "Descrição") : NullField(i.InputUpdate.InputUpdateBrand.Code, "Descrição")).ToList();
 
         (from i in RemoveInvalid(listBrandValidate)
          select SuccessfullyUpdated(i.InputUpdate.InputUpdateBrand.Code, i.InputUpdate.Id, "Marca")).ToList();
@@ -108,7 +107,7 @@ public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValida
     #region Delete
     public void ValidateDelete(List<BrandValidateDTO> listBrandValidate)
     {
-        NotificationHelper.CreateDict();
+        CreateDictionary();
 
         (from i in RemoveIgnore(listBrandValidate)
          where i.RepeteInputDelete != null

@@ -1,4 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Domain.DTO;
@@ -43,16 +44,16 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
         List<BrandValidateDTO> listBrandValidate = listCreate.Select(i => new BrandValidateDTO().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
         _brandValidadeService.ValidateCreate(listBrandValidate);
 
-        var (success, errors) = GetValidationResult();
-        if (errors.Count == listInputCreateBrand.Count)
-            return BaseResult<List<OutputBrand?>>.Failure(errors);
+        var listNotification = GetAllNotification();
+        if (listNotification.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<List<OutputBrand?>>.Failure(listNotification);
 
         var listCreateBrand = (from i in RemoveInvalid(listBrandValidate)
                                select new BrandDTO(i.InputCreate.Name, i.InputCreate.Code, i.InputCreate.Description, default)).ToList();
 
         var listNewBrand = await _brandRepository.Create(listCreateBrand);
 
-        return BaseResult<List<OutputBrand>>.Success(listNewBrand.Select(i => (OutputBrand)i).ToList(), [.. success, .. errors]);
+        return BaseResult<List<OutputBrand>>.Success(listNewBrand.Select(i => (OutputBrand)i).ToList(), listNotification);
         //response.Content = listNewBrand.Convert<Brand, BrandDTO, OutputBrand>();
 
     }
@@ -84,10 +85,10 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
         List<BrandValidateDTO> listBrandValidate = listUpdate.Select(i => new BrandValidateDTO().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.CodeExists)).ToList();
         _brandValidadeService.ValidateUpdate(listBrandValidate);
 
-        var (success, errors) = GetValidationResult();
+        var listNotification = GetAllNotification();
 
-        if (success.Count == 0)
-            return BaseResult<bool>.Failure(errors);
+        if (listNotification.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<bool>.Failure(listNotification);
 
         var listBrandUpdate = (from i in listBrandValidate
                                let name = i.OriginalBrandDTO.Name = i.InputUpdate.InputUpdateBrand.Name
@@ -97,7 +98,7 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
 
         await _brandRepository.Update(listBrandUpdate);
 
-        return BaseResult<bool>.Success(true, [.. success, .. errors]);
+        return BaseResult<bool>.Success(true, listNotification);
     }
     #endregion
 
@@ -124,17 +125,17 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
         List<BrandValidateDTO> listBrandValidate = listDelete.Select(i => new BrandValidateDTO().ValidateDelete(i.InputDeleteBrand, i.OriginalBrand, i.RepeteInputDelete, i.BrandWithProduct)).ToList();
         _brandValidadeService.ValidateDelete(listBrandValidate);
 
-        var (success, errors) = GetValidationResult();
+        var listNotification = GetAllNotification();
 
-        if (success.Count == 0)
-            return BaseResult<bool>.Failure(errors);
+        if (listNotification!.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<bool>.Failure(listNotification!);
 
         var delete = (from i in listBrandValidate
                       select i.OriginalBrandDTO).ToList();
 
         await _brandRepository.Delete(delete);
 
-        return BaseResult<bool>.Success(true, [.. success, .. errors]);
+        return BaseResult<bool>.Success(true, listNotification!);
     }
     #endregion
 }

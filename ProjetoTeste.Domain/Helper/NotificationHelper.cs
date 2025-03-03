@@ -18,7 +18,7 @@ public static class NotificationHelper
         {
             var list = Get(key);
             var noitfication = list.FirstOrDefault();
-            noitfication.ListMessage.AddRange(detailedNotification.ListMessage);
+            noitfication.ListMessage.Union(detailedNotification.ListMessage);
         }
         else
         {
@@ -28,7 +28,7 @@ public static class NotificationHelper
 
     public static List<DetailedNotification> Get(string key)
     {
-        ListNotification.TryGetValue(key, out List<DetailedNotification> listDetailedNotification);
+        ListNotification.TryGetValue(key, out List<DetailedNotification>? listDetailedNotification);
         if (listDetailedNotification != null)
             return listDetailedNotification;
 

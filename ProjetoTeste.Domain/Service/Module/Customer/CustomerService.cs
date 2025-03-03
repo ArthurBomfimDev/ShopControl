@@ -1,4 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
 using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Domain.DTO;
@@ -29,16 +30,17 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
 
         _customerValidateService.ValidateCreate(listCutomerValidate);
 
-        var (success, errors) = GetValidationResult();
-        if (success.Count == 0)
-            return BaseResult<List<OutputCustomer>>.Failure(errors);
+        var listNotification = GetAllNotification();
+
+        if (listNotification!.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<List<OutputCustomer>>.Failure(listNotification!);
 
         var listCreate = (from i in listCutomerValidate
                           select new CustomerDTO(i.InputCreateCustomer.Name, i.InputCreateCustomer.CPF, i.InputCreateCustomer.Email, i.InputCreateCustomer.Phone)).ToList();
 
         var create = await _customerRepository.Create(listCreate);
 
-        return BaseResult<List<OutputCustomer>>.Success(create.Select(i => (OutputCustomer)i).ToList(), [.. success, .. errors]);
+        return BaseResult<List<OutputCustomer>>.Success(create.Select(i => (OutputCustomer)i).ToList(), listNotification!);
     }
     #endregion
 
@@ -61,9 +63,10 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
         List<CustomerValidateDTO> listCustomerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdateCustomer, i.OriginalCustomer, i.RepeteId)).ToList();
         _customerValidateService.ValidateUpdate(listCustomerValidate);
 
-        var (succes, errors) = GetValidationResult();
-        if (succes.Count == 0)
-            return BaseResult<bool>.Failure(errors);
+        var listNotification = GetAllNotification();
+
+        if (listNotification!.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<bool>.Failure(listNotification!);
 
         var listUpdateCustomer = (from i in listCustomerValidate
                                   let name = i.OriginalDTO.Name = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name
@@ -73,7 +76,7 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
                                   select i.OriginalDTO).ToList();
 
         await _customerRepository.Update(listUpdateCustomer);
-        return BaseResult<bool>.Success(true, [.. succes, .. errors]);
+        return BaseResult<bool>.Success(true, listNotification!);
     }
     #endregion
 
@@ -96,16 +99,17 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
         List<CustomerValidateDTO> listCustomerValidate = listDelete.Select(i => new CustomerValidateDTO().ValidateDelete(i.InputDeleteCustomer, i.Original, i.RepeatedDelete)).ToList();
         _customerValidateService.ValidateDelete(listCustomerValidate);
 
-        var (succes, errors) = GetValidationResult();
-        if (succes.Count == 0)
-            return BaseResult<bool>.Failure(errors);
+        var listNotification = GetAllNotification();
+
+        if (listNotification!.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<bool>.Failure(listNotification!);
 
         var listDeleteCustomer = (from i in listCustomerValidate
                                   select i.OriginalDTO).ToList();
 
         await _customerRepository.Delete(listDeleteCustomer);
 
-        return BaseResult<bool>.Success(true, [.. succes, .. errors]);
+        return BaseResult<bool>.Success(true, listNotification!);
     }
     #endregion
 }

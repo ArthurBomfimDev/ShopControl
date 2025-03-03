@@ -1,7 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Enum.Validate;
-using ProjetoTeste.Domain.Helper;
 using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
@@ -14,7 +13,7 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
     {
         var response = new BaseResponse<List<ProductValidateDTO>>();
 
-        NotificationHelper.CreateDict();
+        CreateDictionary();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.InputCreateProduct == null
@@ -41,19 +40,19 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
          let resultInvalidLenght = InvalidLenght(i.InputCreateProduct.Code, 1, 6)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Code, 1, 6, resultInvalidLenght, "Código")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Code, 1, 6, "Código") : NullField(i.InputCreateProduct.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          let resultInvalidLenght = InvalidLenght(i.InputCreateProduct.Name, 1, 24)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Name, 1, 24, resultInvalidLenght, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Name, 1, 24, "Nome") : NullField(i.InputCreateProduct.Code, "Nome")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          let resultInvalidLenght = InvalidLenght(i.InputCreateProduct.Description, 0, 100)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Description, 0, 100, resultInvalidLenght, "Descrição")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Description, 0, 100, "Descrição") : NullField(i.InputCreateProduct.Code, "Descrição")).ToList();
 
         //(from i in RemoveIgnore(listProductValidate)
         // where i.BrandId == 0
@@ -79,7 +78,7 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
     #region Update
     public void ValidateUpdate(List<ProductValidateDTO> listProductValidate)
     {
-        NotificationHelper.CreateDict();
+        CreateDictionary();
 
         var response = new BaseResponse<List<ProductValidateDTO>>();
 
@@ -129,32 +128,30 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
          let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdateProduct.InputUpdateProduct.Name, 1, 24)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidLenght(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, i.InputIdentityUpdateProduct.InputUpdateProduct.Code, 1, 24, resultInvalidLenght, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, i.InputIdentityUpdateProduct.InputUpdateProduct.Name, 1, 24, "Nome") : NullField(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, "Nome")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputIdentityUpdateProduct.InputUpdateProduct.Code.Length > 6 || string.IsNullOrEmpty(i.InputIdentityUpdateProduct.InputUpdateProduct.Code) || string.IsNullOrWhiteSpace(i.InputIdentityUpdateProduct.InputUpdateProduct.Code)
-         let setInvalid = i.SetInvalid()
-         let message = response.AddErrorMessage(i.InputIdentityUpdateProduct.InputUpdateProduct.Code.Length > 6 ? $"Produto com Id {i.InputIdentityUpdateProduct.Id} o código: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui um código com mais de 6 caracteres e não pode ser cadastrado."
-         : $"Produto com Id {i.InputIdentityUpdateProduct.Id} o código: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui um código vazio e não pode ser cadastrado.")
-         select i).ToList();
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, 1, 6)
+         where resultInvalidLenght != EnumValidateType.Valid
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, i.InputIdentityUpdateProduct.InputUpdateProduct.Code, 1, 6, "Código") : NullField(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputIdentityUpdateProduct.InputUpdateProduct.Description.Length > 100 || string.IsNullOrEmpty(i.InputIdentityUpdateProduct.InputUpdateProduct.Description) || string.IsNullOrWhiteSpace(i.InputIdentityUpdateProduct.InputUpdateProduct.Description)
-         let setInvalid = i.SetInvalid()
-         let message = response.AddErrorMessage(i.InputIdentityUpdateProduct.InputUpdateProduct.Description.Length > 100 ? $"Produto com Id {i.InputIdentityUpdateProduct.Id} a descrição: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui uma descrição com mais de 100 caracteres e não pode ser cadastrado."
-         : $"Produto com Id {i.InputIdentityUpdateProduct.Id} a descrição: '{i.InputIdentityUpdateProduct.InputUpdateProduct.Name}' possui uma descrição vazia e não pode ser cadastrado.")
-         select i).ToList();
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdateProduct.InputUpdateProduct.Description, 0, 100)
+         where resultInvalidLenght != EnumValidateType.Valid
+         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, i.InputIdentityUpdateProduct.InputUpdateProduct.Description, 0, 100, "Descrição") : NullField(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, "Descrição")).ToList();
 
-        (from i in RemoveIgnore(listProductValidate)
-         where !i.Invalid
-         select i).ToList();
+
+        (from i in RemoveInvalid(listProductValidate)
+         select SuccessfullyUpdated(i.InputIdentityUpdateProduct.InputUpdateProduct.Code, i.InputIdentityUpdateProduct.Id, "Produto")).ToList();
     }
     #endregion
 
     #region Delete
     public void ValidateDelete(List<ProductValidateDTO> listProductValidate)
     {
-        NotificationHelper.CreateDict();
+        CreateDictionary();
 
         var response = new BaseResponse<List<ProductValidateDTO>>();
 

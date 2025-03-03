@@ -55,16 +55,17 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
         List<ProductValidateDTO> listProductValidate = listCreate.Select(i => new ProductValidateDTO().ValidateCreate(i.InputCreateProduct, i.OriginalCode, i.RepeteCode, i.BrandExists)).ToList();
         _productValidateService.ValidateCreate(listProductValidate);
 
-        var (success, errors) = GetValidationResult();
-        if (success.Count == 0)
-            return BaseResult<List<OutputProduct>>.Failure(errors);
+        var listNotification = GetAllNotification();
+
+        if (listNotification!.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<List<OutputProduct>>.Failure(listNotification!);
 
         var listCreateProduct = (from i in listProductValidate
                                  select i.InputCreateProduct).Select(i => new ProductDTO(i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock, default)).ToList();
 
         var listCreatedProduct = await _productRepository.Create(listCreateProduct);
 
-        return BaseResult<List<OutputProduct>>.Success(listCreatedProduct!.Select(i => (OutputProduct)i).ToList(), [.. success, .. errors]);
+        return BaseResult<List<OutputProduct>>.Success(listCreatedProduct!.Select(i => (OutputProduct)i).ToList(), listNotification!);
     }
     #endregion
 
@@ -95,9 +96,10 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
         List<ProductValidateDTO> listProductValidate = listUpdate.Select(i => new ProductValidateDTO().ValidateUpdate(i.InputIdentityUpdateProduct, i.OriginalIdentity, i.OriginalCode, i.RepeteIdentity, i.RepeteCode, i.BrandExists)).ToList();
         _productValidateService.ValidateUpdate(listProductValidate);
 
-        var (success, errors) = GetValidationResult();
-        if (success.Count == 0)
-            return BaseResult<bool>.Failure(errors);
+        var listNotification = GetAllNotification();
+
+        if (listNotification!.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<bool>.Failure(listNotification!);
 
         var listUpdateProduct = (from i in listProductValidate
                                  let name = i.Original.Name = i.InputIdentityUpdateProduct.InputUpdateProduct.Name
@@ -109,7 +111,7 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
                                  select i.Original).ToList();
 
         await _productRepository.Update(listUpdateProduct);
-        return BaseResult<bool>.Success(true, [.. success, .. errors]);
+        return BaseResult<bool>.Success(true, listNotification!);
     }
     #endregion
 
@@ -134,15 +136,16 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
 
         _productValidateService.ValidateDelete(listProductValidate);
 
-        var (success, errors) = GetValidationResult();
-        if (success.Count == 0)
-            return BaseResult<bool>.Failure(errors);
+        var listNotification = GetAllNotification();
+
+        if (listNotification!.Where(i => i.NotificationType == EnumNotificationType.Success).ToList().Count == 0)
+            return BaseResult<bool>.Failure(listNotification!);
 
         var listDeleteProduct = (from i in listProductValidate
                                  select i.Original).ToList();
 
         await _productRepository.Delete(listDeleteProduct);
-        return BaseResult<bool>.Success(true, [.. success, .. errors]);
+        return BaseResult<bool>.Success(true, listNotification!);
     }
     #endregion
 

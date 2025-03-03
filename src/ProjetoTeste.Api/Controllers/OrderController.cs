@@ -7,6 +7,7 @@ using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Service;
+using ProjetoTeste.Domain.Interface.Service.Module.ProductOrder;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
 
@@ -15,10 +16,12 @@ namespace ProjetoTeste.Api.Controllers;
 public class OrderController : BaseController<IOrderService, OrderDTO, Order, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
 {
     private readonly IOrderService _orderService;
+    private readonly IProductOrderService _productOrderService;
 
-    public OrderController(IOrderService orderService, IUnitOfWork unitOfWork) : base(unitOfWork, orderService)
+    public OrderController(IOrderService orderService, IUnitOfWork unitOfWork, IProductOrderService productOrderService) : base(unitOfWork, orderService)
     {
         _orderService = orderService;
+        _productOrderService = productOrderService;
     }
 
     #region Get
@@ -82,25 +85,25 @@ public class OrderController : BaseController<IOrderService, OrderDTO, Order, In
 
     #region Create ProductOrder
     [HttpPost("Create/ProductOrder")]
-    public async Task<ActionResult<OutputOrder>> CreateProductOrder(InputCreateProductOrder input)
+    public async Task<ActionResult<BaseResult<OutputOrder>>> CreateProductOrder(InputCreateProductOrder inputCreateProductOrder)
     {
-        var add = await _orderService.CreateProductOrder(input);
-        if (!add.Success)
+        var create = await _productOrderService.Create(inputCreateProductOrder);
+        if (!create.IsSuccess)
         {
-            return BadRequest(add);
+            return BadRequest(create);
         }
-        return Ok(add);
+        return Ok(create);
     }
 
     [HttpPost("Create/ProductOrder/Multiple")]
-    public async Task<ActionResult<OutputOrder>> CreateProductOrder(List<InputCreateProductOrder> listInputCreateProductOrder)
+    public async Task<ActionResult<BaseResult<List<OutputOrder>>>> CreateProductOrder(List<InputCreateProductOrder> listInputCreateProductOrder)
     {
-        var add = await _orderService.CreateProductOrderMultiple(listInputCreateProductOrder);
-        if (!add.Success)
+        var createMultiple = await _productOrderService.CreateMultiple(listInputCreateProductOrder);
+        if (!createMultiple.IsSuccess)
         {
-            return BadRequest(add);
+            return BadRequest(createMultiple);
         }
-        return Ok(add);
+        return Ok(createMultiple);
     }
     #endregion
 

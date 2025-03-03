@@ -7,7 +7,7 @@ namespace ProjetoTeste.Domain.DTO;
 public class OrderDTO : BaseDTO<OrderDTO>
 {
     public long CustomerId { get; private set; }
-    public decimal Total { get; private set; }
+    public decimal Total { get; set; }
     public DateTime OrderDate { get; private set; }
 
     public CustomerDTO Customer { get; private set; }
