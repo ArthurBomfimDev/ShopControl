@@ -13,14 +13,14 @@ public class NotificationDictionary
     {
         ListNotification = new();
     }
-
     public void Add(string key, DetailedNotification detailedNotification)
     {
         if (ListNotification.ContainsKey(key))
         {
             var list = Get(key);
-            var noitfication = list.FirstOrDefault();
-            noitfication.ListMessage.AddRange(detailedNotification.ListMessage);
+            var notification = list.FirstOrDefault();
+            if (!notification.ListMessage.Contains(detailedNotification.ListMessage.FirstOrDefault()))
+                notification.ListMessage.AddRange(detailedNotification.ListMessage);
         }
         else
         {
@@ -52,15 +52,4 @@ public class NotificationDictionary
         Add(keyIdentificator, new DetailedNotification(keyIdentificator, [message], EnumNotificationType.Error));
         return true;
     }
-
-    //public (List<DetailedNotification>? listSuccess, List<DetailedNotification>? listErrors) GetResult()
-    //{
-    //    var listNotification = GetAllNotification();
-    //    if (listNotification == null)
-    //        return (null, null);
-    //    var listSucess = listNotification!.Where(i => i.NotificationType == EnumNotificationType.Success).ToList();
-    //    var listError = listNotification!.Where(i => i.NotificationType == EnumNotificationType.Error).ToList();
-
-    //    return (listSucess, listError);
-    //}
 }
