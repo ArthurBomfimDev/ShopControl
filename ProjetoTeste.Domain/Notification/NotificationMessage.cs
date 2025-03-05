@@ -11,7 +11,7 @@ public static class NotificationMessage
 
     public static string RepeatedIdentifier(string fieldName, string? value) => $"ERROR KEY: RepeatedIdentifier - O Campo identificador: {fieldName}, com valor '{value}', foi insirido repetidas vezes e não pode ser cadastrado.";
 
-    public static string RepeatedId(long Id) => $"ERROR KEY: RepetaedId- O Id: {Id}, foi insirido repetidas vezes e não pode ser utilizado.";
+    public static string RepeatedId(long Id) => $"ERROR KEY: RepetaedId - O Id: {Id}, foi insirido repetidas vezes e não pode ser utilizado.";
 
     public static string AlreadyExists(string fieldName, string? value) => $"ERROR KEY: AlreadyExists - O Campo identificador: {fieldName}, com valor '{value}', não pode ser utilizado, pois já está em uso.";
 

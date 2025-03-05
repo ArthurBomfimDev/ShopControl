@@ -48,16 +48,6 @@ public class ProductOrderValidateService : BaseValidate<ProductOrderValidateDTO>
         (from i in RemoveIgnore(listProductOrderValidate)
          let value = i.InputCreateProductOrder.Quantity
          select ValidateStock(listProduct, value, i.InputCreateProductOrder.OrderId.ToString(), i.InputCreateProductOrder.ProductId) == true ? true : i.SetInvalid()).ToList();
-        //foreach (var i in RemoveIgnore(listProductOrderValidate))
-        //{
-        //    if (!i.Invalid && i.InputCreateProductOrder.Quantity <= listProduct.FirstOrDefault(j => j.Id == i.InputCreateProductOrder.ProductId).Stock)
-        //        listProduct.FirstOrDefault(j => j.Id == i.InputCreateProductOrder.ProductId).Stock -= i.InputCreateProductOrder.Quantity;
-        //    else
-        //    {
-        //        i.SetInvalid();
-        //        UnavailableStock(i.InputCreateProductOrder.OrderId.ToString(), i.InputCreateProductOrder.Quantity, listProduct.FirstOrDefault(j => j.Id == i.InputCreateProductOrder.ProductId).Stock);
-        //    }
-        //}
 
         (from i in RemoveInvalid(listProductOrderValidate)
          select SuccessfullyRegistered(i.OrderDTO.Id.ToString(), "Pedido de Produto")).ToList();
