@@ -10,7 +10,7 @@ using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Domain.Service;
 
-public class CustomerService : BaseService<ICustomerRepository, ICustomerValidateService, CustomerDTO, InputCreateCustomer, InputUpdateCustomer, InputIdentityUpdateCustomer, InputIdentifyDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer, CustomerValidateDTO>, ICustomerService
+public class CustomerService : BaseService<ICustomerRepository, ICustomerValidateService, CustomerDTO, InputCreateCustomer, InputUpdateCustomer, InputIdentityUpdateCustomer, InputIdentityDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer, CustomerValidateDTO>, ICustomerService
 {
     #region Dependency Injection
     private readonly ICustomerRepository _customerRepository;
@@ -24,9 +24,9 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
     #endregion
 
     #region Create
-    public override async Task<BaseResult<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreateCustomer)
+    public override async Task<BaseResult<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreate)
     {
-        List<CustomerValidateDTO> listCutomerValidate = listInputCreateCustomer.Select(i => new CustomerValidateDTO().ValidateCreate(i)).ToList();
+        List<CustomerValidateDTO> listCutomerValidate = listInputCreate.Select(i => new CustomerValidateDTO().ValidateCreate(i)).ToList();
 
         _customerValidateService.ValidateCreate(listCutomerValidate);
 
@@ -36,7 +36,7 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
             return BaseResult<List<OutputCustomer>>.Failure(listNotification!);
 
         var listCreate = (from i in listCutomerValidate
-                          select new CustomerDTO(i.InputCreateCustomer.Name, i.InputCreateCustomer.CPF, i.InputCreateCustomer.Email, i.InputCreateCustomer.Phone)).ToList();
+                          select new CustomerDTO(i.InputCreate.Name, i.InputCreate.CPF, i.InputCreate.Email, i.InputCreate.Phone)).ToList();
 
         var create = await _customerRepository.Create(listCreate);
 
@@ -45,22 +45,22 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
     #endregion
 
     #region Update
-    public override async Task<BaseResult<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> listInputIdentityUpdateCustomer)
+    public override async Task<BaseResult<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> listInputIdentityUpdate)
     {
-        var originalCustomer = await _customerRepository.GetListByListId(listInputIdentityUpdateCustomer.Select(i => i.Id).ToList());
-        var listRepeteId = (from i in listInputIdentityUpdateCustomer
-                            where listInputIdentityUpdateCustomer.Count(j => j.Id == i.Id) > 1
+        var originalCustomer = await _customerRepository.GetListByListId(listInputIdentityUpdate.Select(i => i.Id).ToList());
+        var listRepeteId = (from i in listInputIdentityUpdate
+                            where listInputIdentityUpdate.Count(j => j.Id == i.Id) > 1
                             select i.Id).ToList();
 
-        var listUpdate = (from i in listInputIdentityUpdateCustomer
+        var listUpdate = (from i in listInputIdentityUpdate
                           select new
                           {
-                              InputIdentityUpdateCustomer = i,
+                              InputIdentityUpdate= i,
                               OriginalCustomer = originalCustomer.FirstOrDefault(j => j.Id == i.Id),
                               RepeteId = listRepeteId.FirstOrDefault(k => k == i.Id),
                           }).ToList();
 
-        List<CustomerValidateDTO> listCustomerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdateCustomer, i.OriginalCustomer, i.RepeteId)).ToList();
+        List<CustomerValidateDTO> listCustomerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdate, i.OriginalCustomer, i.RepeteId)).ToList();
         _customerValidateService.ValidateUpdate(listCustomerValidate);
 
         var listNotification = GetAllNotification();
@@ -69,10 +69,10 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
             return BaseResult<bool>.Failure(listNotification!);
 
         var listUpdateCustomer = (from i in listCustomerValidate
-                                  let name = i.OriginalDTO.Name = i.InputIdentityUpdateCustomer.InputUpdate.Name
-                                  let cpf = i.OriginalDTO.CPF = i.InputIdentityUpdateCustomer.InputUpdate.CPF
-                                  let email = i.OriginalDTO.Email = i.InputIdentityUpdateCustomer.InputUpdate.Email
-                                  let phone = i.OriginalDTO.Phone = i.InputIdentityUpdateCustomer.InputUpdate.Phone
+                                  let name = i.OriginalDTO.Name = i.InputIdentityUpdate.InputUpdate.Name
+                                  let cpf = i.OriginalDTO.CPF = i.InputIdentityUpdate.InputUpdate.CPF
+                                  let email = i.OriginalDTO.Email = i.InputIdentityUpdate.InputUpdate.Email
+                                  let phone = i.OriginalDTO.Phone = i.InputIdentityUpdate.InputUpdate.Phone
                                   select i.OriginalDTO).ToList();
 
         await _customerRepository.Update(listUpdateCustomer);
@@ -81,7 +81,7 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
     #endregion
 
     #region Delete
-    public override async Task<BaseResult<bool>> DeleteMultiple(List<InputIdentifyDeleteCustomer> listInputIdentifyDeleteCustomer)
+    public override async Task<BaseResult<bool>> DeleteMultiple(List<InputIdentityDeleteCustomer> listInputIdentifyDeleteCustomer)
     {
         var listOriginal = await _customerRepository.GetListByListId(listInputIdentifyDeleteCustomer.Select(i => i.Id).ToList());
         var listRepeatedDelete = (from i in listInputIdentifyDeleteCustomer

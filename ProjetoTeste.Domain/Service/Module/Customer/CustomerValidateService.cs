@@ -86,37 +86,37 @@ public class CustomerValidateService : BaseValidate<CustomerValidateDTO>, ICusto
         CreateDictionary();
 
         (from i in listCustomerValidate
-         where i.InputCreateCustomer == null
+         where i.InputCreate == null
          let setInvalid = i.SetIgnore()
          select i).ToList();
 
         (from i in RemoveIgnore(listCustomerValidate)
-         let cpfValidate = CPFValidate(i.InputCreateCustomer.CPF)
+         let cpfValidate = CPFValidate(i.InputCreate.CPF)
          where cpfValidate != EnumValidateType.Valid
          let setInvalid = cpfValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidEmail(i.InputCreateCustomer.CPF, i.InputCreateCustomer.CPF)).ToList();
+         select InvalidEmail(i.InputCreate.CPF, i.InputCreate.CPF)).ToList();
 
         (from i in RemoveIgnore(listCustomerValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputCreateCustomer.Name, 1, 64)
+         let resultInvalidLenght = InvalidLenght(i.InputCreate.Name, 1, 64)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreateCustomer.CPF, i.InputCreateCustomer.Name, 1, 64, "Nome") : NullField(i.InputCreateCustomer.CPF, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.CPF, i.InputCreate.Name, 1, 64, "Nome") : NullField(i.InputCreate.CPF, "Nome")).ToList();
 
         (from i in RemoveIgnore(listCustomerValidate)
-         let emailValidate = EmailValidate(i.InputCreateCustomer.Email)
+         let emailValidate = EmailValidate(i.InputCreate.Email)
          where emailValidate != EnumValidateType.Valid
          let setInvalid = i.SetInvalid()
-         select InvalidEmail(i.InputCreateCustomer.CPF, i.InputCreateCustomer.Email)).ToList();
+         select InvalidEmail(i.InputCreate.CPF, i.InputCreate.Email)).ToList();
 
 
         (from i in RemoveIgnore(listCustomerValidate)
-         let resultPheneValidate = PhoneValidate(i.InputCreateCustomer.Phone)
+         let resultPheneValidate = PhoneValidate(i.InputCreate.Phone)
          where resultPheneValidate != EnumValidateType.Valid
          let setInvalid = resultPheneValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidPhone(i.InputCreateCustomer.CPF, i.InputCreateCustomer.Phone)).ToList();
+         select InvalidPhone(i.InputCreate.CPF, i.InputCreate.Phone)).ToList();
 
         (from i in RemoveInvalid(listCustomerValidate)
-         select SuccessfullyRegistered(i.InputCreateCustomer.CPF, "Cliente")).ToList();
+         select SuccessfullyRegistered(i.InputCreate.CPF, "Cliente")).ToList();
 
         #region ValidateUnic
         ////var cpfExistsList = (from i in inputCreateList
@@ -180,40 +180,40 @@ public class CustomerValidateService : BaseValidate<CustomerValidateDTO>, ICusto
         (from i in RemoveIgnore(listCustomerValidate)
          where i.RepeteId != 0
          let setInvalid = i.SetInvalid()
-         select RepeatedId(i.InputIdentityUpdateCustomer.InputUpdate.CPF, i.InputIdentityUpdateCustomer.Id)).ToList();
+         select RepeatedId(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.Id)).ToList();
 
         (from i in RemoveIgnore(listCustomerValidate)
          where i.OriginalDTO == null
          let setInvalid = i.SetInvalid()
-         select NotFoundId(i.InputIdentityUpdateCustomer.InputUpdate.CPF, "Cliente", i.InputIdentityUpdateCustomer.Id)).ToList();
+         select NotFoundId(i.InputIdentityUpdate.InputUpdate.CPF, "Cliente", i.InputIdentityUpdate.Id)).ToList();
 
         (from i in RemoveIgnore(listCustomerValidate)
-         let cpfValidate = CPFValidate(i.InputIdentityUpdateCustomer.InputUpdate.CPF)
+         let cpfValidate = CPFValidate(i.InputIdentityUpdate.InputUpdate.CPF)
          where cpfValidate != EnumValidateType.Valid
          let setInvalid = cpfValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidCPF(i.InputIdentityUpdateCustomer.InputUpdate.CPF, i.InputIdentityUpdateCustomer.InputUpdate.CPF)).ToList();
+         select InvalidCPF(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.CPF)).ToList();
 
         (from i in RemoveIgnore(listCustomerValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdateCustomer.InputUpdate.Name, 1, 64)
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Name, 1, 64)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdateCustomer.InputUpdate.CPF, i.InputIdentityUpdateCustomer.InputUpdate.Name, 1, 64, "Nome") : NullField(i.InputIdentityUpdateCustomer.InputUpdate.CPF, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.Name, 1, 64, "Nome") : NullField(i.InputIdentityUpdate.InputUpdate.CPF, "Nome")).ToList();
 
         (from i in RemoveIgnore(listCustomerValidate)
-         let emailValidate = EmailValidate(i.InputIdentityUpdateCustomer.InputUpdate.Email)
+         let emailValidate = EmailValidate(i.InputIdentityUpdate.InputUpdate.Email)
          where emailValidate != EnumValidateType.Valid
          let setInvalid = i.SetInvalid()
-         select InvalidEmail(i.InputIdentityUpdateCustomer.InputUpdate.CPF, i.InputIdentityUpdateCustomer.InputUpdate.Email)).ToList();
+         select InvalidEmail(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.Email)).ToList();
 
 
         (from i in RemoveIgnore(listCustomerValidate)
-         let resultPheneValidate = PhoneValidate(i.InputIdentityUpdateCustomer.InputUpdate.Phone)
+         let resultPheneValidate = PhoneValidate(i.InputIdentityUpdate.InputUpdate.Phone)
          where resultPheneValidate != EnumValidateType.Valid
          let setInvalid = resultPheneValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidPhone(i.InputIdentityUpdateCustomer.InputUpdate.CPF, i.InputIdentityUpdateCustomer.InputUpdate.Phone)).ToList();
+         select InvalidPhone(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.Phone)).ToList();
 
         (from i in RemoveInvalid(listCustomerValidate)
-         select SuccessfullyUpdated(i.InputIdentityUpdateCustomer.InputUpdate.CPF, i.InputIdentityUpdateCustomer.Id, "Cliente")).ToList();
+         select SuccessfullyUpdated(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.Id, "Cliente")).ToList();
 
         #region Unique
         //if (idList.Count != inputUpdateList.Count)
@@ -283,15 +283,15 @@ public class CustomerValidateService : BaseValidate<CustomerValidateDTO>, ICusto
         (from i in RemoveIgnore(listCustomerValidate)
          where i.RepeatedDelete != null
          let setInvalid = i.SetInvalid()
-         select RepeatedId(i.InputIdentifyDeleteCustomer.Id.ToString(), i.InputIdentifyDeleteCustomer.Id)).ToList();
+         select RepeatedId(i.InputIdentityDelete.Id.ToString(), i.InputIdentityDelete.Id)).ToList();
 
         (from i in RemoveIgnore(listCustomerValidate)
          where i.OriginalDTO == null
          let setInvalid = i.SetInvalid()
-         select NotFoundId(i.InputIdentifyDeleteCustomer.Id.ToString(), "Cliente", i.InputIdentifyDeleteCustomer.Id)).ToList();
+         select NotFoundId(i.InputIdentityDelete.Id.ToString(), "Cliente", i.InputIdentityDelete.Id)).ToList();
 
         (from i in RemoveInvalid(listCustomerValidate)
-         select SuccessfullyDeleted(i.InputIdentifyDeleteCustomer.Id.ToString(), "Cliente")).ToList();
+         select SuccessfullyDeleted(i.InputIdentityDelete.Id.ToString(), "Cliente")).ToList();
     }
     #endregion
 }

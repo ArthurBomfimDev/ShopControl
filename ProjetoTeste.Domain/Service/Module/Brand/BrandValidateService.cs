@@ -57,50 +57,50 @@ public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValida
         CreateDictionary();
 
         (from i in listBrandValidate
-         where i.InputUpdate == null || i.InputUpdate.InputUpdate == null
+         where i.InputIdentityUpdate == null || i.InputIdentityUpdate.InputUpdate == null
          let setIgnore = i.SetIgnore()
          select InvalidNull(listBrandValidate.IndexOf(i))).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          where i.OriginalBrandDTO == null
          let setInvalid = i.SetInvalid()
-         select NotFoundId(i.InputUpdate.InputUpdate.Code, "Marca", i.InputUpdate.Id)).ToList();
+         select NotFoundId(i.InputIdentityUpdate.InputUpdate.Code, "Marca", i.InputIdentityUpdate.Id)).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
-         where i.RepetedInputUpdateIdentify != 0
+         where i.RepetedInputUpdateIdentity != 0
          let setInvalid = i.SetInvalid()
-         select RepeatedId(i.InputUpdate.InputUpdate.Code, i.InputUpdate.Id)).ToList();
+         select RepeatedId(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.Id)).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          where i.RepetedCode != null
          let setInvalid = i.SetInvalid()
-         select RepeatedIdentifier(i.InputUpdate.InputUpdate.Code, "Código")).ToList();
+         select RepeatedIdentifier(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          where !i.Invalid && i.CodeExists != null && i.CodeExists != i.OriginalBrandDTO?.Code
          let setInvalid = i.SetInvalid()
-         select AlreadyExists(i.InputUpdate.InputUpdate.Code, "Código")).ToList();
+         select AlreadyExists(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdate.Name, 1, 24)
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Name, 1, 24)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputUpdate.InputUpdate.Code, i.InputUpdate.InputUpdate.Name, 1, 24, "Nome") : NullField(i.InputUpdate.InputUpdate.Code, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Name, 1, 24, "Nome") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Nome")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdate.Code, 1, 6)
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, 1, 6)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputUpdate.InputUpdate.Code, i.InputUpdate.InputUpdate.Code, 1, 6, "Código") : NullField(i.InputUpdate.InputUpdate.Code, "Código")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Code, 1, 6, "Código") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputUpdate.InputUpdate.Description, 0, 100)
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Description, 0, 100)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputUpdate.InputUpdate.Code, i.InputUpdate.InputUpdate.Description, 0, 100, "Descrição") : NullField(i.InputUpdate.InputUpdate.Code, "Descrição")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Description, 0, 100, "Descrição") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Descrição")).ToList();
 
         (from i in RemoveInvalid(listBrandValidate)
-         select SuccessfullyUpdated(i.InputUpdate.InputUpdate.Code, i.InputUpdate.Id, "Marca")).ToList();
+         select SuccessfullyUpdated(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.Id, "Marca")).ToList();
     }
     #endregion
 
@@ -112,20 +112,20 @@ public class BrandValidateService : BaseValidate<BrandValidateDTO>, IBrandValida
         (from i in RemoveIgnore(listBrandValidate)
          where i.RepeteInputDelete != null
          let setInvalid = i.SetInvalid()
-         select RepeatedId(i.InputIdentifyDeleteBrand.Id.ToString(), i.InputIdentifyDeleteBrand.Id)).ToList();
+         select RepeatedId(i.InputIdentityDelete.Id.ToString(), i.InputIdentityDelete.Id)).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          where i.OriginalBrandDTO == null
          let setInvalid = i.SetInvalid()
-         select NotFoundId(i.InputIdentifyDeleteBrand.Id.ToString(), "Marca", i.InputIdentifyDeleteBrand.Id)).ToList();
+         select NotFoundId(i.InputIdentityDelete.Id.ToString(), "Marca", i.InputIdentityDelete.Id)).ToList();
 
         (from i in RemoveIgnore(listBrandValidate)
          where i.BrandWithProduct != 0
          let setInvalid = i.SetInvalid()
-         select LikedValue(i.InputIdentifyDeleteBrand.Id.ToString(), "Produto(s)", "Marca")).ToList();
+         select LikedValue(i.InputIdentityDelete.Id.ToString(), "Produto(s)", "Marca")).ToList();
 
         (from i in RemoveInvalid(listBrandValidate)
-         select SuccessfullyDeleted(i.InputIdentifyDeleteBrand.Id.ToString(), "Marca")).ToList();
+         select SuccessfullyDeleted(i.InputIdentityDelete.Id.ToString(), "Marca")).ToList();
     }
     #endregion
 }

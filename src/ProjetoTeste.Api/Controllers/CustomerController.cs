@@ -8,4 +8,4 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Api.Controllers;
 
-public class CustomerController(ICustomerService customerService, IUnitOfWork unitOfWork) : BaseController<ICustomerService, CustomerDTO, Customer, InputCreateCustomer, InputUpdateCustomer, InputIdentityUpdateCustomer, InputIdentifyDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer>(unitOfWork, customerService) { }
+public class CustomerController(ICustomerService customerService, IUnitOfWork unitOfWork) : BaseController<ICustomerService, CustomerDTO, Customer, InputCreateCustomer, InputUpdateCustomer, InputIdentityUpdateCustomer, InputIdentityDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer>(unitOfWork, customerService) { }

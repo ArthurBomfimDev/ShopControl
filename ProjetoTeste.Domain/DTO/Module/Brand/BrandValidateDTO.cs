@@ -1,20 +1,18 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Domain.DTO;
+using ProjetoTeste.Domain.DTO.Base;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class BrandValidateDTO : BaseValidateDTO
+public class BrandValidateDTO : BaseValidateDTO_1<InputCreateBrand, InputUpdateBrand, InputIdentityUpdateBrand, InputIdentityDeleteBrand>
 {
-    public InputCreateBrand? InputCreate { get; private set; }
     public string? RepeatedInputCreateCode { get; private set; }
     public List<InputIdentityUpdateBrand>? ListRepeatedInputIdetityUpdate { get; private set; }
     public BrandDTO? OriginalBrandDTO { get; private set; }
-    public InputIdentityUpdateBrand InputUpdate { get; private set; }
-    public long RepetedInputUpdateIdentify { get; private set; }
+    public long RepetedInputUpdateIdentity { get; private set; }
     public string RepetedCode { get; private set; }
     public string? CodeExists { get; private set; }
-    public InputIdentifyDeleteBrand InputIdentifyDeleteBrand { get; private set; }
-    public InputIdentifyDeleteBrand? RepeteInputDelete { get; private set; }
+    public InputIdentityDeleteBrand? RepeteInputDelete { get; private set; }
     public long? BrandWithProduct { get; private set; }
 
     public BrandValidateDTO ValidateCreate(InputCreateBrand? inputCreate, string? repeatedInputCreate, BrandDTO? originalBrand)
@@ -26,16 +24,16 @@ public class BrandValidateDTO : BaseValidateDTO
     }
     public BrandValidateDTO ValidateUpdate(InputIdentityUpdateBrand? inputUpdate, long repetedInputUpdate, BrandDTO? originalBrand, string repetedCode, string? codeExists)
     {
-        InputUpdate = inputUpdate;
-        RepetedInputUpdateIdentify = repetedInputUpdate;
+        InputIdentityUpdate = inputUpdate;
+        RepetedInputUpdateIdentity = repetedInputUpdate;
         OriginalBrandDTO = originalBrand;
         RepetedCode = repetedCode;
         CodeExists = codeExists;
         return this;
     }
-    public BrandValidateDTO ValidateDelete(InputIdentifyDeleteBrand inputIdentifyDeleteBrand, BrandDTO? originalBrand, InputIdentifyDeleteBrand repeteInputDelete, long? brandWIthProduct)
+    public BrandValidateDTO ValidateDelete(InputIdentityDeleteBrand inputIdentifyDeleteBrand, BrandDTO? originalBrand, InputIdentityDeleteBrand repeteInputDelete, long? brandWIthProduct)
     {
-        InputIdentifyDeleteBrand = inputIdentifyDeleteBrand;
+        InputIdentityDelete = inputIdentifyDeleteBrand;
         OriginalBrandDTO = originalBrand;
         RepeteInputDelete = repeteInputDelete;
         BrandWithProduct = brandWIthProduct;

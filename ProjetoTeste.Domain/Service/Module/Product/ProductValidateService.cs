@@ -13,55 +13,55 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
         CreateDictionary();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputCreateProduct == null
+         where i.InputCreate == null
          let setIgnore = i.SetIgnore()
          select InvalidNull(listProductValidate.IndexOf(i))).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.OriginalCode != null
          let setInvalid = i.SetInvalid()
-         select AlreadyExists(i.InputCreateProduct.Code, "Código")).ToList();
+         select AlreadyExists(i.InputCreate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.RepeteCode != null
          let setInvalid = i.SetInvalid()
-         select RepeatedIdentifier(i.InputCreateProduct.Code, "Código")).ToList();
+         select RepeatedIdentifier(i.InputCreate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputCreateProduct.Code, 1, 6)
+         let resultInvalidLenght = InvalidLenght(i.InputCreate.Code, 1, 6)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Code, 1, 6, "Código") : NullField(i.InputCreateProduct.Code, "Código")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Code, 1, 6, "Código") : NullField(i.InputCreate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputCreateProduct.Name, 1, 24)
+         let resultInvalidLenght = InvalidLenght(i.InputCreate.Name, 1, 24)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Name, 1, 24, "Nome") : NullField(i.InputCreateProduct.Code, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Name, 1, 24, "Nome") : NullField(i.InputCreate.Code, "Nome")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputCreateProduct.Description, 0, 100)
+         let resultInvalidLenght = InvalidLenght(i.InputCreate.Description, 0, 100)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreateProduct.Code, i.InputCreateProduct.Description, 0, 100, "Descrição") : NullField(i.InputCreateProduct.Code, "Descrição")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Description, 0, 100, "Descrição") : NullField(i.InputCreate.Code, "Descrição")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.BrandId == 0
          let setInvalid = i.SetInvalid()
-         select InvalidRelatedProperty(i.InputCreateProduct.Code, "Id da Marca", i.InputCreateProduct.BrandId)).ToList();
+         select InvalidRelatedProperty(i.InputCreate.Code, "Id da Marca", i.InputCreate.BrandId)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputCreateProduct.Price < 0
+         where i.InputCreate.Price < 0
          let setInvalid = i.SetInvalid()
-         select NegativePrice(i.InputCreateProduct.Code, i.InputCreateProduct.Price)).ToList();
+         select NegativePrice(i.InputCreate.Code, i.InputCreate.Price)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputCreateProduct.Stock < 0
+         where i.InputCreate.Stock < 0
          let setInvalid = i.SetInvalid()
-         select NegativeStock(i.InputCreateProduct.Code, i.InputCreateProduct.Stock)).ToList();
+         select NegativeStock(i.InputCreate.Code, i.InputCreate.Stock)).ToList();
 
         (from i in RemoveInvalid(listProductValidate)
-         select SuccessfullyRegistered(i.InputCreateProduct.Code, "Produto")).ToList();
+         select SuccessfullyRegistered(i.InputCreate.Code, "Produto")).ToList();
 
     }
     #endregion
@@ -72,66 +72,66 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
         CreateDictionary();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputIdentityUpdateProduct == null
+         where i.InputIdentityUpdate == null
          let setIgnore = i.SetIgnore()
          select InvalidNull(listProductValidate.IndexOf(i))).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.RepeteIdentity != 0
          let setInvalid = i.SetInvalid()
-         select RepeatedId(i.InputIdentityUpdateProduct.InputUpdate.Code, i.InputIdentityUpdateProduct.Id)).ToList();
+         select RepeatedId(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.Id)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.Original == null
          let setInvalid = i.SetInvalid()
-         select NotFoundId(i.InputIdentityUpdateProduct.InputUpdate.Code, "Marca", i.InputIdentityUpdateProduct.Id)).ToList();
+         select NotFoundId(i.InputIdentityUpdate.InputUpdate.Code, "Marca", i.InputIdentityUpdate.Id)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.RepeteCode != null
          let setInvalid = i.SetInvalid()
-         select RepeatedIdentifier(i.InputIdentityUpdateProduct.InputUpdate.Code, "Código")).ToList();
+         select RepeatedIdentifier(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.OriginalCode != null && i.Original.Code != i.InputIdentityUpdateProduct.InputUpdate.Code
+         where i.OriginalCode != null && i.Original.Code != i.InputIdentityUpdate.InputUpdate.Code
          let setInvalid = i.SetInvalid()
-         select AlreadyExists(i.InputIdentityUpdateProduct.InputUpdate.Code, "Código")).ToList();
+         select AlreadyExists(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.BrandId == default(long)
          let setInvalid = i.SetInvalid()
-         select InvalidRelatedProperty(i.InputIdentityUpdateProduct.InputUpdate.Code, "Id da Marca", i.InputIdentityUpdateProduct.InputUpdate.BrandId)).ToList();
+         select InvalidRelatedProperty(i.InputIdentityUpdate.InputUpdate.Code, "Id da Marca", i.InputIdentityUpdate.InputUpdate.BrandId)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputIdentityUpdateProduct.InputUpdate.Price < 0
+         where i.InputIdentityUpdate.InputUpdate.Price < 0
          let setInvalid = i.SetInvalid()
-         select NegativePrice(i.InputIdentityUpdateProduct.InputUpdate.Code, i.InputIdentityUpdateProduct.InputUpdate.Price)).ToList();
+         select NegativePrice(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Price)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputIdentityUpdateProduct.InputUpdate.Stock < 0
+         where i.InputIdentityUpdate.InputUpdate.Stock < 0
          let setInvalid = i.SetInvalid()
-        select NegativePrice(i.InputIdentityUpdateProduct.InputUpdate.Code, i.InputIdentityUpdateProduct.InputUpdate.Stock)).ToList();
+        select NegativePrice(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Stock)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdateProduct.InputUpdate.Name, 1, 24)
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Name, 1, 24)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdateProduct.InputUpdate.Code, i.InputIdentityUpdateProduct.InputUpdate.Name, 1, 24, "Nome") : NullField(i.InputIdentityUpdateProduct.InputUpdate.Code, "Nome")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Name, 1, 24, "Nome") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Nome")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdateProduct.InputUpdate.Code, 1, 6)
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, 1, 6)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdateProduct.InputUpdate.Code, i.InputIdentityUpdateProduct.InputUpdate.Code, 1, 6, "Código") : NullField(i.InputIdentityUpdateProduct.InputUpdate.Code, "Código")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Code, 1, 6, "Código") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdateProduct.InputUpdate.Description, 0, 100)
+         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Description, 0, 100)
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdateProduct.InputUpdate.Code, i.InputIdentityUpdateProduct.InputUpdate.Description, 0, 100, "Descrição") : NullField(i.InputIdentityUpdateProduct.InputUpdate.Code, "Descrição")).ToList();
+         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Description, 0, 100, "Descrição") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Descrição")).ToList();
 
 
         (from i in RemoveInvalid(listProductValidate)
-         select SuccessfullyUpdated(i.InputIdentityUpdateProduct.InputUpdate.Code, i.InputIdentityUpdateProduct.Id, "Produto")).ToList();
+         select SuccessfullyUpdated(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.Id, "Produto")).ToList();
     }
     #endregion
 
@@ -141,27 +141,27 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
         CreateDictionary();
 
         (from i in RemoveIgnore(listProductValidate)
-         where i.InputIdentifyDeleteProduct == null
+         where i.InputIdentityDelete == null
          let setIgnore = i.SetIgnore()
          select InvalidNull(listProductValidate.IndexOf(i))).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.RepetedIdentity != 0
          let setInvalid = i.SetInvalid()
-         select RepeatedId(i.InputIdentifyDeleteProduct.Id.ToString(), i.InputIdentifyDeleteProduct.Id)).ToList();
+         select RepeatedId(i.InputIdentityDelete.Id.ToString(), i.InputIdentityDelete.Id)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where i.Original == null
          let setInvalid = i.SetInvalid()
-         select NotFoundId(i.InputIdentifyDeleteProduct.Id.ToString(), "Produto", i.InputIdentifyDeleteProduct.Id)).ToList();
+         select NotFoundId(i.InputIdentityDelete.Id.ToString(), "Produto", i.InputIdentityDelete.Id)).ToList();
 
         (from i in RemoveIgnore(listProductValidate)
          where !i.Invalid && i.Original.Stock > 0
          let setInvald = i.SetInvalid()
-         select LikedValue(i.InputIdentifyDeleteProduct.Id.ToString(), "Estoque", "Produto")).ToList();
+         select LikedValue(i.InputIdentityDelete.Id.ToString(), "Estoque", "Produto")).ToList();
 
         (from i in RemoveInvalid(listProductValidate)
-         select SuccessfullyDeleted(i.InputIdentifyDeleteProduct.Id.ToString(), "Produto")).ToList();
+         select SuccessfullyDeleted(i.InputIdentityDelete.Id.ToString(), "Produto")).ToList();
     }
     #endregion
 

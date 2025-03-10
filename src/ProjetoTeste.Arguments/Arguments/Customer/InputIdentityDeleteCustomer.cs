@@ -4,4 +4,4 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class InputIdentityDeleteProduct(long id) : BaseInputIdentityDelete<InputIdentityDeleteProduct>(id) { }
+public class InputIdentityDeleteCustomer(long id) : BaseInputIdentityDelete<InputIdentityDeleteCustomer>(id) { }

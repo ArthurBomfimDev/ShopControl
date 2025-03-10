@@ -1,13 +1,11 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Domain.DTO;
+using ProjetoTeste.Domain.DTO.Base;
 
 namespace ProjetoTeste.Arguments.Arguments;
 
-public class ProductValidateDTO : BaseValidateDTO
+public class ProductValidateDTO : BaseValidateDTO_1<InputCreateProduct, InputUpdateProduct, InputIdentityUpdateProduct, InputIdentityDeleteProduct>
 {
-    public InputCreateProduct? InputCreateProduct { get; private set; }
-    public InputIdentityUpdateProduct? InputIdentityUpdateProduct { get; private set; }
-    public InputIdentityDeleteProduct? InputIdentifyDeleteProduct { get; private set; }
     public ProductDTO? Original { get; private set; }
     public string? OriginalCode { get; private set; }
     public long? RepeteIdentity { get; private set; }
@@ -18,7 +16,7 @@ public class ProductValidateDTO : BaseValidateDTO
 
     public ProductValidateDTO ValidateCreate(InputCreateProduct inputCreateProduct, string? originalCode, string repeteCode, long brandId)
     {
-        InputCreateProduct = inputCreateProduct;
+        InputCreate = inputCreateProduct;
         OriginalCode = originalCode;
         RepeteCode = repeteCode;
         BrandId = brandId;
@@ -26,7 +24,7 @@ public class ProductValidateDTO : BaseValidateDTO
     }
     public ProductValidateDTO ValidateUpdate(InputIdentityUpdateProduct? inputIdentityUpdateProduct, ProductDTO? original, string? originalCode, long? repeteIdentity, string? repeteCode, long? brandId)
     {
-        InputIdentityUpdateProduct = inputIdentityUpdateProduct;
+        InputIdentityUpdate = inputIdentityUpdateProduct;
         Original = original;
         OriginalCode = originalCode;
         RepeteIdentity = repeteIdentity;
@@ -36,7 +34,7 @@ public class ProductValidateDTO : BaseValidateDTO
     }
     public ProductValidateDTO ValidateDelete(InputIdentityDeleteProduct? inputIdentifyDeleteProduct, ProductDTO? original, long? repetedIdentity)
     {
-        InputIdentifyDeleteProduct = inputIdentifyDeleteProduct;
+        InputIdentityDelete = inputIdentifyDeleteProduct;
         Original = original;
         RepetedIdentity = repetedIdentity;
         return this;

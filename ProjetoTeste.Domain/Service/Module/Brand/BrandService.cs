@@ -10,7 +10,7 @@ using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Domain.Service;
 
-public class BrandService : BaseService<IBrandRepository, IBrandValidateService, BrandDTO, InputCreateBrand, InputUpdateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand, BrandValidateDTO>, IBrandService
+public class BrandService : BaseService<IBrandRepository, IBrandValidateService, BrandDTO, InputCreateBrand, InputUpdateBrand, InputIdentityUpdateBrand, InputIdentityDeleteBrand, InputIdentityViewBrand, OutputBrand, BrandValidateDTO>, IBrandService
 {
     #region Dependency Injection
     private readonly IBrandRepository _brandRepository;
@@ -91,9 +91,9 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
             return BaseResult<bool>.Failure(listNotification);
 
         var listBrandUpdate = (from i in listBrandValidate
-                               let name = i.OriginalBrandDTO.Name = i.InputUpdate.InputUpdate.Name
-                               let code = i.OriginalBrandDTO.Code = i.InputUpdate.InputUpdate.Code
-                               let description = i.OriginalBrandDTO.Description = i.InputUpdate.InputUpdate.Description
+                               let name = i.OriginalBrandDTO.Name = i.InputIdentityUpdate.InputUpdate.Name
+                               let code = i.OriginalBrandDTO.Code = i.InputIdentityUpdate.InputUpdate.Code
+                               let description = i.OriginalBrandDTO.Description = i.InputIdentityUpdate.InputUpdate.Description
                                select i.OriginalBrandDTO).ToList();
 
         await _brandRepository.Update(listBrandUpdate);
@@ -103,7 +103,7 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
     #endregion
 
     #region Delete
-    public override async Task<BaseResult<bool>> DeleteMultiple(List<InputIdentifyDeleteBrand> listInputIdentifyDeleteBrand)
+    public override async Task<BaseResult<bool>> DeleteMultiple(List<InputIdentityDeleteBrand> listInputIdentifyDeleteBrand)
     {
         var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentifyDeleteBrand.Select(i => i.Id).ToList());
 

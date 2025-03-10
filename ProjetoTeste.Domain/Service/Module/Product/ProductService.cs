@@ -61,7 +61,7 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
             return BaseResult<List<OutputProduct>>.Failure(listNotification!);
 
         var listCreateProduct = (from i in listProductValidate
-                                 select i.InputCreateProduct).Select(i => new ProductDTO(i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock, default)).ToList();
+                                 select i.InputCreate).Select(i => new ProductDTO(i.Name, i.Code, i.Description, i.Price, i.BrandId, i.Stock, default)).ToList();
 
         var listCreatedProduct = await _productRepository.Create(listCreateProduct);
 
@@ -102,12 +102,12 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
             return BaseResult<bool>.Failure(listNotification!);
 
         var listUpdateProduct = (from i in listProductValidate
-                                 let name = i.Original.Name = i.InputIdentityUpdateProduct.InputUpdate.Name
-                                 let code = i.Original.Code = i.InputIdentityUpdateProduct.InputUpdate.Code
-                                 let description = i.Original.Description = i.InputIdentityUpdateProduct.InputUpdate.Description
-                                 let brandId = i.Original.BrandId = i.InputIdentityUpdateProduct.InputUpdate.BrandId
-                                 let stock = i.Original.Stock = i.InputIdentityUpdateProduct.InputUpdate.Stock
-                                 let Price = i.Original.Price = i.InputIdentityUpdateProduct.InputUpdate.Price
+                                 let name = i.Original.Name = i.InputIdentityUpdate.InputUpdate.Name
+                                 let code = i.Original.Code = i.InputIdentityUpdate.InputUpdate.Code
+                                 let description = i.Original.Description = i.InputIdentityUpdate.InputUpdate.Description
+                                 let brandId = i.Original.BrandId = i.InputIdentityUpdate.InputUpdate.BrandId
+                                 let stock = i.Original.Stock = i.InputIdentityUpdate.InputUpdate.Stock
+                                 let Price = i.Original.Price = i.InputIdentityUpdate.InputUpdate.Price
                                  select i.Original).ToList();
 
         await _productRepository.Update(listUpdateProduct);
