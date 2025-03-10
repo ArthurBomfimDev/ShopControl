@@ -5,5 +5,5 @@ using ProjetoTeste.Domain.Interface.Service.Base;
 
 namespace ProjetoTeste.Domain.Interface.Service
 {
-    public interface IBrandService : IBaseService<BrandDTO, InputCreateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand> { }
+    public interface IBrandService : IBaseService<BrandDTO, InputCreateBrand, InputUpdateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand> { }
 }

@@ -8,6 +8,6 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Api.Controllers;
 //Maestro
-public class BrandController(IUnitOfWork unitOfWork, IBrandService brandService) : BaseController<IBrandService, BrandDTO, Brand, InputCreateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand>(unitOfWork, brandService)
+public class BrandController(IUnitOfWork unitOfWork, IBrandService brandService) : BaseController<IBrandService, BrandDTO, Brand, InputCreateBrand, InputUpdateBrand ,InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand>(unitOfWork, brandService)
 {
 }

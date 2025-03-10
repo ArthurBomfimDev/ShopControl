@@ -10,7 +10,7 @@ using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Domain.Service;
 
-public class CustomerService : BaseService<ICustomerRepository, ICustomerValidateService, CustomerDTO, InputCreateCustomer, InputIdentityUpdateCustomer, InputIdentifyDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer, CustomerValidateDTO>, ICustomerService
+public class CustomerService : BaseService<ICustomerRepository, ICustomerValidateService, CustomerDTO, InputCreateCustomer, InputUpdateCustomer, InputIdentityUpdateCustomer, InputIdentifyDeleteCustomer, InputIdentifyViewCustomer, OutputCustomer, CustomerValidateDTO>, ICustomerService
 {
     #region Dependency Injection
     private readonly ICustomerRepository _customerRepository;
@@ -69,10 +69,10 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
             return BaseResult<bool>.Failure(listNotification!);
 
         var listUpdateCustomer = (from i in listCustomerValidate
-                                  let name = i.OriginalDTO.Name = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Name
-                                  let cpf = i.OriginalDTO.CPF = i.InputIdentityUpdateCustomer.InputUpdateCustomer.CPF
-                                  let email = i.OriginalDTO.Email = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Email
-                                  let phone = i.OriginalDTO.Phone = i.InputIdentityUpdateCustomer.InputUpdateCustomer.Phone
+                                  let name = i.OriginalDTO.Name = i.InputIdentityUpdateCustomer.InputUpdate.Name
+                                  let cpf = i.OriginalDTO.CPF = i.InputIdentityUpdateCustomer.InputUpdate.CPF
+                                  let email = i.OriginalDTO.Email = i.InputIdentityUpdateCustomer.InputUpdate.Email
+                                  let phone = i.OriginalDTO.Phone = i.InputIdentityUpdateCustomer.InputUpdate.Phone
                                   select i.OriginalDTO).ToList();
 
         await _customerRepository.Update(listUpdateCustomer);

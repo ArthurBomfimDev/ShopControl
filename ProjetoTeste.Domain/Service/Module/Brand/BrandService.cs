@@ -10,7 +10,7 @@ using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Domain.Service;
 
-public class BrandService : BaseService<IBrandRepository, IBrandValidateService, BrandDTO, InputCreateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand, BrandValidateDTO>, IBrandService
+public class BrandService : BaseService<IBrandRepository, IBrandValidateService, BrandDTO, InputCreateBrand, InputUpdateBrand, InputIdentityUpdateBrand, InputIdentifyDeleteBrand, InputIdentityViewBrand, OutputBrand, BrandValidateDTO>, IBrandService
 {
     #region Dependency Injection
     private readonly IBrandRepository _brandRepository;
@@ -63,26 +63,26 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
     public override async Task<BaseResult<bool>> UpdateMultiple(List<InputIdentityUpdateBrand> listInputIdentityUpdateBrand)
     {
         var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList());
-        var listCodeExists = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdateBrand.Code).ToList())).Select(i => i.Code);
-        var listRepeatedInputUpdateBrandIdentify = (from i in listInputIdentityUpdateBrand
+        var listCodeExists = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdate.Code).ToList())).Select(i => i.Code);
+        var listRepeatedInputUpdateIdentify = (from i in listInputIdentityUpdateBrand
                                                     where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
                                                     select i.Id).ToList();
 
         var listRepeatedCode = (from i in listInputIdentityUpdateBrand
-                                where listInputIdentityUpdateBrand.Count(j => j.InputUpdateBrand.Code == i.InputUpdateBrand.Code) > 1
-                                select i.InputUpdateBrand.Code).ToList();
+                                where listInputIdentityUpdateBrand.Count(j => j.InputUpdate.Code == i.InputUpdate.Code) > 1
+                                select i.InputUpdate.Code).ToList();
 
         var listUpdate = (from i in listInputIdentityUpdateBrand
                           select new
                           {
                               InputIdentityUpdateBrand = i,
-                              RepeatedInputUpdateBrand = listRepeatedInputUpdateBrandIdentify.FirstOrDefault(j => j == i.Id),
+                              RepeatedInputUpdate = listRepeatedInputUpdateIdentify.FirstOrDefault(j => j == i.Id),
                               OriginalBrand = listOriginalBrand.FirstOrDefault(k => k.Id == i.Id),
-                              RepeatedCode = listRepeatedCode.FirstOrDefault(l => l == i.InputUpdateBrand.Code),
-                              CodeExists = listCodeExists.FirstOrDefault(m => m == i.InputUpdateBrand.Code)
+                              RepeatedCode = listRepeatedCode.FirstOrDefault(l => l == i.InputUpdate.Code),
+                              CodeExists = listCodeExists.FirstOrDefault(m => m == i.InputUpdate.Code)
                           }).ToList();
 
-        List<BrandValidateDTO> listBrandValidate = listUpdate.Select(i => new BrandValidateDTO().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdateBrand, i.OriginalBrand, i.RepeatedCode, i.CodeExists)).ToList();
+        List<BrandValidateDTO> listBrandValidate = listUpdate.Select(i => new BrandValidateDTO().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdate, i.OriginalBrand, i.RepeatedCode, i.CodeExists)).ToList();
         _brandValidadeService.ValidateUpdate(listBrandValidate);
 
         var listNotification = GetAllNotification();
@@ -91,9 +91,9 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
             return BaseResult<bool>.Failure(listNotification);
 
         var listBrandUpdate = (from i in listBrandValidate
-                               let name = i.OriginalBrandDTO.Name = i.InputUpdate.InputUpdateBrand.Name
-                               let code = i.OriginalBrandDTO.Code = i.InputUpdate.InputUpdateBrand.Code
-                               let description = i.OriginalBrandDTO.Description = i.InputUpdate.InputUpdateBrand.Description
+                               let name = i.OriginalBrandDTO.Name = i.InputUpdate.InputUpdate.Name
+                               let code = i.OriginalBrandDTO.Code = i.InputUpdate.InputUpdate.Code
+                               let description = i.OriginalBrandDTO.Description = i.InputUpdate.InputUpdate.Description
                                select i.OriginalBrandDTO).ToList();
 
         await _brandRepository.Update(listBrandUpdate);

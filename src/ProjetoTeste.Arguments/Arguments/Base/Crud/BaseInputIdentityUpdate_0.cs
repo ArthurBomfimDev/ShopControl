@@ -1,4 +1,23 @@
-﻿namespace ProjetoTeste.Arguments.Arguments.Base;
+﻿using ProjetoTeste.Arguments.Arguments.Base.Crud;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-public class BaseInputIdentityUpdate<TInputIdentityUpdate> where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputIdentityUpdate> { }
-public class BaseInputIdentityUpdate_0 : BaseInputIdentityUpdate<BaseInputIdentityUpdate_0> { }
+namespace ProjetoTeste.Arguments.Arguments.Base;
+
+public class BaseInputIdentityUpdate<TInputUpdate> where TInputUpdate : BaseInputUpdate<TInputUpdate> 
+{
+    [Required(ErrorMessage = "O campo {0} é OBRIGATÓRIO - Identificador")]
+    public long Id { get; set; }
+    public TInputUpdate? InputUpdate { get; set; }
+
+    public BaseInputIdentityUpdate() { }
+
+    [JsonConstructor]
+    public BaseInputIdentityUpdate(long id, TInputUpdate? inputUpdate)
+    {
+        Id = id;
+        InputUpdate = inputUpdate;
+    }
+}
+
+public class BaseInputIdentityUpdate_0 : BaseInputIdentityUpdate<BaseInputUpdate_0> { }

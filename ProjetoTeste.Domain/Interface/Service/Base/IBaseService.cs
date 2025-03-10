@@ -1,13 +1,15 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Arguments.Arguments.Base.Crud;
 using ProjetoTeste.Domain.DTO.Base;
 
 namespace ProjetoTeste.Domain.Interface.Service.Base;
 
-public interface IBaseService<TDTO, TInputCreate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput>
+public interface IBaseService<TDTO, TInputCreate, TInputUpdate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput>
     where TDTO : BaseDTO<TDTO>
     where TInputCreate : BaseInputCreate<TInputCreate>
-    where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputIdentityUpdate>
+    where TInputUpdate : BaseInputUpdate<TInputUpdate>
+    where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputUpdate>
     where TInputIdentityDelete : BaseInputIdentityDelete<TInputIdentityDelete>
     where TInputIdentityView : BaseInputIdentityView<TInputIdentityView>, IBaseIdentity
     where TOutput : BaseOutput<TOutput>

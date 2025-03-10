@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Arguments.Arguments.Base.Crud;
 using ProjetoTeste.Domain.DTO.Base;
 using ProjetoTeste.Domain.Interface.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.UnitOfWork;
@@ -11,12 +12,13 @@ namespace ProjetoTeste.Api.Controllers.Base;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityView, TOutput> : Controller
-    where TService : IBaseService<TDTO, TInputCreate, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityView, TOutput>
+public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInputUpdate, TInputIndetityUpdate,TInputIndetityDelete, TInputIndeityView, TOutput> : Controller
+    where TService : IBaseService<TDTO, TInputCreate, TInputUpdate, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityView, TOutput>
     where TEntity : BaseEntity
     where TDTO : BaseDTO<TDTO>
     where TInputCreate : BaseInputCreate<TInputCreate>
-    where TInputIndetityUpdate : BaseInputIdentityUpdate<TInputIndetityUpdate>
+    where TInputUpdate : BaseInputUpdate<TInputUpdate>
+    where TInputIndetityUpdate : BaseInputIdentityUpdate<TInputUpdate>
     where TInputIndetityDelete : BaseInputIdentityDelete<TInputIndetityDelete>
     where TInputIndeityView : BaseInputIdentityView<TInputIndeityView>, IBaseIdentity
     where TOutput : BaseOutput<TOutput>

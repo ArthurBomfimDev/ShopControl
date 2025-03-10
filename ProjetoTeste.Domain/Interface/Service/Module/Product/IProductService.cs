@@ -6,7 +6,7 @@ using ProjetoTeste.Domain.Interface.Service.Base;
 
 namespace ProjetoTeste.Domain.Interface.Service;
 
-public interface IProductService : IBaseService<ProductDTO, InputCreateProduct, InputIdentityUpdateProduct, InputIdentityDeleteProduct, InputIdentityViewProduct, OutputProduct>
+public interface IProductService : IBaseService<ProductDTO, InputCreateProduct, InputUpdateProduct, InputIdentityUpdateProduct, InputIdentityDeleteProduct, InputIdentityViewProduct, OutputProduct>
 {
     Task<List<OutputProduct>> GetListByBrandId(InputIdentityViewBrand inputIdentifyViewBrand);
 }

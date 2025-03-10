@@ -9,7 +9,7 @@ using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Domain.Service;
-public class ProductService : BaseService<IProductRepository, IProductValidateService, ProductDTO, InputCreateProduct, InputIdentityUpdateProduct, InputIdentityDeleteProduct, InputIdentityViewProduct, OutputProduct, ProductValidateDTO>, IProductService
+public class ProductService : BaseService<IProductRepository, IProductValidateService, ProductDTO, InputCreateProduct, InputUpdateProduct, InputIdentityUpdateProduct, InputIdentityDeleteProduct, InputIdentityViewProduct, OutputProduct, ProductValidateDTO>, IProductService
 {
     #region Dependency Injection
     private readonly IProductRepository _productRepository;
@@ -76,11 +76,11 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
         var listRepeteIdentity = (from i in listInputIdentityUpdateProduct
                                   where listInputIdentityUpdateProduct.Count(j => j.Id == i.Id) > 1
                                   select i.Id).ToList();
-        var listOriginalCode = (await _productRepository.GetListByCodeList(listInputIdentityUpdateProduct.Select(i => i.InputUpdateProduct.Code).ToList())).Select(i => i.Code);
+        var listOriginalCode = (await _productRepository.GetListByCodeList(listInputIdentityUpdateProduct.Select(i => i.InputUpdate.Code).ToList())).Select(i => i.Code);
         var listRepeteCode = (from i in listInputIdentityUpdateProduct
-                              where listInputIdentityUpdateProduct.Count(j => j.InputUpdateProduct.Code == i.InputUpdateProduct.Code) > 1
-                              select i.InputUpdateProduct.Code).ToList();
-        var listBrand = (await _brandRepository.GetListByListId(listInputIdentityUpdateProduct.Select(i => i.InputUpdateProduct.BrandId).ToList())).Select(i => i.Id);
+                              where listInputIdentityUpdateProduct.Count(j => j.InputUpdate.Code == i.InputUpdate.Code) > 1
+                              select i.InputUpdate.Code).ToList();
+        var listBrand = (await _brandRepository.GetListByListId(listInputIdentityUpdateProduct.Select(i => i.InputUpdate.BrandId).ToList())).Select(i => i.Id);
 
         var listUpdate = (from i in listInputIdentityUpdateProduct
                           select new
@@ -88,9 +88,9 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
                               InputIdentityUpdateProduct = i,
                               OriginalIdentity = listOriginalIdentity.FirstOrDefault(j => j.Id == i.Id),
                               RepeteIdentity = listRepeteIdentity.FirstOrDefault(k => k == i.Id),
-                              OriginalCode = listOriginalCode.FirstOrDefault(l => l == i.InputUpdateProduct.Code),
-                              RepeteCode = listRepeteCode.FirstOrDefault(m => m == i.InputUpdateProduct.Code),
-                              BrandExists = listBrand.FirstOrDefault(n => n == i.InputUpdateProduct.BrandId)
+                              OriginalCode = listOriginalCode.FirstOrDefault(l => l == i.InputUpdate.Code),
+                              RepeteCode = listRepeteCode.FirstOrDefault(m => m == i.InputUpdate.Code),
+                              BrandExists = listBrand.FirstOrDefault(n => n == i.InputUpdate.BrandId)
                           }).ToList();
 
         List<ProductValidateDTO> listProductValidate = listUpdate.Select(i => new ProductValidateDTO().ValidateUpdate(i.InputIdentityUpdateProduct, i.OriginalIdentity, i.OriginalCode, i.RepeteIdentity, i.RepeteCode, i.BrandExists)).ToList();
@@ -102,12 +102,12 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
             return BaseResult<bool>.Failure(listNotification!);
 
         var listUpdateProduct = (from i in listProductValidate
-                                 let name = i.Original.Name = i.InputIdentityUpdateProduct.InputUpdateProduct.Name
-                                 let code = i.Original.Code = i.InputIdentityUpdateProduct.InputUpdateProduct.Code
-                                 let description = i.Original.Description = i.InputIdentityUpdateProduct.InputUpdateProduct.Description
-                                 let brandId = i.Original.BrandId = i.InputIdentityUpdateProduct.InputUpdateProduct.BrandId
-                                 let stock = i.Original.Stock = i.InputIdentityUpdateProduct.InputUpdateProduct.Stock
-                                 let Price = i.Original.Price = i.InputIdentityUpdateProduct.InputUpdateProduct.Price
+                                 let name = i.Original.Name = i.InputIdentityUpdateProduct.InputUpdate.Name
+                                 let code = i.Original.Code = i.InputIdentityUpdateProduct.InputUpdate.Code
+                                 let description = i.Original.Description = i.InputIdentityUpdateProduct.InputUpdate.Description
+                                 let brandId = i.Original.BrandId = i.InputIdentityUpdateProduct.InputUpdate.BrandId
+                                 let stock = i.Original.Stock = i.InputIdentityUpdateProduct.InputUpdate.Stock
+                                 let Price = i.Original.Price = i.InputIdentityUpdateProduct.InputUpdate.Price
                                  select i.Original).ToList();
 
         await _productRepository.Update(listUpdateProduct);

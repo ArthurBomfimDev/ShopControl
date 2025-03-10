@@ -3,6 +3,7 @@ using ProjetoTeste.Api.Controllers.Base;
 using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Arguments.Arguments.Base.Crud;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Domain.DTO;
@@ -13,7 +14,7 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Api.Controllers;
 
-public class OrderController : BaseController<IOrderService, OrderDTO, Order, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
+public class OrderController : BaseController<IOrderService, OrderDTO, Order, InputCreateOrder, BaseInputUpdate_0, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder>
 {
     private readonly IOrderService _orderService;
     private readonly IProductOrderService _productOrderService;

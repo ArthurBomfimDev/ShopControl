@@ -1,6 +1,7 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Arguments.Arguments.Base.Crud;
 using ProjetoTeste.Arguments.Conversor;
 using ProjetoTeste.Domain.DTO.Base;
 using ProjetoTeste.Domain.Interface.Repository.Base;
@@ -8,10 +9,11 @@ using ProjetoTeste.Domain.Interface.Service.Base;
 
 namespace ProjetoTeste.Domain.Service.Base;
 
-public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCreate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput, TValidate> : BaseValidate<TValidate>, IBaseService<TDTO, TInputCreate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput>
+public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCreate, TInputUpdate ,TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput, TValidate> : BaseValidate<TValidate>, IBaseService<TDTO, TInputCreate, TInputUpdate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput>
     where TDTO : BaseDTO<TDTO>
     where TInputCreate : BaseInputCreate<TInputCreate>
-    where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputIdentityUpdate>
+    where TInputUpdate : BaseInputUpdate<TInputUpdate>
+    where TInputIdentityUpdate : BaseInputIdentityUpdate<TInputUpdate>
     where TInputIdentityDelete : BaseInputIdentityDelete<TInputIdentityDelete>
     where TInputIdentityView : BaseInputIdentityView<TInputIdentityView>, IBaseIdentity
     where TOutput : BaseOutput<TOutput>

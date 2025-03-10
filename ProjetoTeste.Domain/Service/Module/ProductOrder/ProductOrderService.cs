@@ -1,6 +1,7 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Arguments.Arguments.Base.Crud;
 using ProjetoTeste.Arguments.Arguments.ProductOrder;
 using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Repository;
@@ -9,7 +10,7 @@ using ProjetoTeste.Domain.Service.Base;
 
 namespace ProjetoTeste.Domain.Service.Module.ProductOrder;
 
-public class ProductOrderService : BaseService<IProductOrderRepository, IProductOrderValidateService, ProductOrderDTO, InputCreateProductOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, BaseInputIdentityView_0, OutputProductOrder, ProductOrderValidateDTO>, IProductOrderService
+public class ProductOrderService : BaseService<IProductOrderRepository, IProductOrderValidateService, ProductOrderDTO, InputCreateProductOrder, BaseInputUpdate_0, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, BaseInputIdentityView_0, OutputProductOrder, ProductOrderValidateDTO>, IProductOrderService
 {
     private readonly IProductOrderRepository _productOrderRepository;
     private readonly IProductOrderValidateService _productOrderValidateService;

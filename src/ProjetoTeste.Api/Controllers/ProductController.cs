@@ -9,7 +9,7 @@ using ProjetoTeste.Infrastructure.Persistence.Entity;
 
 namespace ProjetoTeste.Api.Controllers;
 
-public class ProductController : BaseController<IProductService, ProductDTO, Product, InputCreateProduct, InputIdentityUpdateProduct, InputIdentityDeleteProduct, InputIdentityViewProduct, OutputProduct>
+public class ProductController : BaseController<IProductService, ProductDTO, Product, InputCreateProduct, InputUpdateProduct, InputIdentityUpdateProduct, InputIdentityDeleteProduct, InputIdentityViewProduct, OutputProduct>
 {
     private readonly IProductService _productService;
 

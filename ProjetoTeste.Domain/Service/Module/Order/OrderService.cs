@@ -1,6 +1,7 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.ApiResponse;
+using ProjetoTeste.Arguments.Arguments.Base.Crud;
 using ProjetoTeste.Arguments.Arguments.Order;
 using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Repository;
@@ -10,7 +11,7 @@ using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Domain.Service;
 
-public class OrderService : BaseService<IOrderRepository, IOrderValidateService, OrderDTO, InputCreateOrder, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder, OrderValidateDTO>, IOrderService
+public class OrderService : BaseService<IOrderRepository, IOrderValidateService, OrderDTO, InputCreateOrder, BaseInputUpdate_0, BaseInputIdentityUpdate_0, BaseInputIdentityDelete_0, InputIdentifyViewOrder, OutputOrder, OrderValidateDTO>, IOrderService
 {
     #region Dependency Injection
     private readonly IOrderRepository _orderRepository;

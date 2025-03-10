@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ProjetoTeste.Arguments.Arguments.Base.Crud;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 namespace ProjetoTeste.Arguments.Arguments.Brand;
 
-public class InputUpdateBrand
+public class InputUpdateBrand: BaseInputUpdate<InputUpdateBrand>
 {
     public string Name { get; private set; }
 
