@@ -15,20 +15,22 @@ public class BrandValidateDTO : BaseValidateDTO_1<InputCreateBrand, InputUpdateB
     public InputIdentityDeleteBrand? RepeteInputDelete { get; private set; }
     public long? BrandWithProduct { get; private set; }
 
-    public BrandValidateDTO ValidateCreate(InputCreateBrand? inputCreate, string? repeatedInputCreate, BrandDTO? originalBrand)
+    public BrandValidateDTO ValidateCreate(InputCreateBrand? inputCreate, string? repeatedInputCreate, BrandDTO? originalBrand, Dictionary<string, List<int>>? dictionaryLength)
     {
         InputCreate = inputCreate;
         RepeatedInputCreateCode = repeatedInputCreate;
         OriginalBrandDTO = originalBrand;
+        DictionaryLength = dictionaryLength;
         return this;
     }
-    public BrandValidateDTO ValidateUpdate(InputIdentityUpdateBrand? inputUpdate, long repetedInputUpdate, BrandDTO? originalBrand, string repetedCode, string? codeExists)
+    public BrandValidateDTO ValidateUpdate(InputIdentityUpdateBrand? inputUpdate, long repetedInputUpdate, BrandDTO? originalBrand, string repetedCode, string? codeExists, Dictionary<string, List<int>>? dictionaryLength)
     {
         InputIdentityUpdate = inputUpdate;
         RepetedInputUpdateIdentity = repetedInputUpdate;
         OriginalBrandDTO = originalBrand;
         RepetedCode = repetedCode;
         CodeExists = codeExists;
+        DictionaryLength = dictionaryLength;
         return this;
     }
     public BrandValidateDTO ValidateDelete(InputIdentityDeleteBrand inputIdentifyDeleteBrand, BrandDTO? originalBrand, InputIdentityDeleteBrand repeteInputDelete, long? brandWIthProduct)

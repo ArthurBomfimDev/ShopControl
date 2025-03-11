@@ -16,14 +16,13 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Property(p => p.Name).HasColumnName("nome");
         builder.Property(p => p.Name).IsRequired();
-        builder.Property(p => p.Name).HasMaxLength(24);
+        builder.Property(p => p.Name).HasMaxLength(40);
 
         builder.Property(p => p.Code).HasColumnName("codigo");
         builder.Property(p => p.Code).IsRequired();
-        builder.Property(p => p.Code).HasMaxLength(16);
+        builder.Property(p => p.Code).HasMaxLength(6);
 
         builder.Property(p => p.Description).HasColumnName("descricao");
-        builder.Property(p => p.Description).IsRequired();
         builder.Property(p => p.Description).HasMaxLength(100);
 
         builder.Property(p => p.BrandId).HasColumnName("id_marca");

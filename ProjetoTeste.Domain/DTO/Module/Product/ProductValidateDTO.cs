@@ -14,15 +14,16 @@ public class ProductValidateDTO : BaseValidateDTO_1<InputCreateProduct, InputUpd
     public long? RepetedIdentity { get; private set; }
 
 
-    public ProductValidateDTO ValidateCreate(InputCreateProduct inputCreateProduct, string? originalCode, string repeteCode, long brandId)
+    public ProductValidateDTO ValidateCreate(InputCreateProduct inputCreateProduct, string? originalCode, string repeteCode, long brandId, Dictionary<string, List<int>> dictionaryLength)
     {
         InputCreate = inputCreateProduct;
         OriginalCode = originalCode;
         RepeteCode = repeteCode;
         BrandId = brandId;
+        DictionaryLength = dictionaryLength;
         return this;
     }
-    public ProductValidateDTO ValidateUpdate(InputIdentityUpdateProduct? inputIdentityUpdateProduct, ProductDTO? original, string? originalCode, long? repeteIdentity, string? repeteCode, long? brandId)
+    public ProductValidateDTO ValidateUpdate(InputIdentityUpdateProduct? inputIdentityUpdateProduct, ProductDTO? original, string? originalCode, long? repeteIdentity, string? repeteCode, long? brandId, Dictionary<string, List<int>> dictionaryLength)
     {
         InputIdentityUpdate = inputIdentityUpdateProduct;
         Original = original;
@@ -30,6 +31,7 @@ public class ProductValidateDTO : BaseValidateDTO_1<InputCreateProduct, InputUpd
         RepeteIdentity = repeteIdentity;
         RepeteCode = repeteCode;
         BrandId = brandId;
+        DictionaryLength = dictionaryLength;
         return this;
     }
     public ProductValidateDTO ValidateDelete(InputIdentityDeleteProduct? inputIdentifyDeleteProduct, ProductDTO? original, long? repetedIdentity)

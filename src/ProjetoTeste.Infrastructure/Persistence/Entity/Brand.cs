@@ -1,5 +1,7 @@
 ﻿using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 
@@ -7,9 +9,18 @@ public class Brand : BaseEntity
 {
     public string Name { get; set; }
     public string Code { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     public virtual List<Product>? ListProduct { get; set; }
+
+    //Dictionary<string, List<int>> dict = (from i in typeof(Brand).GetProperties()
+    //                                      where i.PropertyType == typeof(string)
+    //                                      select new
+    //                                      {
+    //                                          PropertyName = i.Name,
+    //                                          MaxLength = i.GetCustomAttribute<MaxLengthAttribute>()?.Length ?? 0,
+    //                                          MinLength = i.GetCustomAttribute<MinLengthAttribute>()?.Length ?? 0
+    //                                      }).ToDictionary(j => j.PropertyName, j => new List<int> { j.MinLength, j.MaxLength });
 
     public Brand()
     { }

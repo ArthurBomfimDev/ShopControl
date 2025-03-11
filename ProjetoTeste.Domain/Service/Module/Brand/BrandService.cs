@@ -7,6 +7,8 @@ using ProjetoTeste.Domain.Interface.Repository;
 using ProjetoTeste.Domain.Interface.Service;
 using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace ProjetoTeste.Domain.Service;
 
@@ -41,7 +43,19 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
                               OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Code == i.Code)
                           }).ToList();
 
-        List<BrandValidateDTO> listBrandValidate = listCreate.Select(i => new BrandValidateDTO().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand)).ToList();
+        var dictLength = await _brandRepository.PropertyNameLength();
+
+        Dictionary<string, List<int>> dict = (from i in typeof(BrandDTO).GetProperties()
+                                              where i.PropertyType == typeof(string)
+                                              select new
+                                              {
+                                                  PropertyName = i.Name,
+                                                  MaxLength = i.GetCustomAttribute<MaxLengthAttribute>()?.Length ?? 0,
+                                                  MinLength = i.GetCustomAttribute<MinLengthAttribute>()?.Length ?? 0
+                                              }).ToDictionary(j => j.PropertyName, j => new List<int> { j.MinLength, j.MaxLength });
+
+
+        List<BrandValidateDTO> listBrandValidate = listCreate.Select(i => new BrandValidateDTO().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand, dictLength)).ToList();
         _brandValidadeService.ValidateCreate(listBrandValidate);
 
         var listNotification = GetAllNotification();
@@ -65,8 +79,8 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
         var listOriginalBrand = await _brandRepository.GetListByListId(listInputIdentityUpdateBrand.Select(i => i.Id).ToList());
         var listCodeExists = (await _brandRepository.GetListByListCode(listInputIdentityUpdateBrand.Select(i => i.InputUpdate.Code).ToList())).Select(i => i.Code);
         var listRepeatedInputUpdateIdentify = (from i in listInputIdentityUpdateBrand
-                                                    where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
-                                                    select i.Id).ToList();
+                                               where listInputIdentityUpdateBrand.Count(j => j.Id == i.Id) > 1
+                                               select i.Id).ToList();
 
         var listRepeatedCode = (from i in listInputIdentityUpdateBrand
                                 where listInputIdentityUpdateBrand.Count(j => j.InputUpdate.Code == i.InputUpdate.Code) > 1
@@ -82,7 +96,9 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
                               CodeExists = listCodeExists.FirstOrDefault(m => m == i.InputUpdate.Code)
                           }).ToList();
 
-        List<BrandValidateDTO> listBrandValidate = listUpdate.Select(i => new BrandValidateDTO().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdate, i.OriginalBrand, i.RepeatedCode, i.CodeExists)).ToList();
+        var dictLength = await _brandRepository.PropertyNameLength();
+
+        List<BrandValidateDTO> listBrandValidate = listUpdate.Select(i => new BrandValidateDTO().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdate, i.OriginalBrand, i.RepeatedCode, i.CodeExists, dictLength)).ToList();
         _brandValidadeService.ValidateUpdate(listBrandValidate);
 
         var listNotification = GetAllNotification();

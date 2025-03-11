@@ -60,5 +60,26 @@ namespace ProjetoTeste.Infrastructure.Persistence.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<Dictionary<string, List<int>>> PropertyNameLength()
+        {
+            var entity = Activator.CreateInstance<TEntity>();
+
+            Dictionary<string, List<int>> dict = (from i in entity.GetType().GetProperties()
+                                                  where i.PropertyType == typeof(string)
+                                                  let entityType = _context.Model.FindEntityType(typeof(TEntity))
+                                                  let propertyName = i.Name
+                                                  let property = entityType?.FindProperty(propertyName)
+                                                  let max = property?.GetMaxLength() ?? 0
+                                                  let min = property?.IsColumnNullable() == true ? 0 : 1
+                                                  select new
+                                                  {
+                                                      ProeprtyName = propertyName,
+                                                      Min = min,
+                                                      Max = max
+                                                  }).ToDictionary(i => i.ProeprtyName, i => new List<int> { i.Min, i.Max });
+
+            return dict;
+        }
     }
 }

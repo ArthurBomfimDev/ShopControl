@@ -1,4 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Brand;
+using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Arguments.Enum.Validate;
 using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
@@ -7,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class CustomerValidateService : BaseValidate<CustomerValidateDTO>, ICustomerValidateService
+public class CustomerValidateService : BaseValidate_1<CustomerValidateDTO, InputCreateCustomer, InputUpdateCustomer, InputIdentityUpdateCustomer, InputIdentityDeleteCustomer>, ICustomerValidateService
 {
     #region Validate
 
@@ -94,13 +96,15 @@ public class CustomerValidateService : BaseValidate<CustomerValidateDTO>, ICusto
          let cpfValidate = CPFValidate(i.InputCreate.CPF)
          where cpfValidate != EnumValidateType.Valid
          let setInvalid = cpfValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select InvalidEmail(i.InputCreate.CPF, i.InputCreate.CPF)).ToList();
+         select InvalidCPF(i.InputCreate.CPF, i.InputCreate.CPF)).ToList();
 
-        (from i in RemoveIgnore(listCustomerValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputCreate.Name, 1, 64)
-         where resultInvalidLenght != EnumValidateType.Valid
-         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.CPF, i.InputCreate.Name, 1, 64, "Nome") : NullField(i.InputCreate.CPF, "Nome")).ToList();
+        //(from i in RemoveIgnore(listCustomerValidate)
+        // let resultInvalidLenght = InvalidLenghtValidate(i.InputCreate.Name, 1, 64)
+        // where resultInvalidLenght != EnumValidateType.Valid
+        // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+        // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.CPF, i.InputCreate.Name, 1, 64, "Nome") : NullField(i.InputCreate.CPF, "Nome")).ToList();
+
+        CreateValidateLenght(listCustomerValidate);
 
         (from i in RemoveIgnore(listCustomerValidate)
          let emailValidate = EmailValidate(i.InputCreate.Email)
@@ -193,11 +197,13 @@ public class CustomerValidateService : BaseValidate<CustomerValidateDTO>, ICusto
          let setInvalid = cpfValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
          select InvalidCPF(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.CPF)).ToList();
 
-        (from i in RemoveIgnore(listCustomerValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Name, 1, 64)
-         where resultInvalidLenght != EnumValidateType.Valid
-         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.Name, 1, 64, "Nome") : NullField(i.InputIdentityUpdate.InputUpdate.CPF, "Nome")).ToList();
+        //(from i in RemoveIgnore(listCustomerValidate)
+        // let resultInvalidLenght = InvalidLenghtValidate(i.InputIdentityUpdate.InputUpdate.Name, 1, 64)
+        // where resultInvalidLenght != EnumValidateType.Valid
+        // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+        // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.Name, 1, 64, "Nome") : NullField(i.InputIdentityUpdate.InputUpdate.CPF, "Nome")).ToList();
+
+        UpdateValidateLenght(listCustomerValidate);
 
         (from i in RemoveIgnore(listCustomerValidate)
          let emailValidate = EmailValidate(i.InputIdentityUpdate.InputUpdate.Email)

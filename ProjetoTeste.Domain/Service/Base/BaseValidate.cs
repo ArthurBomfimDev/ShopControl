@@ -15,7 +15,7 @@ public class BaseValidate<TValidateDTO> : NotificationGeneration where TValidate
     #region Validate
 
     #region InvalidLength
-    public static EnumValidateType InvalidLenght(string? value, int minLeght, int MaxLenght)
+    public static EnumValidateType InvalidLenghtValidate(string? value, int minLeght, int MaxLenght)
     {
         if (string.IsNullOrWhiteSpace(value))
             return minLeght == 0 ? EnumValidateType.Valid : EnumValidateType.NonInformed;

@@ -1,11 +1,12 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
+using ProjetoTeste.Arguments.Arguments.Product;
 using ProjetoTeste.Arguments.Enum.Validate;
 using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
 namespace ProjetoTeste.Infrastructure.Application;
 
-public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProductValidateService
+public class ProductValidateService : BaseValidate_1<ProductValidateDTO, InputCreateProduct, InputUpdateProduct, InputIdentityUpdateProduct, InputIdentityDeleteProduct>, IProductValidateService
 {
     #region Create
     public void ValidateCreate(List<ProductValidateDTO> listProductValidate)
@@ -27,23 +28,25 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
          let setInvalid = i.SetInvalid()
          select RepeatedIdentifier(i.InputCreate.Code, "Código")).ToList();
 
-        (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputCreate.Code, 1, 6)
-         where resultInvalidLenght != EnumValidateType.Valid
-         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Code, 1, 6, "Código") : NullField(i.InputCreate.Code, "Código")).ToList();
+        //(from i in RemoveIgnore(listProductValidate)
+        // let resultInvalidLenght = InvalidLenghtValidate(i.InputCreate.Code, 1, 6)
+        // where resultInvalidLenght != EnumValidateType.Valid
+        // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+        // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Code, 1, 6, "Código") : NullField(i.InputCreate.Code, "Código")).ToList();
 
-        (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputCreate.Name, 1, 24)
-         where resultInvalidLenght != EnumValidateType.Valid
-         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Name, 1, 24, "Nome") : NullField(i.InputCreate.Code, "Nome")).ToList();
+        //(from i in RemoveIgnore(listProductValidate)
+        // let resultInvalidLenght = InvalidLenghtValidate(i.InputCreate.Name, 1, 24)
+        // where resultInvalidLenght != EnumValidateType.Valid
+        // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+        // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Name, 1, 24, "Nome") : NullField(i.InputCreate.Code, "Nome")).ToList();
 
-        (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputCreate.Description, 0, 100)
-         where resultInvalidLenght != EnumValidateType.Valid
-         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Description, 0, 100, "Descrição") : NullField(i.InputCreate.Code, "Descrição")).ToList();
+        //(from i in RemoveIgnore(listProductValidate)
+        // let resultInvalidLenght = InvalidLenghtValidate(i.InputCreate.Description, 0, 100)
+        // where resultInvalidLenght != EnumValidateType.Valid
+        // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+        // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Description, 0, 100, "Descrição") : NullField(i.InputCreate.Code, "Descrição")).ToList();
+
+        CreateValidateLenght(listProductValidate);
 
         (from i in RemoveIgnore(listProductValidate)
          where i.BrandId == 0
@@ -111,23 +114,26 @@ public class ProductValidateService : BaseValidate<ProductValidateDTO>, IProduct
          let setInvalid = i.SetInvalid()
         select NegativePrice(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Stock)).ToList();
 
-        (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Name, 1, 24)
-         where resultInvalidLenght != EnumValidateType.Valid
-         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Name, 1, 24, "Nome") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Nome")).ToList();
 
-        (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, 1, 6)
-         where resultInvalidLenght != EnumValidateType.Valid
-         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Code, 1, 6, "Código") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
+        UpdateValidateLenght(listProductValidate);
 
-        (from i in RemoveIgnore(listProductValidate)
-         let resultInvalidLenght = InvalidLenght(i.InputIdentityUpdate.InputUpdate.Description, 0, 100)
-         where resultInvalidLenght != EnumValidateType.Valid
-         let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
-         select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Description, 0, 100, "Descrição") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Descrição")).ToList();
+        //(from i in RemoveIgnore(listProductValidate)
+        // let resultInvalidLenght = InvalidLenghtValidate(i.InputIdentityUpdate.InputUpdate.Name, 1, 24)
+        // where resultInvalidLenght != EnumValidateType.Valid
+        // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+        // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Name, 1, 24, "Nome") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Nome")).ToList();
+
+        //(from i in RemoveIgnore(listProductValidate)
+        // let resultInvalidLenght = InvalidLenghtValidate(i.InputIdentityUpdate.InputUpdate.Code, 1, 6)
+        // where resultInvalidLenght != EnumValidateType.Valid
+        // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+        // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Code, 1, 6, "Código") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
+
+        //(from i in RemoveIgnore(listProductValidate)
+        // let resultInvalidLenght = InvalidLenghtValidate(i.InputIdentityUpdate.InputUpdate.Description, 0, 100)
+        // where resultInvalidLenght != EnumValidateType.Valid
+        // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
+        // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Description, 0, 100, "Descrição") : NullField(i.InputIdentityUpdate.InputUpdate.Code, "Descrição")).ToList();
 
 
         (from i in RemoveInvalid(listProductValidate)

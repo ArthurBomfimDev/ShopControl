@@ -13,4 +13,5 @@ public class BaseValidateDTO_1<TInputCreate, TInputUpdate, TInputIdentityUpdate,
     public TInputCreate? InputCreate { get; set; }
     public TInputIdentityUpdate? InputIdentityUpdate { get; set; }
     public TInputIdentityDelete? InputIdentityDelete { get; set; }
+    public Dictionary<string, List<int>>? DictionaryLength { get; set; }
 }

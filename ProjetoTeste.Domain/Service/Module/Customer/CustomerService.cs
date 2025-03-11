@@ -26,7 +26,8 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
     #region Create
     public override async Task<BaseResult<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreate)
     {
-        List<CustomerValidateDTO> listCutomerValidate = listInputCreate.Select(i => new CustomerValidateDTO().ValidateCreate(i)).ToList();
+        var dictLength = await _customerRepository.PropertyNameLength();
+        List<CustomerValidateDTO> listCutomerValidate = listInputCreate.Select(i => new CustomerValidateDTO().ValidateCreate(i, dictLength)).ToList();
 
         _customerValidateService.ValidateCreate(listCutomerValidate);
 
@@ -60,7 +61,9 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
                               RepeteId = listRepeteId.FirstOrDefault(k => k == i.Id),
                           }).ToList();
 
-        List<CustomerValidateDTO> listCustomerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdate, i.OriginalCustomer, i.RepeteId)).ToList();
+        var dictLength = await _customerRepository.PropertyNameLength();
+
+        List<CustomerValidateDTO> listCustomerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdate, i.OriginalCustomer, i.RepeteId, dictLength)).ToList();
         _customerValidateService.ValidateUpdate(listCustomerValidate);
 
         var listNotification = GetAllNotification();
