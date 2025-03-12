@@ -97,6 +97,11 @@ public class CustomerValidateService : BaseValidate_1<CustomerValidateDTO, Input
          let setInvalid = cpfValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
          select InvalidCPF(i.InputCreate.CPF, i.InputCreate.CPF)).ToList();
 
+        (from i in RemoveInvalid(listCustomerValidate)
+         where i.AlreadyExistsCPF != null
+         let setInvalid = i.SetInvalid()
+         select AlreadyExists(i.InputCreate.CPF, "CPF")).ToList();
+
         //(from i in RemoveIgnore(listCustomerValidate)
         // let resultInvalidLenght = InvalidLenghtValidate(i.InputCreate.Name, 1, 64)
         // where resultInvalidLenght != EnumValidateType.Valid
@@ -195,6 +200,11 @@ public class CustomerValidateService : BaseValidate_1<CustomerValidateDTO, Input
          where cpfValidate != EnumValidateType.Valid
          let setInvalid = cpfValidate == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
          select InvalidCPF(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.CPF)).ToList();
+
+        (from i in RemoveInvalid(listCustomerValidate)
+         where i.AlreadyExistsCPF != null
+         let setInvalid = i.SetInvalid()
+         select AlreadyExists(i.InputIdentityUpdate.InputUpdate.CPF, "CPF")).ToList();
 
         //(from i in RemoveIgnore(listCustomerValidate)
         // let resultInvalidLenght = InvalidLenghtValidate(i.InputIdentityUpdate.InputUpdate.Name, 1, 64)

@@ -26,9 +26,17 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
     #region Create
     public override async Task<BaseResult<List<OutputCustomer>>> CreateMultiple(List<InputCreateCustomer> listInputCreate)
     {
+        var listCustomerByListCpf = await _customerRepository.GetListCustumerByListCPF(listInputCreate.Select(i => i.CPF).ToList());
         var dictionaryLength = _customerRepository.DictionaryLength();
 
-        List<CustomerValidateDTO> listCutomerValidate = listInputCreate.Select(i => new CustomerValidateDTO().ValidateCreate(i, dictionaryLength)).ToList();
+        var listValidate = (from i in listInputCreate
+                            select new
+                            {
+                                InputCreate = i,
+                                AlreadyExistsCPF = listCustomerByListCpf.FirstOrDefault(j => j.CPF == i.CPF)
+                            }).ToList();
+
+        List<CustomerValidateDTO> listCutomerValidate = listValidate.Select(i => new CustomerValidateDTO().ValidateCreate(i.InputCreate, dictionaryLength, i.AlreadyExistsCPF)).ToList();
 
         _customerValidateService.ValidateCreate(listCutomerValidate);
 
@@ -49,23 +57,25 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
     #region Update
     public override async Task<BaseResult<bool>> UpdateMultiple(List<InputIdentityUpdateCustomer> listInputIdentityUpdate)
     {
-        var originalCustomer = await _customerRepository.GetListByListId(listInputIdentityUpdate.Select(i => i.Id).ToList());
+        var listOriginalCustomer = await _customerRepository.GetListByListId(listInputIdentityUpdate.Select(i => i.Id).ToList());
         var listRepeteId = (from i in listInputIdentityUpdate
                             where listInputIdentityUpdate.Count(j => j.Id == i.Id) > 1
                             select i.Id).ToList();
+        var listCustomerByListCpf = await _customerRepository.GetListCustumerByListCPF(listInputIdentityUpdate.Select(i => i.InputUpdate.CPF).ToList());
 
         var listUpdate = (from i in listInputIdentityUpdate
                           select new
                           {
                               InputIdentityUpdate = i,
-                              OriginalCustomer = originalCustomer.FirstOrDefault(j => j.Id == i.Id),
+                              OriginalCustomer = listOriginalCustomer.FirstOrDefault(j => j.Id == i.Id),
                               RepeteId = listRepeteId.FirstOrDefault(k => k == i.Id),
+                              AlreadyExistsCPF = listCustomerByListCpf.FirstOrDefault(l => l.CPF == i.InputUpdate.CPF && l.Id != i.Id)
                           }).ToList();
 
         var dictionaryLength = _customerRepository.DictionaryLength();
 
 
-        List<CustomerValidateDTO> listCustomerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdate, i.OriginalCustomer, i.RepeteId, dictionaryLength)).ToList();
+        List<CustomerValidateDTO> listCustomerValidate = listUpdate.Select(i => new CustomerValidateDTO().ValidateUpdate(i.InputIdentityUpdate, i.OriginalCustomer, i.RepeteId, dictionaryLength, i.AlreadyExistsCPF)).ToList();
         _customerValidateService.ValidateUpdate(listCustomerValidate);
 
         var listNotification = GetAllNotification();

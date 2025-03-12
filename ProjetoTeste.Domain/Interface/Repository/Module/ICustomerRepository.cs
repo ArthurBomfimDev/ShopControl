@@ -9,4 +9,5 @@ public interface ICustomerRepository : IBaseRepository<CustomerDTO>
     bool CPFExists(string cpf);
     bool PhoneExists(string phone);
     bool Exists(long id);
+    Task<List<CustomerDTO>> GetListCustumerByListCPF(List<string> listCPF);
 }

@@ -1,4 +1,5 @@
-﻿using ProjetoTeste.Domain.DTO;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Domain.Interface.Repository;
 using ProjetoTeste.Infrastructure.Persistence.Context;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
@@ -25,6 +26,12 @@ public class CustomerRepository : BaseRepository<Customer, CustomerDTO>, ICustom
     public bool Exists(long id)
     {
         return _dbSet.Any(x => x.Id == id);
+    }
+
+    public async Task<List<CustomerDTO>> GetListCustumerByListCPF(List<string> listCPF)
+    {
+        var listCustomer = await _dbSet.Where(i => listCPF.Contains(i.CPF)).AsNoTracking().ToListAsync();
+        return listCustomer.Select(i => (CustomerDTO)i).ToList();
     }
 
     public bool PhoneExists(string phone)
