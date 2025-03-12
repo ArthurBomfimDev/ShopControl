@@ -42,7 +42,7 @@ public class CustomerService : BaseService<ICustomerRepository, ICustomerValidat
 
         var create = await _customerRepository.Create(listCreate);
 
-        return BaseResult<List<OutputCustomer>>.Success(create.Select(i => (OutputCustomer)i).ToList(), listNotification!);
+        return BaseResult<List<OutputCustomer>>.Success(create!.Select(i => (OutputCustomer)i).ToList(), listNotification!);
     }
     #endregion
 

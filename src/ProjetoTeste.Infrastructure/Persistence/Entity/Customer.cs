@@ -13,8 +13,9 @@ public class Customer : BaseEntity
     [MaxLength(100)]
     public string Name { get; set; }
 
-    [Required]
+    [Required]   
     [Column("CPF")]
+    [MaxLength(11)]
     public string CPF { get; set; }
 
     [Required]
@@ -26,6 +27,7 @@ public class Customer : BaseEntity
     [Required]
     [Column("telefone")]
     [Phone]
+    [MaxLength(15)]
     public string Phone { get; set; }
 
     public virtual List<Order>? ListOrder { get; set; }
