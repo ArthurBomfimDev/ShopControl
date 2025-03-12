@@ -11,4 +11,5 @@ public interface IBaseRepository<TDTO> where TDTO : BaseDTO<TDTO>
     Task<bool> Update(List<TDTO> listEntity);
     Task<bool> Delete(List<TDTO> listEntity);
     Task<Dictionary<string, List<int>>> PropertyNameLength();
+    Dictionary<string, List<int>> DictionaryLength();
 }

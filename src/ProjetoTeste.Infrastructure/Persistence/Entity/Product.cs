@@ -1,17 +1,42 @@
 ﻿using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Entity;
+[Table("produto")]
 public class Product : BaseEntity
 {
-    public string? Name { get; set; }
+    [Required]
+    [Column("nome")]
+    [MaxLength(40)]
+    public string Name { get; set; }
+
+    [Required]
+    [Column("codigo")]
+    [MaxLength(6)]
     public string? Code { get; set; }
+
+    [Column("descricao")]
+    [MaxLength(100)]
     public string? Description { get; set; }
+
+    [Required]
+    [Column("preco")]
     public decimal Price { get; set; }
+
+    [Required]
+    [Column("id_da_marca")]
+    [ForeignKey(nameof(Brand))]
     public long BrandId { get; set; }
+
+    [Required]
+    [Column("estoque")]
     public long Stock { get; set; }
 
+    [NotMapped]
     public virtual Brand? Brand { get; set; }
+    [NotMapped]
     public virtual List<ProductOrder>? ListProductOrder { get; set; }
 
     public Product()

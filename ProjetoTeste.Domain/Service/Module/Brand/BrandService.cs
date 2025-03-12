@@ -43,7 +43,7 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
                               OriginalBrand = listOriginalBrand.FirstOrDefault(j => j.Code == i.Code)
                           }).ToList();
 
-        var dictLength = await _brandRepository.PropertyNameLength();
+        var dictionaryLength = _brandRepository.DictionaryLength();
 
         Dictionary<string, List<int>> dict = (from i in typeof(BrandDTO).GetProperties()
                                               where i.PropertyType == typeof(string)
@@ -55,7 +55,7 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
                                               }).ToDictionary(j => j.PropertyName, j => new List<int> { j.MinLength, j.MaxLength });
 
 
-        List<BrandValidateDTO> listBrandValidate = listCreate.Select(i => new BrandValidateDTO().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand, dictLength)).ToList();
+        List<BrandValidateDTO> listBrandValidate = listCreate.Select(i => new BrandValidateDTO().ValidateCreate(i.inputCreateBrand, i.RepeatedInputCreateBrandCode, i.OriginalBrand, dictionaryLength)).ToList();
         _brandValidadeService.ValidateCreate(listBrandValidate);
 
         var listNotification = GetAllNotification();
@@ -96,9 +96,9 @@ public class BrandService : BaseService<IBrandRepository, IBrandValidateService,
                               CodeExists = listCodeExists.FirstOrDefault(m => m == i.InputUpdate.Code)
                           }).ToList();
 
-        var dictLength = await _brandRepository.PropertyNameLength();
+        var dictionaryLength = _brandRepository.DictionaryLength();
 
-        List<BrandValidateDTO> listBrandValidate = listUpdate.Select(i => new BrandValidateDTO().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdate, i.OriginalBrand, i.RepeatedCode, i.CodeExists, dictLength)).ToList();
+        List<BrandValidateDTO> listBrandValidate = listUpdate.Select(i => new BrandValidateDTO().ValidateUpdate(i.InputIdentityUpdateBrand, i.RepeatedInputUpdate, i.OriginalBrand, i.RepeatedCode, i.CodeExists, dictionaryLength)).ToList();
         _brandValidadeService.ValidateUpdate(listBrandValidate);
 
         var listNotification = GetAllNotification();

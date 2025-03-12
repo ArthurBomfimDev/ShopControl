@@ -1,17 +1,38 @@
 ﻿using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 
+[Table("pedido_de_produto")]
 public class ProductOrder : BaseEntity
 {
+    [Required]
+    [ForeignKey(nameof(Order))]
+    [Column("id_de_pedido")]
     public long OrderId { get; set; }
+
+    [Required]
+    [ForeignKey(nameof(Product))]
+    [Column("id_de_produto")]
     public long ProductId { get; set; }
+
+    [Required]
+    [Column("quantidade")]
     public int Quantity { get; set; }
+
+    [Required]
+    [Column("preco_unitario")]
     public decimal UnitPrice { get; set; }
+
+    [Required]
+    [Column("subtotal")]
     public decimal SubTotal { get; set; }
 
+    [NotMapped]
     public virtual Order? Order { get; set; }
+    [NotMapped]
     public virtual Product? Product { get; set; }
 
     public ProductOrder()

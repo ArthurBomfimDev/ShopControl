@@ -1,5 +1,4 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
-using ProjetoTeste.Arguments.Arguments.Brand;
 using ProjetoTeste.Arguments.Arguments.Customer;
 using ProjetoTeste.Arguments.Enum.Validate;
 using ProjetoTeste.Domain.Service.Base;
@@ -104,7 +103,7 @@ public class CustomerValidateService : BaseValidate_1<CustomerValidateDTO, Input
         // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
         // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.CPF, i.InputCreate.Name, 1, 64, "Nome") : NullField(i.InputCreate.CPF, "Nome")).ToList();
 
-        CreateValidateLenght(listCustomerValidate);
+        ValidateLenght(listCustomerValidate);
 
         (from i in RemoveIgnore(listCustomerValidate)
          let emailValidate = EmailValidate(i.InputCreate.Email)
@@ -203,7 +202,7 @@ public class CustomerValidateService : BaseValidate_1<CustomerValidateDTO, Input
         // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
         // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputIdentityUpdate.InputUpdate.CPF, i.InputIdentityUpdate.InputUpdate.Name, 1, 64, "Nome") : NullField(i.InputIdentityUpdate.InputUpdate.CPF, "Nome")).ToList();
 
-        UpdateValidateLenght(listCustomerValidate);
+        ValidateLenght(listCustomerValidate);
 
         (from i in RemoveIgnore(listCustomerValidate)
          let emailValidate = EmailValidate(i.InputIdentityUpdate.InputUpdate.Email)

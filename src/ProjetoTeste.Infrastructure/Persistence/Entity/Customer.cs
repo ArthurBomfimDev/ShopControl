@@ -1,13 +1,31 @@
 ﻿using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 
+[Table("cliente")]
 public class Customer : BaseEntity
 {
+    [Required]
+    [Column("nome")]
+    [MaxLength(100)]
     public string Name { get; set; }
+
+    [Required]
+    [Column("CPF")]
     public string CPF { get; set; }
+
+    [Required]
+    [Column("email")]
+    [EmailAddress]
+    [MaxLength(320)]
     public string Email { get; set; }
+
+    [Required]
+    [Column("telefone")]
+    [Phone]
     public string Phone { get; set; }
 
     public virtual List<Order>? ListOrder { get; set; }

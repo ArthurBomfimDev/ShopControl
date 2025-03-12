@@ -12,7 +12,7 @@ namespace ProjetoTeste.Api.Controllers.Base;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInputUpdate, TInputIndetityUpdate,TInputIndetityDelete, TInputIndeityView, TOutput> : Controller
+public abstract class BaseController<TService, TDTO, TEntity, TInputCreate, TInputUpdate, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityView, TOutput> : Controller
     where TService : IBaseService<TDTO, TInputCreate, TInputUpdate, TInputIndetityUpdate, TInputIndetityDelete, TInputIndeityView, TOutput>
     where TEntity : BaseEntity
     where TDTO : BaseDTO<TDTO>

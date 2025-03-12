@@ -1,6 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments;
 using ProjetoTeste.Arguments.Arguments.Product;
-using ProjetoTeste.Arguments.Enum.Validate;
 using ProjetoTeste.Domain.Service.Base;
 using ProjetoTeste.Infrastructure.Interface.ValidateService;
 
@@ -46,7 +45,7 @@ public class ProductValidateService : BaseValidate_1<ProductValidateDTO, InputCr
         // let setInvalid = resultInvalidLenght == EnumValidateType.Invalid ? i.SetInvalid() : i.SetIgnore()
         // select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(i.InputCreate.Code, i.InputCreate.Description, 0, 100, "Descrição") : NullField(i.InputCreate.Code, "Descrição")).ToList();
 
-        CreateValidateLenght(listProductValidate);
+        ValidateLenght(listProductValidate);
 
         (from i in RemoveIgnore(listProductValidate)
          where i.BrandId == 0
@@ -112,10 +111,10 @@ public class ProductValidateService : BaseValidate_1<ProductValidateDTO, InputCr
         (from i in RemoveIgnore(listProductValidate)
          where i.InputIdentityUpdate.InputUpdate.Stock < 0
          let setInvalid = i.SetInvalid()
-        select NegativePrice(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Stock)).ToList();
+         select NegativePrice(i.InputIdentityUpdate.InputUpdate.Code, i.InputIdentityUpdate.InputUpdate.Stock)).ToList();
 
 
-        UpdateValidateLenght(listProductValidate);
+        ValidateLenght(listProductValidate);
 
         //(from i in RemoveIgnore(listProductValidate)
         // let resultInvalidLenght = InvalidLenghtValidate(i.InputIdentityUpdate.InputUpdate.Name, 1, 24)

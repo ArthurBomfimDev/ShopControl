@@ -1,16 +1,30 @@
 ﻿using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 
+[Table("pedido")]
 public class Order : BaseEntity
 {
-
+    [Required]
+    [Column("id_do_cliente")]
+    [ForeignKey(nameof(Customer))]
     public long CustomerId { get; set; }
+
+    [Required]
+    [Column("total")]
     public decimal Total { get; set; }
+
+    [Required]
+    [Column("data_do_pedido")]
     public DateTime OrderDate { get; set; }
 
+    [NotMapped]
     public Customer? Customer { get; set; }
+
+    [NotMapped]
     public List<ProductOrder>? ListProductOrder { get; set; }
 
     public Order() { }

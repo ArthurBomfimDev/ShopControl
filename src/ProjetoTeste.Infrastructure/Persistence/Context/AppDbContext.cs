@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoTeste.Infrastructure.Persistence.Entity;
-using ProjetoTeste.Infrastructure.Persistence.Mapping;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Context
 {
@@ -17,7 +16,8 @@ namespace ProjetoTeste.Infrastructure.Persistence.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(CustomerConfiguration).Assembly);
+            base.OnModelCreating(modelBuilder);
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(CustomerConfiguration).Assembly);
         }
     }
 }

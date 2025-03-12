@@ -1,26 +1,29 @@
 ﻿using ProjetoTeste.Domain.DTO;
 using ProjetoTeste.Infrastructure.Persistence.Entity.Base;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjetoTeste.Infrastructure.Persistence.Entity;
 
+[Table("marca")]
 public class Brand : BaseEntity
 {
+    [Required]
+    [Column("nome")]
+    [MaxLength(40)]
     public string Name { get; set; }
+
+    [Required]
+    [Column("codigo")]
+    [MaxLength(6)]
     public string Code { get; set; }
+
+    [MaxLength(100)]
+    [Column("descricao")]
     public string? Description { get; set; }
 
+    [NotMapped]
     public virtual List<Product>? ListProduct { get; set; }
-
-    //Dictionary<string, List<int>> dict = (from i in typeof(Brand).GetProperties()
-    //                                      where i.PropertyType == typeof(string)
-    //                                      select new
-    //                                      {
-    //                                          PropertyName = i.Name,
-    //                                          MaxLength = i.GetCustomAttribute<MaxLengthAttribute>()?.Length ?? 0,
-    //                                          MinLength = i.GetCustomAttribute<MinLengthAttribute>()?.Length ?? 0
-    //                                      }).ToDictionary(j => j.PropertyName, j => new List<int> { j.MinLength, j.MaxLength });
 
     public Brand()
     { }

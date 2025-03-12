@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace ProjetoTeste.Arguments.Arguments.Base;
 
-public class BaseInputIdentityUpdate<TInputUpdate> where TInputUpdate : BaseInputUpdate<TInputUpdate> 
+public class BaseInputIdentityUpdate<TInputUpdate> where TInputUpdate : BaseInputUpdate<TInputUpdate>
 {
     [Required(ErrorMessage = "O campo {0} é OBRIGATÓRIO - Identificador")]
     public long Id { get; set; }

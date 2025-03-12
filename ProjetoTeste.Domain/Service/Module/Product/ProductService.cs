@@ -52,9 +52,9 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
                               BrandExists = listBrand.FirstOrDefault(l => l == i.BrandId)
                           }).ToList();
 
-        var dictLength = await _productRepository.PropertyNameLength();
+        var dictionaryLength = _productRepository.DictionaryLength();
 
-        List<ProductValidateDTO> listProductValidate = listCreate.Select(i => new ProductValidateDTO().ValidateCreate(i.InputCreateProduct, i.OriginalCode, i.RepeteCode, i.BrandExists, dictLength)).ToList();
+        List<ProductValidateDTO> listProductValidate = listCreate.Select(i => new ProductValidateDTO().ValidateCreate(i.InputCreateProduct, i.OriginalCode, i.RepeteCode, i.BrandExists, dictionaryLength)).ToList();
         _productValidateService.ValidateCreate(listProductValidate);
 
         var listNotification = GetAllNotification();
@@ -95,9 +95,9 @@ public class ProductService : BaseService<IProductRepository, IProductValidateSe
                               BrandExists = listBrand.FirstOrDefault(n => n == i.InputUpdate.BrandId)
                           }).ToList();
 
-        var dictLength = await _productRepository.PropertyNameLength();
+        var dictionaryLength = _productRepository.DictionaryLength();
 
-        List<ProductValidateDTO> listProductValidate = listUpdate.Select(i => new ProductValidateDTO().ValidateUpdate(i.InputIdentityUpdateProduct, i.OriginalIdentity, i.OriginalCode, i.RepeteIdentity, i.RepeteCode, i.BrandExists, dictLength)).ToList();
+        List<ProductValidateDTO> listProductValidate = listUpdate.Select(i => new ProductValidateDTO().ValidateUpdate(i.InputIdentityUpdateProduct, i.OriginalIdentity, i.OriginalCode, i.RepeteIdentity, i.RepeteCode, i.BrandExists, dictionaryLength)).ToList();
         _productValidateService.ValidateUpdate(listProductValidate);
 
         var listNotification = GetAllNotification();

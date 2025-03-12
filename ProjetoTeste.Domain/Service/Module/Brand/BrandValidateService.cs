@@ -28,7 +28,7 @@ public class BrandValidateService : BaseValidate_1<BrandValidateDTO, InputCreate
          let setInvalid = i.SetInvalid()
          select AlreadyExists(i.InputCreate.Code, "Código")).ToList();
 
-        CreateValidateLenght(listBrandValidate);
+        ValidateLenght(listBrandValidate);
 
         //(from i in RemoveIgnore(listBrandValidate)
         // let resultInvalidLenght = InvalidLenghtValidate(i.InputCreate.Name, 1, 64)
@@ -83,7 +83,7 @@ public class BrandValidateService : BaseValidate_1<BrandValidateDTO, InputCreate
          let setInvalid = i.SetInvalid()
          select AlreadyExists(i.InputIdentityUpdate.InputUpdate.Code, "Código")).ToList();
 
-        UpdateValidateLenght(listBrandValidate);
+        ValidateLenght(listBrandValidate);
 
         //(from i in RemoveIgnore(listBrandValidate)
         // let resultInvalidLenght = InvalidLenghtValidate(i.InputIdentityUpdate.InputUpdate.Name, 1, 24)

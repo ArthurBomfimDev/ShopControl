@@ -9,7 +9,7 @@ using ProjetoTeste.Domain.Interface.Service.Base;
 
 namespace ProjetoTeste.Domain.Service.Base;
 
-public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCreate, TInputUpdate ,TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput, TValidate> : BaseValidate<TValidate>, IBaseService<TDTO, TInputCreate, TInputUpdate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput>
+public abstract class BaseService<TIRepository, TValidateService, TDTO, TInputCreate, TInputUpdate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput, TValidate> : BaseValidate<TValidate>, IBaseService<TDTO, TInputCreate, TInputUpdate, TInputIdentityUpdate, TInputIdentityDelete, TInputIdentityView, TOutput>
     where TDTO : BaseDTO<TDTO>
     where TInputCreate : BaseInputCreate<TInputCreate>
     where TInputUpdate : BaseInputUpdate<TInputUpdate>

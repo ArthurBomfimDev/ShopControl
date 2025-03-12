@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetoTeste.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using ProjetoTeste.Infrastructure.Persistence.Context;
 namespace ProjetoTeste.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250311160848_order")]
+    partial class order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,8 +70,7 @@ namespace ProjetoTeste.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(320)
-                        .HasColumnType("varchar(320)")
+                        .HasColumnType("longtext")
                         .HasColumnName("email");
 
                     b.Property<string>("Name")
@@ -96,16 +98,13 @@ namespace ProjetoTeste.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long>("CustomerId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("id_do_cliente");
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime(6)")
-                        .HasColumnName("data_do_pedido");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(65,30)")
-                        .HasColumnName("total");
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -123,37 +122,28 @@ namespace ProjetoTeste.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long>("BrandId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("id_da_marca");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("varchar(6)")
-                        .HasColumnName("codigo");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("descricao");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("varchar(40)")
-                        .HasColumnName("nome");
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)")
-                        .HasColumnName("preco");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<long>("Stock")
-                        .HasColumnType("bigint")
-                        .HasColumnName("estoque");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.ToTable("produto");
+                    b.HasIndex("BrandId");
+
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.ProductOrder", b =>
@@ -165,28 +155,27 @@ namespace ProjetoTeste.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long>("OrderId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("id_de_pedido");
+                        .HasColumnType("bigint");
 
                     b.Property<long>("ProductId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("id_de_produto");
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int")
-                        .HasColumnName("quantidade");
+                        .HasColumnType("int");
 
                     b.Property<decimal>("SubTotal")
-                        .HasColumnType("decimal(65,30)")
-                        .HasColumnName("subtotal");
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(65,30)")
-                        .HasColumnName("preco_unitario");
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("pedido_de_produto");
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductOrder");
                 });
 
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.Order", b =>
@@ -198,9 +187,44 @@ namespace ProjetoTeste.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.Product", b =>
+                {
+                    b.HasOne("ProjetoTeste.Infrastructure.Persistence.Entity.Brand", "Brand")
+                        .WithMany()
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.ProductOrder", b =>
+                {
+                    b.HasOne("ProjetoTeste.Infrastructure.Persistence.Entity.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetoTeste.Infrastructure.Persistence.Entity.Product", "Product")
+                        .WithMany("ListProductOrder")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.Customer", b =>
                 {
                     b.Navigation("ListOrder");
+                });
+
+            modelBuilder.Entity("ProjetoTeste.Infrastructure.Persistence.Entity.Product", b =>
+                {
+                    b.Navigation("ListProductOrder");
                 });
 #pragma warning restore 612, 618
         }

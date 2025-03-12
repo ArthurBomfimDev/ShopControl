@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 namespace ProjetoTeste.Arguments.Arguments.Brand;
 
-public class InputUpdateBrand: BaseInputUpdate<InputUpdateBrand>
+public class InputUpdateBrand : BaseInputUpdate<InputUpdateBrand>
 {
     public string Name { get; private set; }
 
