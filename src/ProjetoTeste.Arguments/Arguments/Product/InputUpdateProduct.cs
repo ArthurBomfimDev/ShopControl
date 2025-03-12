@@ -1,4 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base.Crud;
+using ProjetoTeste.Arguments.DataAnnotation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 namespace ProjetoTeste.Arguments.Arguments.Product;
@@ -7,6 +8,7 @@ public class InputUpdateProduct : BaseInputUpdate<InputUpdateProduct>
 {
     public string Name { get; private set; }
     [Required(ErrorMessage = "O campo {0} é OBRIGATÓRIO - Identificador")]
+    [IdentifierAttribute]
     public string Code { get; private set; }
     public string Description { get; private set; }
     public decimal Price { get; private set; }

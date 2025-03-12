@@ -1,4 +1,5 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base.Crud;
+using ProjetoTeste.Arguments.DataAnnotation;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -7,6 +8,7 @@ namespace ProjetoTeste.Arguments.Arguments.Customer;
 public class InputUpdateCustomer : BaseInputUpdate<InputUpdateCustomer>
 {
     public string Name { get; private set; }
+    [IdentifierAttribute]
     [Required(ErrorMessage = "O campo {0} é OBRIGATÓRIO - Identificador")]
     public string CPF { get; private set; }
     public string Email { get; private set; }

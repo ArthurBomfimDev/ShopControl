@@ -1,5 +1,6 @@
 ﻿using ProjetoTeste.Arguments.Arguments.Base;
 using ProjetoTeste.Arguments.Arguments.Base.Crud;
+using ProjetoTeste.Arguments.DataAnnotation;
 using ProjetoTeste.Arguments.Enum.Validate;
 using ProjetoTeste.Domain.DTO.Base;
 using System.ComponentModel.DataAnnotations;
@@ -17,23 +18,23 @@ public class BaseValidate_1<TValidateDTO, TInputCreate, TInputUpdate, TInputIden
     public void ValidateLenght(List<TValidateDTO> listValidateDTO)
     {
         var identificatorName = (from i in typeof(TInputCreate).GetProperties()
-                                 where Attribute.IsDefined(i, typeof(RequiredAttribute))
+                                 where Attribute.IsDefined(i, typeof(IdentifierAttribute))
                                  select i.Name).FirstOrDefault();
 
         (from i in RemoveIgnore(listValidateDTO) // Possivel alteração passar parametro de Update ou Create (ou fazer automatico) mas para isso seria necessario transformar implicitamente em DTO
-         let input = CreateOrUpdate(i)
-         where input != null && i.DictionaryLength != null
-         let identificator = input.GetType().GetProperty(identificatorName!).GetValue(input).ToString()
+         let inputProperty = CreateOrUpdate(i)
+         where inputProperty != null && i.DictionaryLength != null
+         let identificator = inputProperty.GetType().GetProperty(identificatorName!).GetValue(inputProperty).ToString()
          from j in i.DictionaryLength!
-         let propertyValue = input.GetType().GetProperty(j.Key).GetValue(input).ToString()
+         let propertyValue = inputProperty.GetType().GetProperty(j.Key).GetValue(inputProperty).ToString()
          let resultInvalidLenght = InvalidLenghtValidate(propertyValue, j.Value[0], j.Value[1])
          where resultInvalidLenght != EnumValidateType.Valid
          let setInvalid = i.SetInvalid()
          select resultInvalidLenght == EnumValidateType.Invalid ? InvalidLenght(identificator, propertyValue, j.Value[0], j.Value[1], j.Key) : NullField(identificator, j.Key.ToString())).ToList();
     }
 
-    public dynamic CreateOrUpdate(TValidateDTO validateDTO)
+    public dynamic? CreateOrUpdate(TValidateDTO validateDTO)
     {
-        return validateDTO.InputCreate == null ? validateDTO.InputIdentityUpdate.InputUpdate : validateDTO.InputCreate;
+        return validateDTO!.InputCreate == null ? validateDTO.InputIdentityUpdate.InputUpdate : validateDTO.InputCreate;
     }
 }
