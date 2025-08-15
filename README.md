@@ -99,9 +99,4 @@ Contribuições são sempre bem-vindas! Se você tem alguma ideia para melhorar 
 3.  Faça o *Commit* de suas mudanças (`git commit -m 'Adiciona nova feature'`)
 4.  Faça o *Push* para a *Branch* (`git push origin feature/sua-feature`)
 5.  Abra um *Pull Request*
-
-## 📜 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](https://github.com/ArthurBomfimDev/ShopControl/blob/main/LICENSE) para mais detalhes.
-
 ---
